@@ -14,7 +14,8 @@
                     data-live-search="false" multiple>
                 <?php foreach ($items as $group_id => $_items) { ?>
                     <optgroup class="group_item" data-group-id="<?php echo $group_id; ?>"
-                              label="<?php echo $_items[0]['group_name']; ?>" style="font-weight: bold;cursor: pointer;">
+                              label="<?php echo $_items[0]['group_name']; ?>"
+                              style="font-weight: bold;cursor: pointer;">
                         <?php foreach ($_items as $item) { ?>
                             <option value="<?php echo $item['id']; ?>"
                                     data-subtext="<?php echo strip_tags(mb_substr($item['long_description'], 0, 200)) . '...'; ?>">
@@ -59,17 +60,6 @@
     }
 
     function initJs() {
-
-    }
-
-    function apply_list_item() {
-        var itemids = $("#item_select").selectpicker('val');
-        if (itemids.length < 1) {
-            return false;
-        }
-        if (itemids[0] != '') {
-            add_item_to_preview(itemids[0]);
-        }
         let tr_first = $("tbody.ui-sortable").find("tr.main");
         if (tr_first == null) {
             return false;
@@ -78,24 +68,72 @@
         if (button_confirm_first == null) {
             return false;
         }
+    }
 
-        //$("tbody.ui-sortable").find("tr.sortable").remove();
-
-        setTimeout(function () {
-            button_confirm_first.click();
-        }, 300);
-
-        for (let x = 0; x < itemids.length; x++) {
-            setTimeout(function () {
-                button_confirm_first.click();
-            }, 300);
-            if (x == 0) {
-                continue;
-            }
-            add_item_to_preview(itemids[x]);
-            setTimeout(function () {
-                button_confirm_first.click();
-            }, 300);
+    function apply_list_item() {
+        var itemids = $("#item_select").selectpicker('val');
+        if (itemids.length < 1) {
+            return false;
         }
+
+        var i = 0;
+        do {
+            let tr_first = $("tbody.ui-sortable").find("tr.main");
+            if (tr_first == null) {
+                return false;
+            }
+            let button_confirm_first = tr_first.find("button");
+            if (button_confirm_first == null) {
+                return false;
+            }
+            requestGetJSON('invoice_items/get_item_by_id/' + itemids[i]).done(function (response) {
+                clear_item_preview_values();
+
+                $('.main textarea[name="description"]').val(response.description);
+                $('.main textarea[name="long_description"]').val(response.long_description.replace(/(<|&lt;)br\s*\/*(>|&gt;)/g, " "));
+
+                _set_item_preview_custom_fields_array(response.custom_fields);
+
+                $('.main input[name="quantity"]').val(1);
+
+                var taxSelectedArray = [];
+                if (response.taxname && response.taxrate) {
+                    taxSelectedArray.push(response.taxname + '|' + response.taxrate);
+                }
+                if (response.taxname_2 && response.taxrate_2) {
+                    taxSelectedArray.push(response.taxname_2 + '|' + response.taxrate_2);
+                }
+
+                $('.main select.tax').selectpicker('val', taxSelectedArray);
+                $('.main input[name="unit"]').val(response.unit);
+
+                var $currency = $("body").find('.accounting-template select[name="currency"]');
+                var baseCurency = $currency.attr('data-base');
+                var selectedCurrency = $currency.find('option:selected').val();
+                var $rateInputPreview = $('.main input[name="rate"]');
+
+                if (baseCurency == selectedCurrency) {
+                    $rateInputPreview.val(response.rate);
+                } else {
+                    var itemCurrencyRate = response['rate_currency_' + selectedCurrency];
+                    if (!itemCurrencyRate || parseFloat(itemCurrencyRate) === 0) {
+                        $rateInputPreview.val(response.rate);
+                    } else {
+                        $rateInputPreview.val(itemCurrencyRate);
+                    }
+                }
+
+                $(document).trigger({
+                    type: "item-added-to-preview",
+                    item: response,
+                    item_type: 'item',
+                });
+
+                add_item_to_table(response,itemids[i],undefined);
+            });
+
+            i++;
+        }
+        while (i < itemids.length);
     }
 </script>
