@@ -79,7 +79,7 @@
             return false;
         }
 
-        $("tbody.ui-sortable").find("tr.sortable").remove();
+        //$("tbody.ui-sortable").find("tr.sortable").remove();
 
         setTimeout(function () {
             button_confirm_first.click();
