@@ -78,7 +78,12 @@ class Clients extends AdminController
                 access_denied('customers');
             }
         }
-
+        $contactId = null;
+        $contacts = $this->clients_model->get_contacts($id, ['active' => 1, 'is_primary' => 1, 'userid' => $id]);
+        if (count($contacts) > 0) {
+            $contactId = $contacts[0]->id;
+            $data["contact"] = (object)$contacts[0];
+        }
         if ($this->input->post() && !$this->input->is_ajax_request()) {
             if ($id == '') {
                 if (!has_permission('customers', '', 'create')) {
@@ -86,10 +91,8 @@ class Clients extends AdminController
                 }
                 $this->load->model('clients_model');
                 $data = $this->input->post();
-
-
                 $contact_data = [
-                    'is_primary' => 0,
+                    'is_primary' => 1,
                     'firstname' => $this->input->post('firstname'),
                     'lastname' => $this->input->post('lastname'),
                     'title' => "",
@@ -110,7 +113,6 @@ class Clients extends AdminController
                 if (isset($data['password'])) {
                     $contact_data['password'] = $this->input->post('password', false);
                 }
-
                 $save_and_add_contact = false;
                 if (isset($data['save_and_add_contact'])) {
                     unset($data['save_and_add_contact']);
@@ -134,7 +136,25 @@ class Clients extends AdminController
                         access_denied('customers');
                     }
                 }
-                $success = $this->clients_model->update($this->input->post(), $id);
+
+                if ($this->input->post("contact_id") != '') {
+                    $contact_data = [
+                        'firstname' => $this->input->post('firstname'),
+                        'lastname' => $this->input->post('lastname'),
+                        'email' => $this->input->post('email')
+                    ];
+                    if ($this->input->post('password') != '') {
+                        $contact_data['password'] = $this->input->post('password');
+                    }
+                    $success_contact = $this->clients_model->update_contact($contact_data, $this->input->post("contact_id"), false, true);
+                }
+                $data_update_client = $this->input->post();
+                unset($data_update_client["contact_id"]);
+                unset($data_update_client["firstname"]);
+                unset($data_update_client["lastname"]);
+                unset($data_update_client["email"]);
+                unset($data_update_client["password"]);
+                $success = $this->clients_model->update($data_update_client, $id, true);
                 if ($success == true) {
                     set_alert('success', _l('updated_successfully', _l('client')));
                 }
