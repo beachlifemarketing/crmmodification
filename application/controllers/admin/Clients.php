@@ -139,7 +139,6 @@ class Clients extends AdminController
                             }else{
                                 redirect(admin_url('clients/client/' . $id . '?group=contacts&new_contact=true'));
                             }
-
                         }
                     }
                 }
