@@ -156,6 +156,7 @@
                     </div>
                     <div class="col-md-4">
                         <?php $value = (isset($contact) ? $contact->firstname : ''); ?>
+                        <?php echo (isset($contact)) ? form_hidden('contact_id',$contact->id): ''; ?>
                         <?php echo render_input('firstname', 'client_firstname', $value); ?>
                         <?php $value = (isset($contact) ? $contact->lastname : ''); ?>
                         <?php echo render_input('lastname', 'client_lastname', $value); ?>
@@ -183,9 +184,6 @@
                             </span>
                             </div>
                             <?php if (isset($contact)) { ?>
-                                <p class="text-muted">
-                                    <?php echo _l('client_password_change_populate_note'); ?>
-                                </p>
                                 <?php if ($contact->last_password_change != NULL) {
                                     echo _l('client_password_last_changed');
                                     echo '<span class="text-has-action" data-toggle="tooltip" data-title="' . _dt($contact->last_password_change) . '"> ' . time_ago($contact->last_password_change) . '</span>';

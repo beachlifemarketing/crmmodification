@@ -249,14 +249,16 @@
         var rule_client_form = {
             firstname: 'required',
             lastname: 'required',
+            <?php if(!isset($contact)){ ?>
             password: 'required',
+            <?php } ?>
             email: {
                 <?php if(hooks()->apply_filters('contact_email_required', "true") === "true"){ ?>
                 required: true,
                 <?php } ?>
                 email: true,
                 // Use this hook only if the contacts are not logging into the customers area and you are not using support tickets piping.
-                <?php if(hooks()->apply_filters('contact_email_unique', "true") === "true"){ ?>
+                <?php if(hooks()->apply_filters('contact_email_unique', "true") === "true" && !isset($contact)){ ?>
                 remote: {
                     url: admin_url + "misc/contact_email_exists",
                     type: 'post',
