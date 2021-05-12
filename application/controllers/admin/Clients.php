@@ -128,7 +128,20 @@ class Clients extends AdminController
                 if ($id) {
                     $contact_data['userid'] = $id;
                     $contactId = $this->clients_model->add_contact_via_customers_area($contact_data, $id);
-                    // TODO : use contactId
+                    // TODO : use
+                    if ($id) {
+                        set_alert('success', _l('added_successfully', _l('client')));
+                        if ($save_and_add_contact == false) {
+                            redirect(admin_url('clients/client/' . $id));
+                        } else {
+                            if ($contactId != '') {
+                                redirect(admin_url('clients/client/' . $id . '?group=contacts'));
+                            }else{
+                                redirect(admin_url('clients/client/' . $id . '?group=contacts&new_contact=true'));
+                            }
+
+                        }
+                    }
                 }
             } else {
                 if (!has_permission('customers', '', 'edit')) {
