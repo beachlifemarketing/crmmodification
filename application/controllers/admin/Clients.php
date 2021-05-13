@@ -166,7 +166,7 @@ class Clients extends AdminController
                 unset($data_update_client["lastname"]);
                 unset($data_update_client["email"]);
                 unset($data_update_client["password"]);
-                $success = $this->clients_model->update($data_update_client, $id, true);
+                $success = $this->clients_model->update($data_update_client, $id);
                 if ($success == true) {
                     set_alert('success', _l('updated_successfully', _l('client')));
                 }
