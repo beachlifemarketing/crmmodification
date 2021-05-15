@@ -81,8 +81,9 @@ class Clients extends AdminController
         $contactId = null;
         $contacts = $this->clients_model->get_contacts($id, ['active' => 1, 'is_primary' => 1, 'userid' => $id]);
         if (count($contacts) > 0) {
-            $contactId = $contacts[0]->id;
-            $data["contact"] = (object)$contacts[0];
+            $contactObj = (object)$contacts[0];
+            $contactId = $contactObj->id;
+            $data["contact"] = $contactObj;
         }
         if ($this->input->post() && !$this->input->is_ajax_request()) {
             if ($id == '') {

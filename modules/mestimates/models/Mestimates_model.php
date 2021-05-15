@@ -1,0 +1,272 @@
+<?php
+
+defined('BASEPATH') or exit('No direct script access allowed');
+
+class Mestimates_model extends App_Model
+{
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
+     * @param integer (optional)
+     * @return object
+     * Get single mestimate
+     */
+    public function get($id = '', $exclude_notified = false)
+    {
+        if (is_numeric($id)) {
+            $this->db->where('id', $id);
+
+            return $this->db->get(db_prefix() . 'mestimates')->row();
+        }
+
+        if ($exclude_notified == true) {
+            $this->db->where('notified', 0);
+        }
+
+        return $this->db->get(db_prefix() . 'mestimates')->result_array();
+    }
+
+
+    public function get_all_mestimates($exclude_notified = true)
+    {
+        if ($exclude_notified) {
+            $this->db->where('notified', 0);
+        }
+
+        $this->db->order_by('due_date', 'asc');
+        $mestimates = $this->db->get(db_prefix() . 'mestimates')->result_array();
+
+        foreach ($mestimates as $key => $val) {
+            $mestimate = get_mestimate_type($val['mestimate_type']);
+
+            if (!$mestimate || $mestimate && isset($mestimate['dashboard']) && $mestimate['dashboard'] === false) {
+                unset($mestimates[$key]);
+            }
+
+        }
+
+        return array_values($mestimates);
+    }
+
+
+    /**
+     * Add new mestimate
+     * @param mixed $data All $_POST dat
+     * @return mixed
+     */
+    public function add($data)
+    {
+        $data['notify_when_fail'] = isset($data['notify_when_fail']) ? 1 : 0;
+        $data['notify_when_achieve'] = isset($data['notify_when_achieve']) ? 1 : 0;
+
+        $data['contract_type'] = $data['contract_type'] == '' ? 0 : $data['contract_type'];
+        $data['staff_id'] = $data['staff_id'] == '' ? 0 : $data['staff_id'];
+        $data['start_date'] = to_sql_date($data['start_date']);
+        $data['end_date'] = to_sql_date($data['end_date']);
+        $this->db->insert(db_prefix() . 'mestimates', $data);
+        $insert_id = $this->db->insert_id();
+        if ($insert_id) {
+            log_activity('New Mestimate Added [ID:' . $insert_id . ']');
+
+            return $insert_id;
+        }
+
+        return false;
+    }
+
+    /**
+     * Update mestimate
+     * @param mixed $data All $_POST data
+     * @param mixed $id mestimate id
+     * @return boolean
+     */
+    public function update($data, $id)
+    {
+        $data['notify_when_fail'] = isset($data['notify_when_fail']) ? 1 : 0;
+        $data['notify_when_achieve'] = isset($data['notify_when_achieve']) ? 1 : 0;
+
+        $data['contract_type'] = $data['contract_type'] == '' ? 0 : $data['contract_type'];
+        $data['staff_id'] = $data['staff_id'] == '' ? 0 : $data['staff_id'];
+        $data['start_date'] = to_sql_date($data['start_date']);
+        $data['end_date'] = to_sql_date($data['end_date']);
+
+        $mestimate = $this->get($id);
+
+        if ($mestimate->notified == 1 && date('Y-m-d') < $data['end_date']) {
+            // After mestimate finished, user changed/extended date? If yes, set this mestimate to be notified
+            $data['notified'] = 0;
+        }
+
+        $this->db->where('id', $id);
+        $this->db->update(db_prefix() . 'mestimates', $data);
+        if ($this->db->affected_rows() > 0) {
+            log_activity('Mestimate Updated [ID:' . $id . ']');
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Delete mestimate
+     * @param mixed $id mestimate id
+     * @return boolean
+     */
+    public function delete($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->delete(db_prefix() . 'mestimates');
+        if ($this->db->affected_rows() > 0) {
+            log_activity('Mestimate Deleted [ID:' . $id . ']');
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function mark_as_notified($id)
+    {
+        $this->db->where('id', $id);
+        $this->db->update(db_prefix() . 'mestimates', [
+            'notified' => 1,
+        ]);
+    }
+
+    public function get_files($mestimate_id = 0, $staffid = null, $client_id = null)
+    {
+        if (is_client_logged_in()) {
+            $this->db->where('visible_to_customer', 1);
+        }
+        $this->db->where('mestimate_id', $mestimate_id);
+        if (isset($staffid)) {
+            $this->db->where('staffid', $staffid);
+        }
+        if (isset($client_id)) {
+            $this->db->where('contact_id', $client_id);
+        }
+        $data = $this->db->get(db_prefix() . 'mestimate_files')->result_array();
+        //print_r($this->db->last_query());
+        return $data;
+    }
+
+    public function get_file($id, $mestimate_id = false)
+    {
+        if (is_client_logged_in()) {
+            $this->db->where('visible_to_customer', 1);
+        }
+        $this->db->where('id', $id);
+        $file = $this->db->get(db_prefix() . 'mestimate_files')->row();
+
+        if ($file && $mestimate_id) {
+            if ($file->mestimate_id != $mestimate_id) {
+                return false;
+            }
+        }
+
+        return $file;
+    }
+
+    public function update_file_data($data)
+    {
+        $this->db->where('id', $data['id']);
+        unset($data['id']);
+        $this->db->update(db_prefix() . 'mestimate_files', $data);
+    }
+
+    public function change_file_visibility($id, $visible)
+    {
+        $this->db->where('id', $id);
+        $this->db->update(db_prefix() . 'mestimate_files', [
+            'visible_to_customer' => $visible,
+        ]);
+    }
+
+    public function change_activity_visibility($id, $visible)
+    {
+        $this->db->where('id', $id);
+        $this->db->update(db_prefix() . 'mestimate_activity', [
+            'visible_to_customer' => $visible,
+        ]);
+    }
+
+    public function remove_file($id, $logActivity = true)
+    {
+        hooks()->do_action('before_remove_mestimate_file', $id);
+
+        $this->db->where('id', $id);
+        $file = $this->db->get(db_prefix() . 'mestimate_files')->row();
+        if ($file) {
+            if (empty($file->external)) {
+                $path = get_upload_path_by_type('mestimate') . $file->mestimate_id . '/';
+                $fullPath = $path . $file->file_name;
+                if (file_exists($fullPath)) {
+                    unlink($fullPath);
+                    $fname = pathinfo($fullPath, PATHINFO_FILENAME);
+                    $fext = pathinfo($fullPath, PATHINFO_EXTENSION);
+                    $thumbPath = $path . $fname . '_thumb.' . $fext;
+
+                    if (file_exists($thumbPath)) {
+                        unlink($thumbPath);
+                    }
+                }
+            }
+
+            $this->db->where('id', $id);
+            $this->db->delete(db_prefix() . 'mestimate_files');
+
+            if (is_dir(get_upload_path_by_type('mestimate') . $file->mestimate_id)) {
+                // Check if no attachments left, so we can delete the folder also
+                $other_attachments = list_files(get_upload_path_by_type('mestimate') . $file->mestimate_id);
+                if (count($other_attachments) == 0) {
+                    delete_dir(get_upload_path_by_type('mestimate') . $file->mestimate_id);
+                }
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    function get_next_file($file_id)
+    {
+        $condition = '1=1';
+        if (is_client_logged_in()) {
+            $condition = 'visible_to_customer = 1';
+        }
+        $stmt = $this->db->query("SELECT * FROM " . db_prefix() . "mestimate_files 
+        WHERE id > " . $file_id . " 
+         AND " . $condition . "
+        ORDER BY id DESC LIMIT 1;");
+        $file = $stmt->row();
+        if (isset($file)) {
+            return $file;
+        }
+        return null;
+    }
+
+    function get_previous_file($file_id)
+    {
+        $condition = '1=1';
+        if (is_client_logged_in()) {
+            $condition = 'visible_to_customer = 1';
+        }
+        $stmt = $this->db->query("SELECT * FROM " . db_prefix() . "mestimate_files 
+        WHERE id < " . $file_id . " 
+         AND " . $condition . "
+        ORDER BY id DESC LIMIT 1;");
+        $file = $stmt->row();
+        if (isset($file)) {
+            return $file;
+        }
+        return null;
+    }
+
+}
+
+
