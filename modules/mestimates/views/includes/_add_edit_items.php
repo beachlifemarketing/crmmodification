@@ -100,17 +100,14 @@
                                 ?>
                                 <button type="button" class="btn btn-danger btn-xs" title="<?php echo _l('remove'); ?>"
                                         onclick="removeRow($(this))">
-                                    <i
-                                            class="ace-icon fa fa-minus bigger-100 icon-only"></i></button>
+                                    <i class="ace-icon fa fa-minus bigger-100 icon-only"></i></button>
                                 <?php
                             } else {
-
                                 ?>
                                 <button type="button" class="btn btn-danger btn-xs hidden button_clone"
                                         title="<?php echo _l('remove'); ?>"
                                         onclick="removeRow($(this))">
-                                    <i
-                                            class="ace-icon fa fa-minus bigger-100 icon-only"></i></button>
+                                    <i class="ace-icon fa fa-minus bigger-100 icon-only"></i></button>
                                 <?php
                             }
                             ?>
@@ -126,44 +123,49 @@
             <tfoot>
             <tr>
                 <td colspan="6" style="text-align: right"><?php echo _l('sub_total'); ?></td>
-                <td><input value="" type="text" id="sub_total" placeholder="0.00" class="col-xs-12 col-sm-12 center"
+                <td><input value="" type="text" name="sub_total" id="sub_total" placeholder="0.00"
+                           class="col-xs-12 col-sm-12 center"
                            readonly="readonly"></td>
                 <td></td>
             </tr>
             <tr>
                 <td colspan="5" style="text-align: right"><?php echo _l('discount'); ?></td>
-                <td><input type="number" id="discount" name="detail['discount']" placeholder="0.00"
+                <td><input type="number" id="discount" name="discount" placeholder="0.00"
                            onkeyup="computeLineAmount()" onchange="computeLineAmount()"
                            class="col-xs-12 col-sm-12 center"></td>
-                <td><input type="text" id="discount_val" placeholder="0.00" class="col-xs-12 col-sm-12 center"
+                <td><input type="text" id="discount_val" name="discount_val" placeholder="0.00"
+                           class="col-xs-12 col-sm-12 center"
                            readonly="readonly"></td>
                 <td></td>
             </tr>
             <tr>
                 <td colspan="6" style="text-align: right"><?php echo _l('total'); ?></td>
-                <td><input value="" type="text" id="total" placeholder="0.00" class="col-xs-12 col-sm-12 center"
+                <td><input value="" type="text" id="total" name="total" placeholder="0.00"
+                           class="col-xs-12 col-sm-12 center"
                            readonly="readonly"></td>
                 <td></td>
             </tr>
 
             <tr>
                 <td colspan="4" style="text-align: right"></td>
-                <td style="text-align: right"><input type="text" name="detail['paid_by_customer_text']"
+                <td style="text-align: right"><input type="text" name="paid_by_customer_text"
                                                      placeholder="<?php echo _l('Total paid by customer'); ?>"
                                                      class="col-xs-12 col-sm-12 center"></td>
                 <td><input onkeyup="computeLineAmount()" id="paid_by_customer_percent" onchange="computeLineAmount()"
-                           type="number" name="detail['paid_by_customer_percent']" placeholder="percent"
+                           type="number" name="paid_by_customer_percent" placeholder="percent"
                            class="col-xs-12 col-sm-12 center"></td>
-                <td><input type="text" name="detail['balance_due']" placeholder="0.00"
+                <td><input type="text" name="balance_due" placeholder="0.00"
                            id="balance_due" class="col-xs-12 col-sm-12 center" readonly="readonly"></td>
                 <td></td>
             </tr>
 
             <tr>
                 <td colspan="5" style="text-align: right"></td>
-                <td><input type="text" placeholder="<?php echo _l('Balance Due (Insurance Billing)'); ?>"
+                <td><input type="text" name="balance_due_text"
+                           placeholder="<?php echo _l('Balance Due (Insurance Billing)'); ?>"
                            class="col-xs-12 col-sm-12 center"></td>
-                <td><input type="text" readonly="readonly" placeholder="0.00" id="balance"
+                <td><input name="balance_due_val" type="text" readonly="readonly" placeholder="0.00"
+                           id="balance_due_val"
                            class="col-xs-12 col-sm-12 center"></td>
                 <td></td>
             </tr>

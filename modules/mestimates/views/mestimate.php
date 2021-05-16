@@ -25,6 +25,29 @@
 </script>
 
 <script type="text/javascript">
+    function selectTemplate() {
+        var template_id = $('select#template_id').val();
+        $("#hid_mestimate_id").val(template_id);
+        $("#mestimate_id").val(template_id);
+        $('input[name="mestimate_id"]').val(template_id);
+        simpleAjaxPostUpload(
+            admin_url + 'mestimates/mestimate?rtype=json',
+            '#id_content_mestimate',
+            function (res) {
+                $('#div_address').html(res.view_address);
+                $('#row_file_mestimates').html(res.view_file);
+                alert_float('success', res.errorMessage);
+            },
+            function (res) {
+                alert_float('danger', res.errorMessage);
+            },
+            function (res) {
+                alert_float('danger', res.errorMessage);
+            }
+        );
+        //window.location.href = admin_url + 'mestimates/mestimate/' + $('input[name="mestimate_id"]').val() + '/' + clientId;
+    }
+
     function selectClient() {
         var clientId = $('#client_id').val();
         $("#hid_client_id").val(clientId);
@@ -63,7 +86,19 @@
     }
 
     function saveTemplateMestimate() {
-
+        var url = admin_url + 'mestimates/estimate_do?sat=template';
+        simpleAjaxPostUpload(
+            url, '#id_content_mestimate',
+            function (res) {
+                alert_float('success', res.errorMessage);
+            },
+            function (res) {
+                alert_float('danger', res.errorMessage);
+            },
+            function (res) {
+                alert_float('danger', res.errorMessage);
+            }
+        );
     }
 
     function computeLineAmount() {
@@ -85,7 +120,7 @@
         $('#balance_due').val(parseFloat(total_due_amount).toFixed(2));
         $('#discount_val').val(parseFloat(total_discount).toFixed(2));
         $('#total').val(parseFloat(total_affter_discount).toFixed(2));
-        $('#balance').val(parseFloat(total_affter_discount - total_due_amount).toFixed(2));
+        $('#balance_due_val').val(parseFloat(total_affter_discount - total_due_amount).toFixed(2));
     }
 
     function addRow(element) {

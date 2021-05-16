@@ -16,11 +16,12 @@
                         <?php } ?>
                         <?php render_datatable(array(
                             _l('job_number'),
-                            _l('claim_number'),
-                            _l('lic_number'),
+                            _l('date'),
+                            _l('representative'),
                             _l('sub_total'),
-                            _l('due_date'),
-                            _l('mestimate_progress'),
+                            _l('discount_percent'),
+                            _l('balance_due'),
+                            _l('total')
                         ), 'mestimates'); ?>
                     </div>
                 </div>
@@ -29,14 +30,7 @@
     </div>
 </div>
 <?php init_tail(); ?>
-<script src="<?php echo module_dir_url('mestimates', 'assets/mestimates.js'); ?>"></script>
 <script>
-    $(function () {
-        validate_estimate_form();
-        init_ajax_project_search_by_customer_id();
-        init_ajax_search('items', '#item_select.ajax-search', undefined, admin_url + 'items/search');
-    })
-
     $(function () {
         initDataTable('.table-mestimates', window.location.href, [6], [6]);
         $('.table-mestimates').DataTable().on('draw', function () {

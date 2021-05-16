@@ -9,6 +9,7 @@ class Mestimates_model extends App_Model
         parent::__construct();
     }
 
+
     /**
      * @param integer (optional)
      * @return object
@@ -16,32 +17,28 @@ class Mestimates_model extends App_Model
      */
     public function get($id = '', $exclude_notified = false)
     {
-        if (is_numeric($id)) {
-            $this->db->where('id', $id);
+        $this->db->where('id', $id);
 
-            return $this->db->get(db_prefix() . 'mestimates')->row();
-        }
-
-        if ($exclude_notified == true) {
-            $this->db->where('notified', 0);
-        }
-
-        return $this->db->get(db_prefix() . 'mestimates')->result_array();
+        $result = $this->db->get(db_prefix() . 'mestimates')->row();
+        return $result;
     }
 
 
-    public function get_all_mestimates($exclude_notified = true)
+    public function get_all_mestimates()
     {
-        if ($exclude_notified) {
-            $this->db->where('notified', 0);
-        }
-
-        $this->db->order_by('due_date', 'asc');
+        $this->db->where('status', 'active');
+        $this->db->order_by('due_date', 'desc');
         $mestimates = $this->db->get(db_prefix() . 'mestimates')->result_array();
-
         return array_values($mestimates);
     }
 
+    public function get_all_template()
+    {
+        $this->db->where('status', 'template');
+        $this->db->order_by('due_date', 'asc');
+        $mestimates = $this->db->get(db_prefix() . 'mestimates')->result_array();
+        return $mestimates;
+    }
 
     /**
      * Add new mestimate
@@ -119,6 +116,16 @@ class Mestimates_model extends App_Model
         //print_r($this->db->last_query());
         return $data;
     }
+
+    public function update_mestimate_file($mestimate_id = 0, $file_ids = [])
+    {
+        foreach ($file_ids as $file_id) {
+            $image = array('mestimate_id' => $mestimate_id);
+            $this->db->where('id', $file_id);
+            $this->db->update('mestimate_files', $image);
+        }
+    }
+
 
     public function get_file($id, $mestimate_id = false)
     {
@@ -232,6 +239,20 @@ class Mestimates_model extends App_Model
             return $file;
         }
         return null;
+    }
+
+    public function get_staff_mestimates($staff_id, $exclude_notified = true)
+    {
+        $this->db->where('staff_id', $staff_id);
+
+        if ($exclude_notified) {
+            $this->db->where('notified', 0);
+        }
+
+        $this->db->order_by('due_date', 'asc');
+        $mestimates = $this->db->get(db_prefix() . 'mestimates')->result_array();
+
+        return $mestimates;
     }
 
 }

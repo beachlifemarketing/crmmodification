@@ -1,7 +1,8 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
 <?php
-$client_id = (isset($estimate) ? $estimate->client_id : '');
 $client_id = (isset($client) ? $client->userid : '');
+$client_id = (isset($estimate) ? $estimate->client_id : '');
+
 ?>
 <div class="panel_s accounting-template estimate">
     <div class="panel-body">
@@ -17,13 +18,14 @@ $client_id = (isset($client) ? $client->userid : '');
                         <label for="tenplate_id"
                                class="control-label"><?php echo _l('estimate_select_template'); ?></label>
                         <select id="template_id" name="template_id" class="selectpicker" data-live-search="true"
+                                onchange="selectTemplate()"
                                 data-width="100%">
                             <?php
                             $templates = (isset($templates)) ? $templates : [];
                             for ($i = 0; $i < count($templates); $i++) {
-                                $selected = (isset($estimate) && $estimate->id == $templates[$i]->id) ? 'selected' : '';
+                                $selected = (isset($estimate) && $estimate->id == $templates[$i]['id']) ? 'selected' : '';
                                 ?>
-                                <option <?= $selected ?>><?= $templates[$i]->job_number ?></option>
+                                <option value="<?= $templates[$i]['id'] ?>" <?= $selected ?>><?= $templates[$i]['job_number'] ?></option>
                                 <?php
                             }
                             ?>
