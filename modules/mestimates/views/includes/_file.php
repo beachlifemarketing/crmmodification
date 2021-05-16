@@ -2,7 +2,7 @@
 <div class="modal fade _mestimate_file" tabindex="-1" role="dialog" data-toggle="modal">
     <div class="modal-dialog full-screen-modal" role="document">
         <div class="modal-content" id="file_preview_content">
-            <?php include '_file_data.php' ?>
+            <?php $this->load->view('mestimates/includes/_file_data'); ?>
         </div>
         <!-- /.modal-content -->
     </div>

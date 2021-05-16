@@ -22,24 +22,25 @@
             if (count($details) == 0) {
                 ?>
                 <tr class="tr_parent">
-                    <td><input name="detail['are'][]" type="text" placeholder="<?php echo _l('are'); ?>"
+                    <td>
+                        <input name="detail[are][]" type="text" placeholder="<?php echo _l('are'); ?>"
                                class="col-xs-12 col-sm-12 center"></td>
-                    <td><input name="detail['size'][]" type="text" placeholder="<?php echo _l('size'); ?>"
+                    <td><input name="size[0]" type="text" placeholder="<?php echo _l('size'); ?>"
                                class="col-xs-12 col-sm-12 center"></td>
-                    <td><textarea name="detail['description'][]"
+                    <td><textarea name="detail[description][]"
                                   class="col-xs-12 col-sm-12 description ui-autocomplete-input"
                                   autocomplete="off"></textarea></td>
-                    <td><input name="detail['qty'][]" type="text" placeholder="0" class="col-xs-12 col-sm-12 center"
-                               onkeyup="computeLineAmount($(this))" onchange="computeLineAmount($(this))"><br><span
+                    <td><input name="detail[qty][]" type="number" placeholder="0" class="col-xs-12 col-sm-12 center"
+                               onkeyup="computeLineAmount()" onchange="computeLineAmount()"><br><span
                                 class="quantity_uom_1"></span></td>
-                    <td><input name="detail['unix'][]" type="text" placeholder="0.00" class="col-xs-12 col-sm-12 right"
-                               onkeyup="computeLineAmount($(this))" onchange="computeLineAmount($(this))"><br><span
+                    <td><input name="detail[unix][]" type="number" placeholder="0.00" class="col-xs-12 col-sm-12 right"
+                               onkeyup="computeLineAmount()" onchange="computeLineAmount()"><br><span
                                 class="quantity_uom_1"></span></td>
-                    <td><input name="detail['duration'][]" type="text" placeholder="<?php echo _l('duration'); ?>"
+                    <td><input name="detail[duration][]" type="text" placeholder="<?php echo _l('duration'); ?>"
                                class="col-xs-12 col-sm-12 center"
-                               onkeyup="computeLineAmount($(this))" onchange="computeLineAmount($(this))"><br><span
+                               onkeyup="computeLineAmount()" onchange="computeLineAmount()"><br><span
                         ></span></td>
-                    <td><input name="detail['amount'][]" type="text" placeholder="0.00"
+                    <td><input name="detail[amount][]" type="text" placeholder="0.00"
                                class="col-xs-12 col-sm-12 right"
                                readonly="readonly"></td>
                     <td>
@@ -51,7 +52,7 @@
                                 onclick="removeRow($(this))">
                             <i
                                     class="ace-icon fa fa-minus bigger-100 icon-only"></i></button>
-                        <input type="hidden" class="hidden" name="detail['id']" value="">
+                        <input type="hidden" class="hidden" name="detail_id[0]" value="">
                     </td>
                 </tr>
                 <?php
@@ -61,30 +62,30 @@
                     ?>
 
                     <tr class="tr_parent">
-                        <td><input value="<?= $detail->area ?>" name="detail['are'][]" type="text"
+                        <td><input value="<?= $detail->area ?>" name="detail[are][]" type="text"
                                    placeholder="<?php echo _l('are'); ?>"
                                    class="col-xs-12 col-sm-12 center"></td>
-                        <td><input value="<?= $detail->size ?>" name="detail['size'][]" type="text"
+                        <td><input value="<?= $detail->size ?>" name="detail[size][]" type="text"
                                    placeholder="<?php echo _l('size'); ?>"
                                    class="col-xs-12 col-sm-12 center"></td>
-                        <td><textarea value="<?= $detail->description ?>" name="detail['description'][]"
+                        <td><textarea value="<?= $detail->description ?>" name="detail[description][]"
                                       class="col-xs-12 col-sm-12 description ui-autocomplete-input"
                                       autocomplete="off"></textarea></td>
-                        <td><input value="<?= $detail->qty_unit ?>" name="detail['qty'][]" type="text" placeholder="0"
+                        <td><input value="<?= $detail->qty_unit ?>" name="detail[qty][]" type="number" placeholder="0"
                                    class="col-xs-12 col-sm-12 center"
-                                   onkeyup="computeLineAmount($(this))" onchange="computeLineAmount($(this))"><br><span
+                                   onkeyup="computeLineAmount()" onchange="computeLineAmount()"><br><span
                                     class="quantity_uom_1"></span></td>
-                        <td><input value="<?= $detail->px_unit ?>" name="detail['unix'][]" type="text"
+                        <td><input value="<?= $detail->px_unit ?>" name="detail[unix][]" type="number"
                                    placeholder="0.00"
                                    class="col-xs-12 col-sm-12 right"
-                                   onkeyup="computeLineAmount($(this))" onchange="computeLineAmount($(this))"><br><span
+                                   onkeyup="computeLineAmount()" onchange="computeLineAmount()"><br><span
                                     class="quantity_uom_1"></span></td>
-                        <td><input value="<?= $detail->duration_unit ?>" name="detail['duration'][]" type="text"
+                        <td><input value="<?= $detail->duration_unit ?>" name="detail[duration][]" type="text"
                                    placeholder="<?php echo _l('duration'); ?>"
                                    class="col-xs-12 col-sm-12 center"
-                                   onkeyup="computeLineAmount($(this))" onchange="computeLineAmount($(this))"><br><span
+                                   onkeyup="computeLineAmount()" onchange="computeLineAmount()"><br><span
                             ></span></td>
-                        <td><input value="<?= $detail->amount ?>" name="detail['amount'][]" type="text"
+                        <td><input value="<?= $detail->amount ?>" name="detail[amount][]" type="text"
                                    placeholder="0.00"
                                    class="col-xs-12 col-sm-12 right"
                                    readonly="readonly"></td>
@@ -99,21 +100,19 @@
                                 ?>
                                 <button type="button" class="btn btn-danger btn-xs" title="<?php echo _l('remove'); ?>"
                                         onclick="removeRow($(this))">
-                                    <i
-                                            class="ace-icon fa fa-minus bigger-100 icon-only"></i></button>
+                                    <i class="ace-icon fa fa-minus bigger-100 icon-only"></i></button>
                                 <?php
                             } else {
-
                                 ?>
                                 <button type="button" class="btn btn-danger btn-xs hidden button_clone"
                                         title="<?php echo _l('remove'); ?>"
                                         onclick="removeRow($(this))">
-                                    <i
-                                            class="ace-icon fa fa-minus bigger-100 icon-only"></i></button>
+                                    <i class="ace-icon fa fa-minus bigger-100 icon-only"></i></button>
                                 <?php
                             }
                             ?>
-                            <input type="hidden" class="hidden" value="<?= $details[$i]->id ?>">
+                            <input type="hidden" class="hidden" name="detail[id][]"
+                                   value="<?= $details[$i]->id ?>">
                         </td>
                     </tr>
                     <?php
@@ -124,42 +123,49 @@
             <tfoot>
             <tr>
                 <td colspan="6" style="text-align: right"><?php echo _l('sub_total'); ?></td>
-                <td><input value="" type="text" id="sub_total" placeholder="0.00" class="col-xs-12 col-sm-12 center"
-                           readonly="readonly"></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td colspan="6" style="text-align: right"><?php echo _l('total'); ?></td>
-                <td><input value="" type="text" id="total" placeholder="0.00" class="col-xs-12 col-sm-12 center"
+                <td><input value="" type="text" name="sub_total" id="sub_total" placeholder="0.00"
+                           class="col-xs-12 col-sm-12 center"
                            readonly="readonly"></td>
                 <td></td>
             </tr>
             <tr>
                 <td colspan="5" style="text-align: right"><?php echo _l('discount'); ?></td>
-                <td><input type="text" id="discount" name="detail['discount']" placeholder="0.00"
+                <td><input type="number" id="discount" name="discount" placeholder="0.00"
+                           onkeyup="computeLineAmount()" onchange="computeLineAmount()"
                            class="col-xs-12 col-sm-12 center"></td>
-                <td><input type="text" id="discount_val" placeholder="0.00" class="col-xs-12 col-sm-12 center"
+                <td><input type="text" id="discount_val" name="discount_val" placeholder="0.00"
+                           class="col-xs-12 col-sm-12 center"
+                           readonly="readonly"></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="6" style="text-align: right"><?php echo _l('total'); ?></td>
+                <td><input value="" type="text" id="total" name="total" placeholder="0.00"
+                           class="col-xs-12 col-sm-12 center"
                            readonly="readonly"></td>
                 <td></td>
             </tr>
 
             <tr>
                 <td colspan="4" style="text-align: right"></td>
-                <td style="text-align: right"><input type="text" name="detail['paid_by_customer_text']"
+                <td style="text-align: right"><input type="text" name="paid_by_customer_text"
                                                      placeholder="<?php echo _l('Total paid by customer'); ?>"
                                                      class="col-xs-12 col-sm-12 center"></td>
-                <td><input type="text" name="detail['paid_by_customer_percent']" placeholder="percent"
+                <td><input onkeyup="computeLineAmount()" id="paid_by_customer_percent" onchange="computeLineAmount()"
+                           type="number" name="paid_by_customer_percent" placeholder="percent"
                            class="col-xs-12 col-sm-12 center"></td>
-                <td><input type="text" name="detail['balance_due']" placeholder="0.00"
-                           class="col-xs-12 col-sm-12 center" readonly="readonly"></td>
+                <td><input type="text" name="balance_due" placeholder="0.00"
+                           id="balance_due" class="col-xs-12 col-sm-12 center" readonly="readonly"></td>
                 <td></td>
             </tr>
 
             <tr>
                 <td colspan="5" style="text-align: right"></td>
-                <td><input type="text"  placeholder="<?php echo _l('Balance Due (Insurance Billing)'); ?>"
+                <td><input type="text" name="balance_due_text"
+                           placeholder="<?php echo _l('Balance Due (Insurance Billing)'); ?>"
                            class="col-xs-12 col-sm-12 center"></td>
-                <td><input type="text"  readonly="readonly" placeholder="0.00"
+                <td><input name="balance_due_val" type="text" readonly="readonly" placeholder="0.00"
+                           id="balance_due_val"
                            class="col-xs-12 col-sm-12 center"></td>
                 <td></td>
             </tr>
@@ -170,16 +176,5 @@
     <div id="removed-items"></div>
 </div>
 <script type="text/javascript">
-    function addRow(element) {
-        var $tr = element.closest('.tr_parent');
-        var $clone = $tr.clone();
-        $clone.find('.button_clone').removeClass('hidden');
-        $clone.find(':text').val('');
-        $tr.after($clone);
-    }
 
-    function removeRow(element) {
-        var $tr = element.closest('.tr_parent');
-        $tr.remove();
-    }
 </script>

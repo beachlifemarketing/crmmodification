@@ -21,6 +21,18 @@ class Mestimates_detail_model extends App_Model
         return $result;
     }
 
+    public function deleteByMestimate($mestimate_id = '')
+    {
+        $this->db->where('mestimate_id', $mestimate_id);
+        $result = $this->db->delete(db_prefix() . 'mestimates_detail');
+        return $result;
+    }
+
+    public function add($data)
+    {
+        return $this->db->insert(db_prefix() . 'mestimates_detail', $data);
+    }
+
 }
 
 

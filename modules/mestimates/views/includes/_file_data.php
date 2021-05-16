@@ -77,9 +77,6 @@
                 echo '<p class="text-muted">' . _l('no_preview_available_for_file') . '</p>';
             } ?>
         </div>
-        <div class="col-md-6 project_file_discusssions_area">
-            <div id="project-file-discussion" class="tc-content"></div>
-        </div>
     </div>
 </div>
 <div class="clearfix"></div>

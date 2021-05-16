@@ -21,18 +21,15 @@ function simpleAjaxPostUpload(url, formId, successCallBack, fieldErrorCallBack, 
             data.append(name, $(v).val());
         }
     });
-
-    console.log(data);
-
     $.ajax({
         url: url,
         type: "POST",
         data: data,
+        dataType: 'json',
         contentType: false,
         cache: false,
         processData: false,
         success: function (res) {
-
             if (res.errorCode == "SUCCESS") {
                 if (typeof successCallBack != 'undefined' && successCallBack != null) {
                     successCallBack(res);
@@ -88,7 +85,9 @@ function simpleAjaxPost(url, data, successCallBack, fieldErrorCallBack, actionEr
         type: 'POST',
         url: url,
         data: data,
-        dataType: 'json',
+        contentType: false,
+        cache: false,
+        processData: false,
         success: function (res) {
             if (res.errorCode == "SUCCESS") {
                 if (typeof successCallBack != 'undefined' && successCallBack != null) {
