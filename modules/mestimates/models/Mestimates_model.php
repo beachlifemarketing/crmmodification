@@ -39,15 +39,6 @@ class Mestimates_model extends App_Model
         $this->db->order_by('due_date', 'asc');
         $mestimates = $this->db->get(db_prefix() . 'mestimates')->result_array();
 
-        foreach ($mestimates as $key => $val) {
-            $mestimate = get_mestimate_type($val['mestimate_type']);
-
-            if (!$mestimate || $mestimate && isset($mestimate['dashboard']) && $mestimate['dashboard'] === false) {
-                unset($mestimates[$key]);
-            }
-
-        }
-
         return array_values($mestimates);
     }
 
@@ -57,24 +48,11 @@ class Mestimates_model extends App_Model
      * @param mixed $data All $_POST dat
      * @return mixed
      */
-    public function add($data)
+    public function addMestimate($data)
     {
-        $data['notify_when_fail'] = isset($data['notify_when_fail']) ? 1 : 0;
-        $data['notify_when_achieve'] = isset($data['notify_when_achieve']) ? 1 : 0;
-
-        $data['contract_type'] = $data['contract_type'] == '' ? 0 : $data['contract_type'];
-        $data['staff_id'] = $data['staff_id'] == '' ? 0 : $data['staff_id'];
-        $data['start_date'] = to_sql_date($data['start_date']);
-        $data['end_date'] = to_sql_date($data['end_date']);
         $this->db->insert(db_prefix() . 'mestimates', $data);
         $insert_id = $this->db->insert_id();
-        if ($insert_id) {
-            log_activity('New Mestimate Added [ID:' . $insert_id . ']');
-
-            return $insert_id;
-        }
-
-        return false;
+        return $insert_id;
     }
 
     /**
@@ -83,25 +61,13 @@ class Mestimates_model extends App_Model
      * @param mixed $id mestimate id
      * @return boolean
      */
-    public function update($data, $id)
+    public function updateMestimate($dataupdate, $id)
     {
-        $data['notify_when_fail'] = isset($data['notify_when_fail']) ? 1 : 0;
-        $data['notify_when_achieve'] = isset($data['notify_when_achieve']) ? 1 : 0;
 
-        $data['contract_type'] = $data['contract_type'] == '' ? 0 : $data['contract_type'];
-        $data['staff_id'] = $data['staff_id'] == '' ? 0 : $data['staff_id'];
-        $data['start_date'] = to_sql_date($data['start_date']);
-        $data['end_date'] = to_sql_date($data['end_date']);
-
-        $mestimate = $this->get($id);
-
-        if ($mestimate->notified == 1 && date('Y-m-d') < $data['end_date']) {
-            // After mestimate finished, user changed/extended date? If yes, set this mestimate to be notified
-            $data['notified'] = 0;
-        }
-
+        $dataupdate['date'] = to_sql_date($dataupdate['date']);
+        $dataupdate['due_date'] = to_sql_date($dataupdate['due_date']);
         $this->db->where('id', $id);
-        $this->db->update(db_prefix() . 'mestimates', $data);
+        $this->db->update(db_prefix() . 'mestimates', $dataupdate);
         if ($this->db->affected_rows() > 0) {
             log_activity('Mestimate Updated [ID:' . $id . ']');
 
@@ -177,6 +143,7 @@ class Mestimates_model extends App_Model
         unset($data['id']);
         $this->db->update(db_prefix() . 'mestimate_files', $data);
     }
+
 
     public function change_file_visibility($id, $visible)
     {

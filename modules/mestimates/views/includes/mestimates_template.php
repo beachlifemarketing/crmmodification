@@ -52,21 +52,27 @@ $client_id = (isset($client) ? $client->userid : '');
                     </div>
                 </div>
                 <div id="div_address">
-                    <?php include_once('_info_company.php') ?>
+                    <?php $this->load->view('mestimates/includes/info_company'); ?>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="panel_s no-shadow">
                     <div class="row">
+
                         <div class="col-md-6">
-                            <?php $value = (isset($estimate) ? $estimate->job_number : ''); ?>
-                            <?php echo render_input('job_number', 'job_number', $value); ?>
+                            <div class="form-group" app-field-wrapper="job_number">
+                                <label for="job_number" class="control-label"><?php echo _l('job_number'); ?></label>
+                                <input type="text" id="job_number" name="job_number" class="form-control"
+                                       value="<?= (isset($estimate) ? $estimate->job_number : ''); ?>">
+                            </div>
                         </div>
 
-
                         <div class="col-md-6">
-                            <?php $value = (isset($estimate) ? $estimate->lic_number : ''); ?>
-                            <?php echo render_input('lic_number', 'lic_number', $value); ?>
+                            <div class="form-group" app-field-wrapper="lic_number">
+                                <label for="lic_number" class="control-label"><?php echo _l('lic_number'); ?></label>
+                                <input type="text" id="lic_number" name="lic_number" class="form-control"
+                                       value="<?= (isset($estimate) ? $estimate->lic_number : ''); ?>">
+                            </div>
                         </div>
 
                         <div class="col-md-6">
@@ -74,7 +80,7 @@ $client_id = (isset($client) ? $client->userid : '');
                                 <div class="form-group select-placeholder">
                                     <label for="tenplate_id"
                                            class="control-label"><?php echo _l('categories'); ?></label>
-                                    <select name="group_id" class="selectpicker"
+                                    <select name="group_id" class="selectpicker" name="group_id"
                                             data-live-search="true"
                                             data-width="100%">
                                         <?php
@@ -92,19 +98,41 @@ $client_id = (isset($client) ? $client->userid : '');
                         </div>
 
                         <div class="col-md-6">
-                            <?php $value = (isset($estimate) ? $estimate->reference_no : ''); ?>
-                            <?php echo render_input('reference_no', 'reference_no', $value); ?>
+                            <div class="form-group" app-field-wrapper="reference_no">
+                                <label for="reference_no"
+                                       class="control-label"><?php echo _l('reference_no'); ?></label>
+                                <input type="text" id="reference_no" name="reference_no" class="form-control"
+                                       value="<?= (isset($estimate) ? $estimate->reference_no : ''); ?>">
+                            </div>
                         </div>
 
                         <div class="col-md-6">
-                            <?php $value = (isset($estimate) ? $estimate->pymt_ption : ''); ?>
-                            <?php echo render_input('pymt_ption', 'pymt_ption', $value); ?>
+                            <div class="form-group" app-field-wrapper="pymt_option">
+                                <label for="pymt_option" class="control-label"><?php echo _l('pymt_option'); ?></label>
+                                <input type="text" id="pymt_option" name="pymt_option" class="form-control"
+                                       value="<?= (isset($estimate) ? $estimate->pymt_option : ''); ?>">
+                            </div>
                         </div>
 
                         <div class="col-md-6">
-                            <?php $value = (isset($estimate) ? $estimate->representative : ''); ?>
-                            <?php echo render_input('representative', 'representative', $value); ?>
+                            <div class="form-group" app-field-wrapper="representative">
+                                <label for="representative"
+                                       class="control-label"><?php echo _l('representative'); ?></label>
+                                <input type="text" id="representative" name="representative" class="form-control"
+                                       value="<?= (isset($estimate) ? $estimate->representative : ''); ?>">
+                            </div>
                         </div>
+
+
+                        <div class="col-md-6">
+                            <div class="form-group" app-field-wrapper="claim_number">
+                                <label for="claim_number"
+                                       class="control-label"><?php echo _l('claim_number'); ?></label>
+                                <input type="text" id="claim_number" name="claim_number" class="form-control"
+                                       value="<?= (isset($estimate) ? $estimate->claim_number : ''); ?>">
+                            </div>
+                        </div>
+
 
                         <div class="col-md-6">
                             <?php $value = (isset($estimate) ? _d($estimate->date) : _d(date('Y-m-d'))); ?>
@@ -123,14 +151,13 @@ $client_id = (isset($client) ? $client->userid : '');
                             echo render_date_input('due_date', 'due_date', $value); ?>
                         </div>
 
-                        <div class="col-md-6">
-                            <?php $value = (isset($estimate) ? $estimate->title : ''); ?>
-                            <?php echo render_input('title', 'title', $value); ?>
-                        </div>
 
-                        <div class="col-md-12">
-                            <?php $value = (isset($estimate) ? $estimate->adminnote : ''); ?>
-                            <?php echo render_textarea('note', 'note', $value); ?>
+                        <div class="col-md-6">
+                            <div class="form-group" app-field-wrapper="adminnote">
+                                <label for="adminnote" class="control-label"><?php echo _l('adminnote'); ?></label>
+                                <input type="text" id="adminnote" name="adminnote" class="form-control"
+                                       value="<?= (isset($estimate) ? $estimate->adminnote : ''); ?>">
+                            </div>
                         </div>
                     </div>
 
@@ -139,14 +166,5 @@ $client_id = (isset($client) ? $client->userid : '');
             </div>
         </div>
     </div>
-    <?php $this->load->view('mestimates/_add_edit_items'); ?>
+    <?php $this->load->view('mestimates/includes/_add_edit_items'); ?>
 </div>
-<script type="text/javascript">
-    function selectClient() {
-
-        var clientId = $('#client_id').val();
-        $("#hid_client_id").val(clientId)
-        window.location.href = admin_url + 'mestimates/mestimate/' + $('input[name="mestimate_id"]').val() + '/' + clientId;
-    }
-
-</script>

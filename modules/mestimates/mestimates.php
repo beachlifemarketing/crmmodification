@@ -13,7 +13,6 @@ define('MESTIMATES_MODULE_NAME', 'mestimates');
 
 $CI = &get_instance();
 $CI->load->helper(MESTIMATES_MODULE_NAME . '/mestimates');
-hooks()->add_action('after_cron_run', 'mestimates_notification');
 hooks()->add_action('admin_init', 'mestimates_module_init_menu_items');
 hooks()->add_action('staff_member_deleted', 'mestimates_staff_member_deleted');
 hooks()->add_action('admin_init', 'mestimates_permissions');
@@ -21,17 +20,8 @@ hooks()->add_action('admin_init', 'mestimates_permissions');
 hooks()->add_filter('migration_tables_to_replace_old_links', 'mestimates_migration_tables_to_replace_old_links');
 hooks()->add_filter('global_search_result_query', 'mestimates_global_search_result_query', 10, 3);
 hooks()->add_filter('global_search_result_output', 'mestimates_global_search_result_output', 10, 2);
-hooks()->add_filter('get_dashboard_widgets', 'mestimates_add_dashboard_widget');
 
-function mestimates_add_dashboard_widget($widgets)
-{
-    $widgets[] = [
-        'path' => 'mestimates/widget',
-        'container' => 'right-4',
-    ];
 
-    return $widgets;
-}
 
 function mestimates_staff_member_deleted($data)
 {
@@ -94,35 +84,6 @@ function mestimates_permissions()
     register_staff_capabilities('mestimates', $capabilities, _l('mestimates'));
 }
 
-function mestimates_notification()
-{
-    $CI = &get_instance();
-    $CI->load->model('mestimates/mestimates_model');
-    $mestimates = $CI->mestimates_model->get('', true);
-    foreach ($mestimates as $mestimate) {
-        $achievement = $CI->mestimates_model->calculate_mestimate_achievement($mestimate['id']);
-
-        if ($achievement['percent'] >= 100) {
-            if (date('Y-m-d') >= $mestimate['end_date']) {
-                if ($mestimate['notify_when_achieve'] == 1) {
-                    $CI->mestimates_model->notify_staff_members($mestimate['id'], 'success', $achievement);
-                } else {
-                    $CI->mestimates_model->mark_as_notified($mestimate['id']);
-                }
-            }
-        } else {
-            // not yet achieved, check for end date
-            if (date('Y-m-d') > $mestimate['end_date']) {
-                if ($mestimate['notify_when_fail'] == 1) {
-                    $CI->mestimates_model->notify_staff_members($mestimate['id'], 'failed', $achievement);
-                } else {
-                    $CI->mestimates_model->mark_as_notified($mestimate['id']);
-                }
-            }
-        }
-    }
-}
-
 /**
  * Register activation module hook
  */
@@ -162,98 +123,3 @@ function mestimates_module_init_menu_items()
     }
 }
 
-
-/**
- * Get mestimate types for the mestimates feature
- *
- * @return array
- */
-function get_mestimate_types()
-{
-    $types = [
-        [
-            'key' => 1,
-            'lang_key' => 'mestimate_type_total_income',
-            'subtext' => 'mestimate_type_income_subtext',
-            'dashboard' => has_permission('invoices', 'view'),
-        ],
-        [
-            'key' => 8,
-            'lang_key' => 'mestimate_type_invoiced_amount',
-            'subtext' => '',
-            'dashboard' => has_permission('invoices', 'view'),
-        ],
-        [
-            'key' => 2,
-            'lang_key' => 'mestimate_type_convert_leads',
-            'dashboard' => is_staff_member(),
-        ],
-        [
-            'key' => 3,
-            'lang_key' => 'mestimate_type_increase_customers_without_leads_conversions',
-            'subtext' => 'mestimate_type_increase_customers_without_leads_conversions_subtext',
-            'dashboard' => has_permission('customers', 'view'),
-        ],
-        [
-            'key' => 4,
-            'lang_key' => 'mestimate_type_increase_customers_with_leads_conversions',
-            'subtext' => 'mestimate_type_increase_customers_with_leads_conversions_subtext',
-            'dashboard' => has_permission('customers', 'view'),
-
-        ],
-        [
-            'key' => 5,
-            'lang_key' => 'mestimate_type_make_contracts_by_type_calc_database',
-            'subtext' => 'mestimate_type_make_contracts_by_type_calc_database_subtext',
-            'dashboard' => has_permission('contracts', 'view'),
-        ],
-        [
-            'key' => 7,
-            'lang_key' => 'mestimate_type_make_contracts_by_type_calc_date',
-            'subtext' => 'mestimate_type_make_contracts_by_type_calc_date_subtext',
-            'dashboard' => has_permission('contracts', 'view'),
-        ],
-        [
-            'key' => 6,
-            'lang_key' => 'mestimate_type_total_estimates_converted',
-            'subtext' => 'mestimate_type_total_estimates_converted_subtext',
-            'dashboard' => has_permission('estimates', 'view'),
-        ],
-    ];
-
-    return hooks()->apply_filters('get_mestimate_types', $types);
-}
-
-/**
- * Get mestimate type by given key
- *
- * @param int $key
- *
- * @return array
- */
-function get_mestimate_type($key)
-{
-    foreach (get_mestimate_types() as $type) {
-        if ($type['key'] == $key) {
-            return $type;
-        }
-    }
-}
-
-/**
- * Translate mestimate type based on passed key
- *
- * @param mixed $key
- *
- * @return string
- */
-function format_mestimate_type($key)
-{
-    foreach (get_mestimate_types() as $type) {
-        if ($type['key'] == $key) {
-            return _l($type['lang_key']);
-        }
-    }
-
-    return $type;
-}
