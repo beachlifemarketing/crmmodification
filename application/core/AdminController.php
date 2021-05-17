@@ -79,10 +79,7 @@ class AdminController extends App_Controller
         ];
 
         $is_load_template = (!$this->input->is_ajax_request());
-        if (isset($_REQUEST['rtype'])) {
-            $is_load_template = ($is_load_template && $_REQUEST['rtype'] !== 'json');
-        }
-        if ($is_load_template) {
+        if (!isset($_REQUEST['rtype']) || $_REQUEST['rtype'] == 'json') {
             $vars['sidebar_menu'] = $this->app_menu->get_sidebar_menu_items();
             $vars['setup_menu'] = $this->app_menu->get_setup_menu_items();
         }

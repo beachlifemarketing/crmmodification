@@ -6,36 +6,18 @@
     </div>
 </div>
 <?php init_tail(); ?>
-<script>
-    $(function () {
-        validate_estimate_form();
-        init_ajax_mestimate_search_by_customer_id();
-        init_ajax_search('items', '#item_select.ajax-search', undefined, admin_url + 'items/search');
-    });
-
-    // Ajax mestimate search but only for specific customer
-    function init_ajax_mestimate_search_by_customer_id(selector) {
-        selector = typeof (selector) == 'undefined' ? '#mestimate_id.ajax-search' : selector;
-        init_ajax_search('mestimate', selector, {
-            customer_id: function () {
-                return $('#client_id').val();
-            }
-        });
-    }
-</script>
-
 <script type="text/javascript">
     function selectTemplate() {
         var template_id = $('select#template_id').val();
         $("#hid_mestimate_id").val(template_id);
         $("#mestimate_id").val(template_id);
         $('input[name="mestimate_id"]').val(template_id);
+        var url = admin_url + 'mestimates/mestimate?rtype=json&change=template';
         simpleAjaxPostUpload(
-            admin_url + 'mestimates/mestimate?rtype=json',
+            url,
             '#id_content_mestimate',
             function (res) {
-                $('#div_address').html(res.view_address);
-                $('#row_file_mestimates').html(res.view_file);
+                $('#id_content_mestimate').html(res.data_template);
                 alert_float('success', res.errorMessage);
             },
             function (res) {
@@ -51,8 +33,10 @@
     function selectClient() {
         var clientId = $('#client_id').val();
         $("#hid_client_id").val(clientId);
+        $("#client_id").val(clientId);
+        $('input[name="client_id"]').val(clientId);
         simpleAjaxPostUpload(
-            admin_url + 'mestimates/mestimate?rtype=json',
+            admin_url + 'mestimates/mestimate?rtype=json&change=client',
             '#id_content_mestimate',
             function (res) {
                 $('#div_address').html(res.view_address);
@@ -137,6 +121,53 @@
     }
 
 </script>
+<script type="text/javascript">
+    function doRemoveFile(fileId) {
+        simpleAjaxPostUpload(
+            admin_url + 'mestimates/remove_file/?rtype=json&id=' + fileId,
+            '#estimate-form',
+            function (res) {
+                $('#row_file_mestimates').html(res.view_file);
+                alert_float('success', '<?=_l('remove_file_success')?>');
+            },
+            function (res) {
+                alert_float('danger', res.errorMessage);
+            },
+            function (res) {
+                alert_float('danger', res.errorMessage);
+            }
+        );
+    }
 
+    function saveFile() {
+        simpleAjaxPostUpload(
+            admin_url + 'mestimates/upload_file/?rtype=json',
+            '#estimate-form',
+            function (res) {
+                $('#row_file_mestimates').html(res.view_file);
+                alert_float('success', '<?=_l('save_file_success')?>');
+            },
+            function (res) {
+                alert_float('danger', res.errorMessage);
+            },
+            function (res) {
+                alert_float('danger', res.errorMessage);
+            }
+        );
+    }
+
+
+    function view_mestimate_file(id, mestimate_id) {
+        $('#mestimate_file_data').empty();
+        $("#mestimate_file_data").load(admin_url + 'mestimates/file/' + id + '/' + mestimate_id, function (response, status, xhr) {
+            if (status == "error") {
+                alert_float('danger', xhr.statusText);
+            }
+        });
+    }
+
+</script>
+
+<script src="<?php echo base_url('modules/mestimates/assets/mestimates.js'); ?>"></script>
 </body>
 </html>

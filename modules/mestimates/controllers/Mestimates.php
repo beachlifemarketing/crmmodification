@@ -5,7 +5,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Mestimates extends AdminController
 {
     private $CI;
-    public $estimate_id;
+    public $mestimate_id;
     public $client_id;
 
     public function __construct()
@@ -17,7 +17,7 @@ class Mestimates extends AdminController
         $this->CI = &get_instance();
 
         if ($this->input->post('mestimate_id') != null) {
-            $this->estimate_id = $this->input->post('mestimate_id');
+            $this->mestimate_id = $this->input->post('mestimate_id');
         }
 
         if ($this->input->post('client_id') != null) {
@@ -40,55 +40,48 @@ class Mestimates extends AdminController
     }
 
 
-    public function mestimate()
+    public function mestimate($id = 0)
     {
         if (!has_permission('mestimates', '', 'view')) {
             access_denied('mestimates');
         }
+        if ($id != null && $id != 0) {
+            $title = _l('edit', _l('mestimate_lowercase'));;
+            $this->mestimate_id = $id;
+        } else {
+            $title = _l('add_new', _l('mestimate_lowercase'));
+        }
 
         $contactId = null;
+        $data = array();
         $data['details'] = [];
-        if ($this->estimate_id == '' || $this->estimate_id == 0) {
-            $title = _l('add_new', _l('mestimate_lowercase'));
-        } else {
-            $data['mestimate'] = $this->mestimates_model->get($this->estimate_id);
-            $title = _l('edit', _l('mestimate_lowercase'));
-            $this->CI->load->helper('mestimates_helper');
-            $data = array();
-            $data['client'] = $this->clients_model->get($data['mestimate']->client_id);
-            $this->client_id = $data['mestimate']->client_id;
-            $contacts = $this->clients_model->get_contacts($data['mestimate']['client_id'], ['active' => 1, 'is_primary' => 1, 'userid' => $data['mestimate']->client_id]);
-            if (count($contacts) > 0) {
-                $contactObj = (object)$contacts[0];
-                $contactId = $contactObj->id;
-                $data["contact"] = $contactObj;
-            }
-
-            $contacts = $this->clients_model->get_contacts($this->client_id, ['active' => 1, 'is_primary' => 1, 'userid' => $data['mestimate']->client_id]);
-            if (count($contacts) > 0) {
-                $contactObj = (object)$contacts[0];
-                $contactId = $contactObj->id;
-                $data["contact"] = $contactObj;
-            }
-            $data['details'] = $this->mestimates_detail_model->getByMestimate($this->estimate_id);
+        $mestimate = $this->mestimates_model->get($this->mestimate_id);
+        $this->CI->load->helper('mestimates_helper');
+        if (isset($mestimate) && isset($mestimate->client_id)) {
+            $this->client_id = $mestimate->client_id;
+        }
+        $data['mestimate'] = $mestimate;
+        if (isset($_REQUEST['change']) && $_REQUEST['change'] == 'client') {
+            $this->client_id = $_REQUEST['client_id'];
         }
         if ($this->client_id !== null) {
             $this->CI->load->helper('mestimates_helper');
             $data = array();
-            $data['client'] = $this->clients_model->get($this->client_id);
+            $client = $this->clients_model->get($this->client_id);
             $contacts = $this->clients_model->get_contacts($this->client_id, ['active' => 1, 'is_primary' => 1, 'userid' => $this->client_id]);
             if (count($contacts) > 0) {
                 $contactObj = (object)$contacts[0];
                 $contactId = $contactObj->id;
                 $data["contact"] = $contactObj;
             }
-            $data['client_id'] = $this->client_id;
+            $data['client'] = $client;
         }
-
-        $data['files'] = $this->mestimates_model->get_files($this->estimate_id, get_staff_user_id(), $this->client_id);
-
+        $data['details'] = $this->mestimates_detail_model->getByMestimate($this->mestimate_id);
+        $data['files'] = $this->mestimates_model->get_files($this->mestimate_id, get_staff_user_id(), $this->client_id);
+        $data['client_id'] = $this->client_id;
+        $data['mestimate_id'] = $this->mestimate_id;
+        $data['mestimate_id_old'] = (isset($id) && $id != '') ? $id : 0;
         $data['title'] = $title;
-
         $data['groups'] = $this->clients_model->get_groups();
         $data['templates'] = $this->mestimates_model->get_all_template();
         $clients = $this->clients_model->get();
@@ -97,8 +90,13 @@ class Mestimates extends AdminController
         if (isset($_REQUEST['rtype']) && $_REQUEST['rtype'] === 'json') {
             $data['errorCode'] = 'SUCCESS';
             $data['view_address'] = $this->load->view('mestimates/includes/info_company', $data, true);
-            $data['view_file'] = $this->load->view('mestimates/includes/mestimate_files.php', $data, true);
+
+            $data['view_file'] = $this->load->view('mestimates/includes/mestimate_files', $data, true);
             $data['errorMessage'] = _l('load_info_client_success');
+            if (isset($_REQUEST['change']) && $_REQUEST['change'] == 'template') {
+                $data['data_template'] = $this->load->view('mestimates/includes/mestimate_data', $data, true);
+                $data['errorMessage'] = _l('load_template_success');
+            }
             echo json_encode($data);
         } else {
             $this->load->view('mestimate', $data);
@@ -126,11 +124,11 @@ class Mestimates extends AdminController
                 die();
             } else {
 
-                if ($this->estimate_id == '' || $this->estimate_id == 0) {
-                    $mestimate_id = $this->build_base_mestimate($this->input->post(), $this->client_id, $this->estimate_id, $sat);
+                if ($this->mestimate_id == '' || $this->mestimate_id == 0) {
+                    $mestimate_id = $this->build_base_mestimate($this->input->post(), $this->client_id, $this->mestimate_id, $sat);
                     $this->build_base_detail($this->input->post(), $mestimate_id, $this->client_id);
                     if ($this->input->post('image_ids') != null) {
-                        $this->update_mestimate_file($this->input->post('image_ids'), $this->estimate_id);
+                        $this->update_mestimate_file($this->input->post('image_ids'), $this->mestimate_id);
                     }
 
                     $data['errorCode'] = 'SUCCESS';
@@ -140,10 +138,10 @@ class Mestimates extends AdminController
                     if (!has_permission('mestimates', '', 'edit')) {
                         access_denied('mestimates');
                     }
-                    $success = $this->build_base_mestimate($this->input->post(), $this->client_id, $this->estimate_id, $sat);
-                    $this->build_base_detail($this->input->post(), $this->estimate_id, $this->client_id);
+                    $success = $this->build_base_mestimate($this->input->post(), $this->client_id, $this->mestimate_id, $sat);
+                    $this->build_base_detail($this->input->post(), $this->mestimate_id, $this->client_id);
                     if ($this->input->post('image_ids') != null) {
-                        $this->update_mestimate_file($this->input->post('image_ids'), $this->estimate_id);
+                        $this->update_mestimate_file($this->input->post('image_ids'), $this->mestimate_id);
                     }
                     $data['errorCode'] = "SUCCESS";
                     $data['errorMessage'] = _l('updated_successfully', _l('mestimate'));
@@ -179,11 +177,13 @@ class Mestimates extends AdminController
     {
         $dataupdate = [];
         $dataupdate['status'] = $sat;
+        $dataupdate['client_id'] = $client_id;
         $dataupdate['contact_id'] = $client_id;
         $dataupdate['job_number'] = $data['job_number'];
         $dataupdate['customer_group_id'] = $data['group_id'];
         $dataupdate['claim_number'] = $data['claim_number'];
         $dataupdate['date'] = $data['date'];
+        $dataupdate['due_date'] = $data['due_date'];
         $dataupdate['lic_number'] = $data['lic_number'];
         $dataupdate['pymt_option'] = $data['pymt_option'];
         $dataupdate['group_id'] = $data['group_id'];
@@ -196,6 +196,8 @@ class Mestimates extends AdminController
         $dataupdate['total'] = $data['total'];
         $dataupdate['discount_val'] = $data['discount_val'];
         $dataupdate['discount'] = $data['discount'];
+        $dataupdate['title'] = $data['title'];
+        $dataupdate['adminnote'] = $data['adminnote'];
         $dataupdate['sub_total'] = $data['sub_total'];
 
         $dataupdate['staff_id'] = get_staff_user_id();

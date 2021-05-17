@@ -2,16 +2,19 @@
 
 # Version 1.0.0
 $lang['mestimate'] = 'M-ESTIMATE';
+$lang['mestimates'] = 'M-ESTIMATE';
 $lang["mestimate_area"] = 'Area';
 $lang["mestimate_size"] = 'Size';
 $lang["mestimate_qty"] = 'Qty';
 $lang["mestimate_px"] = 'Unit PX';
 $lang["mestimate_duration"] = 'Duration';
+$lang["date"] = 'Date';
+$lang["due_date"] = 'Due date';
+$lang["new_mestimate"] = 'Create new M-estimate';
 $lang["mestimate_amount"] = 'Amount';
 $lang["client_information"] = 'Client Information';
 $lang["property_info"] = 'Property Info';
 $lang["job_number"] = 'Job number';
-$lang["lic_number"] = 'lic_number';
 $lang["pymt_ption"] = 'Pymt Option';
 $lang["categories"] = 'Categories';
 $lang["representative"] = 'Representative';
@@ -50,5 +53,26 @@ $lang["due_date"] = "Due Date";
 $lang["pymt_ption"] = "Pymt ption";
 $lang["job_number"] = "Job Number";
 $lang["lic_number"] = "Lic Number";
+$lang["mestimate_add_edit_date"] = "Date";
+$lang['claim_number'] = "Claim number";
+$lang['pymt_option'] = 'Pymt Option';
+$lang['adminnote'] = "Note";
+$lang['load_info_client_success'] = "Load client info success";
+$lang['load_info_client_success'] = "Load client info success";
+$lang["Select one template"] = "Select one template";
+$lang["mestimate_select_template"] = "Select template";
+$lang["Select one template"] = "Select One template";
+$lang["firstname"] = "First name";
+$lang["lastname"] = "Last name";
+$lang["email"] = "Email";
+$lang["phonenumber"] = "Phone number";
+$lang["company"] = "Company name";
+$lang["address"] = "Address";
+$lang["city"] = "City";
+$lang["country"] = "Country";
+$lang["remove_file_success"] = "Remove file succses";
+$lang["save_file_success"] = "Save file success";
+$lang['load_template_success'] = "Load template success";
+
 
 
