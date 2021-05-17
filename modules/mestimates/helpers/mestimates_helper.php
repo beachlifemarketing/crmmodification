@@ -73,7 +73,7 @@ function get_mestimate_discussions_language_array()
     return $lang;
 }
 
-function handle_mestimate_file_uploads($mestimate_id = 0, $client_id = null)
+function handle_mestimate_file_uploads($client_id)
 {
     $CI = &get_instance();
     $filesIDS = [];
@@ -81,7 +81,7 @@ function handle_mestimate_file_uploads($mestimate_id = 0, $client_id = null)
 
     if (isset($_FILES['file']['name'])
         && ($_FILES['file']['name'] != '' || is_array($_FILES['file']['name']) && count($_FILES['file']['name']) > 0)) {
-        hooks()->do_action('before_upload_mestimate_attachment', $mestimate_id);
+        hooks()->do_action('before_upload_mestimate_attachment', $client_id);
 
         if (!is_array($_FILES['file']['name'])) {
             $_FILES['file']['name'] = [$_FILES['file']['name']];
@@ -91,7 +91,7 @@ function handle_mestimate_file_uploads($mestimate_id = 0, $client_id = null)
             $_FILES['file']['size'] = [$_FILES['file']['size']];
         }
 
-        $path = FCPATH . 'uploads/mestimates' . '/' . $mestimate_id . '/';
+        $path = FCPATH . 'uploads/mestimates' . '/' . $client_id . '/';
         if (!file_exists($path)) {
             mkdir($path, 0777, true);
         }
@@ -129,7 +129,6 @@ function handle_mestimate_file_uploads($mestimate_id = 0, $client_id = null)
                         $contact_id = $client_id;
                     }
                     $data = [
-                        'mestimate_id' => $mestimate_id,
                         'file_name' => $filename,
                         'filetype' => $_FILES['file']['type'][$i],
                         'dateadded' => date('Y-m-d H:i:s'),
@@ -186,7 +185,7 @@ function handle_mestimate_file_uploads($mestimate_id = 0, $client_id = null)
 
 function mestimate_file_url($file, $preview = false)
 {
-    $path = 'uploads/mestimates/' . $file['mestimate_id'] . '/';
+    $path = 'uploads/mestimates/' . $file['contact_id'] . '/';
     $fullPath = FCPATH . $path . $file['file_name'];
     $url = base_url($path . $file['file_name']);
     if (!empty($file['external']) && !empty($file['thumbnail_link'])) {
@@ -197,7 +196,7 @@ function mestimate_file_url($file, $preview = false)
             $fext = pathinfo($fullPath, PATHINFO_EXTENSION);
             $thumbPath = pathinfo($fullPath, PATHINFO_DIRNAME) . '/' . $fname . '_thumb.' . $fext;
             if (file_exists($thumbPath)) {
-                $url = base_url('uploads/mestimates/' . $file['mestimate_id'] . '/' . $fname . '_thumb.' . $fext);
+                $url = base_url('uploads/mestimates/' . $file['contact_id'] . '/' . $fname . '_thumb.' . $fext);
             }
         }
     }

@@ -15,7 +15,7 @@ $lang["mestimate_amount"] = 'Amount';
 $lang["client_information"] = 'Client Information';
 $lang["property_info"] = 'Property Info';
 $lang["job_number"] = 'Job number';
-$lang["pymt_ption"] = 'Pymt Option';
+$lang["pymt_ption"] = 'Payment Option';
 $lang["categories"] = 'Categories';
 $lang["representative"] = 'Representative';
 $lang["due_date"] = 'Due Date';
@@ -55,7 +55,7 @@ $lang["job_number"] = "Job Number";
 $lang["lic_number"] = "Lic Number";
 $lang["mestimate_add_edit_date"] = "Date";
 $lang['claim_number'] = "Claim number";
-$lang['pymt_option'] = 'Pymt Option';
+$lang['pymt_option'] = 'Payment Option';
 $lang['adminnote'] = "Note";
 $lang['load_info_client_success'] = "Load client info success";
 $lang['load_info_client_success'] = "Load client info success";
@@ -73,6 +73,8 @@ $lang["country"] = "Country";
 $lang["remove_file_success"] = "Remove file succses";
 $lang["save_file_success"] = "Save file success";
 $lang['load_template_success'] = "Load template success";
+$lang['mestimate_add_edit_due_date'] = "Due date";
+$lang['create_template_success'] = "Create template success";
 
 
 

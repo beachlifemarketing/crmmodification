@@ -5,14 +5,50 @@
         <?php $this->load->view('mestimates/includes/mestimate_data'); ?>
     </div>
 </div>
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Save as template?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="template-name" class="col-form-label">Template name:</label>
+                        <input type="text" class="form-control" id="template-name" onkeyup="updateTemplateName()"
+                               onchange="updateTemplateName()">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="id_button_exampleModal" data-dismiss="modal">Close
+                </button>
+                <button type="button" class="btn btn-primary" onclick="saveTemplateMestimate()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php init_tail(); ?>
+
+<script src="<?php echo base_url('modules/mestimates/assets/mestimates.js'); ?>"></script>
 <script type="text/javascript">
+    function updateTemplateName() {
+        var name = $('#template-name').val();
+        $('#template_name').val(name);
+    }
+
     function selectTemplate() {
         var template_id = $('select#template_id').val();
         $("#hid_mestimate_id").val(template_id);
         $("#mestimate_id").val(template_id);
         $('input[name="mestimate_id"]').val(template_id);
         var url = admin_url + 'mestimates/mestimate?rtype=json&change=template';
+
         simpleAjaxPostUpload(
             url,
             '#id_content_mestimate',
@@ -54,7 +90,7 @@
     }
 
     function saveMestimate() {
-        var url = admin_url + 'mestimates/estimate_do/';
+        var url = admin_url + 'mestimates/estimate_do?rtype=json';
         simpleAjaxPostUpload(
             url, '#id_content_mestimate',
             function (res) {
@@ -70,10 +106,13 @@
     }
 
     function saveTemplateMestimate() {
-        var url = admin_url + 'mestimates/estimate_do?sat=template';
+        var url = admin_url + 'mestimates/estimate_do?rtype=json&sat=template';
+        $('#exampleModal').modal("toggle");
         simpleAjaxPostUpload(
             url, '#id_content_mestimate',
             function (res) {
+                $('#div_address').html(res.view_address);
+                $('#row_file_mestimates').html(res.view_file);
                 alert_float('success', res.errorMessage);
             },
             function (res) {
@@ -92,7 +131,8 @@
         $('input[name="detail[amount][]"]').each(function () {
             var qty = $(this).closest('tr').children('td:eq(3)').children('input').val();
             var unix = $(this).closest('tr').children('td:eq(4)').children('input').val();
-            var amount = qty * unix;
+            var duration = $(this).closest('tr').children('td:eq(5)').children('input').val();
+            var amount = qty * unix * duration;
             $(this).val(amount);
             sub_total += amount;
         });
@@ -157,9 +197,9 @@
     }
 
 
-    function view_mestimate_file(id, mestimate_id) {
+    function view_mestimate_file(id) {
         $('#mestimate_file_data').empty();
-        $("#mestimate_file_data").load(admin_url + 'mestimates/file/' + id + '/' + mestimate_id, function (response, status, xhr) {
+        $("#mestimate_file_data").load(admin_url + 'mestimates/file/' + id, function (response, status, xhr) {
             if (status == "error") {
                 alert_float('danger', xhr.statusText);
             }
@@ -168,6 +208,5 @@
 
 </script>
 
-<script src="<?php echo base_url('modules/mestimates/assets/mestimates.js'); ?>"></script>
 </body>
 </html>
