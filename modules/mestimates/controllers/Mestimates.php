@@ -15,6 +15,7 @@ class Mestimates extends AdminController
         $this->load->model('mestimates_model');
         $this->load->model('mestimates_detail_model');
         $this->load->model('clients_model');
+        $this->load->model('projects_model');
         $this->CI = &get_instance();
 
 
@@ -80,6 +81,7 @@ class Mestimates extends AdminController
             }
             $data['client'] = $client;
             $data['files'] = $this->mestimates_model->get_files(get_staff_user_id(), $this->client_id);
+            $data['projects'] = $this->projects_model->get_projects_for_ticket($this->client_id);
         }
         $data['mestimate'] = $mestimate;
         $data['details'] = $this->mestimates_detail_model->getByMestimate($this->mestimate_id);
@@ -93,6 +95,7 @@ class Mestimates extends AdminController
         $data['mestimate_id'] = $this->mestimate_id;
         $data['mestimate_id_old'] = $this->mestimate_id_old;
 
+
         if (isset($this->mestimate_id_old) && $this->mestimate_id_old > 0) {
             $title = _l('add_new', _l('mestimate_lowercase'));
             $data['is_edit'] = false;
@@ -103,6 +106,7 @@ class Mestimates extends AdminController
 
         $data['title'] = $title;
         $data['groups'] = $this->clients_model->get_groups();
+
         $data['templates'] = $this->mestimates_model->get_all_template();
         $clients = $this->clients_model->get();
         $data['clients'] = $clients;
@@ -203,6 +207,7 @@ class Mestimates extends AdminController
         $dataupdate['client_id'] = $client_id;
         $dataupdate['contact_id'] = $client_id;
         $dataupdate['job_number'] = $data['job_number'];
+        $dataupdate['project_id'] = $data['project_id'];
         $dataupdate['customer_group_id'] = $data['group_id'];
         $dataupdate['claim_number'] = $data['claim_number'];
         $dataupdate['date'] = $data['date'];

@@ -50,7 +50,6 @@
                         </select>
                     </div>
                 </div>
-
                 <div id="div_address">
                     <?php $this->load->view('mestimates/includes/info_company'); ?>
                 </div>

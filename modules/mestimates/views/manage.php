@@ -19,7 +19,7 @@
                             _l('date'),
                             _l('representative'),
                             _l('sub_total'),
-                            _l('discount_percent'),
+                            _l('discounts'),
                             _l('balance_due'),
                             _l('total')
                         ), 'mestimates'); ?>
@@ -32,21 +32,9 @@
 <?php init_tail(); ?>
 <script>
     $(function () {
-        initDataTable('.table-mestimates', window.location.href, [7], [7]);
+        initDataTable('.table-mestimates', window.location.href, [6], [6]);
         $('.table-mestimates').DataTable().on('draw', function () {
-            var rows = $('.table-mestimates').find('tr');
-            $.each(rows, function () {
-                var td = $(this).find('td').eq(6);
-                var percent = $(td).find('input[name="percent"]').val();
-                $(td).find('.mestimate-progress').circleProgress({
-                    value: percent,
-                    size: 45,
-                    animation: false,
-                    fill: {
-                        gradient: ["#28b8da", "#059DC1"]
-                    }
-                })
-            })
+
         })
     });
 </script>
