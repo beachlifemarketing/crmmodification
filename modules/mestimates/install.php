@@ -5,7 +5,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 $CI = &get_instance();
 if (!$CI->db->table_exists(db_prefix() . 'mestimates')) {
     $CI->db->query('CREATE TABLE `' . db_prefix() . 'mestimates` (
-      `id` int NOT NULL AUTO_INCREMENT,
+   `id` int NOT NULL AUTO_INCREMENT,
   `client_id` int NOT NULL,
   `contact_id` int NOT NULL,
   `job_number` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
@@ -31,6 +31,8 @@ if (!$CI->db->table_exists(db_prefix() . 'mestimates')) {
   `balance_due_text` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `discount_val` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `discount` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `title` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `adminnote` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
       )  ENGINE=InnoDB DEFAULT CHARSET=' . $CI->db->char_set . ';'
     );
