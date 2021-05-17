@@ -1,8 +1,8 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
-<div class="panel-body mtop10">
+
     <div class="table-responsive s_table">
 
-        <table id="estimate_details" width="100%" class="table table-striped">
+        <table id="mestimate_details" width="100%" class="table table-striped">
             <thead>
             <tr>
                 <th width="12%"><?php echo _l('are'); ?></th>
@@ -15,7 +15,7 @@
                 <th width="8%">&nbsp;</th>
             </tr>
             </thead>
-            <tbody id="estimate_details_body">
+            <tbody id="mestimate_details_body">
 
             <?php
             $details = isset($details) ? $details : [];
@@ -62,30 +62,30 @@
                     ?>
 
                     <tr class="tr_parent">
-                        <td><input value="<?= $detail->area ?>" name="detail[are][]" type="text"
+                        <td><input value="<?= $detail['area'] ?>" name="detail[are][]" type="text"
                                    placeholder="<?php echo _l('are'); ?>"
                                    class="col-xs-12 col-sm-12 center"></td>
-                        <td><input value="<?= $detail->size ?>" name="detail[size][]" type="text"
+                        <td><input value="<?= $detail['size'] ?>" name="detail[size][]" type="text"
                                    placeholder="<?php echo _l('size'); ?>"
                                    class="col-xs-12 col-sm-12 center"></td>
-                        <td><textarea value="<?= $detail->description ?>" name="detail[description][]"
+                        <td><textarea value="<?= $detail['description'] ?>" name="detail[description][]"
                                       class="col-xs-12 col-sm-12 description ui-autocomplete-input"
-                                      autocomplete="off"></textarea></td>
-                        <td><input value="<?= $detail->qty_unit ?>" name="detail[qty][]" type="number" placeholder="0"
+                                      autocomplete="off"><?= $detail['description'] ?></textarea></td>
+                        <td><input value="<?= $detail['qty_unit'] ?>" name="detail[qty][]" type="number" placeholder="0"
                                    class="col-xs-12 col-sm-12 center"
                                    onkeyup="computeLineAmount()" onchange="computeLineAmount()"><br><span
                                     class="quantity_uom_1"></span></td>
-                        <td><input value="<?= $detail->px_unit ?>" name="detail[unix][]" type="number"
+                        <td><input value="<?= $detail['px_unit'] ?>" name="detail[unix][]" type="number"
                                    placeholder="0.00"
                                    class="col-xs-12 col-sm-12 right"
                                    onkeyup="computeLineAmount()" onchange="computeLineAmount()"><br><span
                                     class="quantity_uom_1"></span></td>
-                        <td><input value="<?= $detail->duration_unit ?>" name="detail[duration][]" type="text"
+                        <td><input value="<?= $detail['duration_unit'] ?>" name="detail[duration][]" type="text"
                                    placeholder="<?php echo _l('duration'); ?>"
                                    class="col-xs-12 col-sm-12 center"
                                    onkeyup="computeLineAmount()" onchange="computeLineAmount()"><br><span
                             ></span></td>
-                        <td><input value="<?= $detail->amount ?>" name="detail[amount][]" type="text"
+                        <td><input value="<?= $detail['amount'] ?>" name="detail[amount][]" type="text"
                                    placeholder="0.00"
                                    class="col-xs-12 col-sm-12 right"
                                    readonly="readonly"></td>
@@ -112,7 +112,7 @@
                             }
                             ?>
                             <input type="hidden" class="hidden" name="detail[id][]"
-                                   value="<?= $details[$i]->id ?>">
+                                   value="<?= $details[$i]['id'] ?>">
                         </td>
                     </tr>
                     <?php
@@ -123,24 +123,26 @@
             <tfoot>
             <tr>
                 <td colspan="6" style="text-align: right"><?php echo _l('sub_total'); ?></td>
-                <td><input value="" type="text" name="sub_total" id="sub_total" placeholder="0.00"
+                <td><input type="text" name="sub_total"
+                           value="<?= (isset($mestimate) && isset($mestimate->sub_total)) ? $mestimate->sub_total : 0.00 ?>" id="sub_total"
+                           placeholder="0.00"
                            class="col-xs-12 col-sm-12 center"
                            readonly="readonly"></td>
                 <td></td>
             </tr>
             <tr>
                 <td colspan="5" style="text-align: right"><?php echo _l('discount'); ?></td>
-                <td><input type="number" id="discount" name="discount" placeholder="0.00"
+                <td><input type="number" id="discount" name="discount" placeholder="0.00" value="<?= (isset($mestimate) && isset($mestimate->discount)) ? $mestimate->discount : 0.00 ?>"
                            onkeyup="computeLineAmount()" onchange="computeLineAmount()"
                            class="col-xs-12 col-sm-12 center"></td>
-                <td><input type="text" id="discount_val" name="discount_val" placeholder="0.00"
+                <td><input type="text" id="discount_val" name="discount_val" placeholder="0.00" value="<?= (isset($mestimate) && isset($mestimate->discount_val)) ? $mestimate->discount_val : 0.00 ?>"
                            class="col-xs-12 col-sm-12 center"
                            readonly="readonly"></td>
                 <td></td>
             </tr>
             <tr>
                 <td colspan="6" style="text-align: right"><?php echo _l('total'); ?></td>
-                <td><input value="" type="text" id="total" name="total" placeholder="0.00"
+                <td><input type="text" id="total" name="total" placeholder="0.00" value="<?= (isset($mestimate) && isset($mestimate->total)) ? $mestimate->total : 0.00 ?>"
                            class="col-xs-12 col-sm-12 center"
                            readonly="readonly"></td>
                 <td></td>
@@ -149,12 +151,13 @@
             <tr>
                 <td colspan="4" style="text-align: right"></td>
                 <td style="text-align: right"><input type="text" name="paid_by_customer_text"
+                                                     value="<?= (isset($mestimate) && isset($mestimate->paid_by_customer_text)) ? $mestimate->paid_by_customer_text : "" ?>"
                                                      placeholder="<?php echo _l('Total paid by customer'); ?>"
                                                      class="col-xs-12 col-sm-12 center"></td>
                 <td><input onkeyup="computeLineAmount()" id="paid_by_customer_percent" onchange="computeLineAmount()"
-                           type="number" name="paid_by_customer_percent" placeholder="percent"
+                           type="number" name="paid_by_customer_percent" placeholder="percent" value="<?= (isset($mestimate) && isset($mestimate->paid_by_customer_percent)) ? $mestimate->paid_by_customer_percent : 0.00 ?>"
                            class="col-xs-12 col-sm-12 center"></td>
-                <td><input type="text" name="balance_due" placeholder="0.00"
+                <td><input type="text" name="balance_due" placeholder="0.00" value="<?= (isset($mestimate) && isset($mestimate->balance_due)) ? $mestimate->balance_due : "" ?>"
                            id="balance_due" class="col-xs-12 col-sm-12 center" readonly="readonly"></td>
                 <td></td>
             </tr>
@@ -162,10 +165,10 @@
             <tr>
                 <td colspan="5" style="text-align: right"></td>
                 <td><input type="text" name="balance_due_text"
-                           placeholder="<?php echo _l('Balance Due (Insurance Billing)'); ?>"
+                           placeholder="<?php echo _l('Balance Due (Insurance Billing)'); ?>" <?= (isset($mestimate) && isset($mestimate->balance_due_text)) ? $mestimate->balance_due_text : "" ?>
                            class="col-xs-12 col-sm-12 center"></td>
                 <td><input name="balance_due_val" type="text" readonly="readonly" placeholder="0.00"
-                           id="balance_due_val"
+                           id="balance_due_val" <?= (isset($mestimate) && isset($mestimate->balance_due_val)) ? $mestimate->balance_due_val : "" ?>
                            class="col-xs-12 col-sm-12 center"></td>
                 <td></td>
             </tr>
@@ -174,7 +177,3 @@
 
     </div>
     <div id="removed-items"></div>
-</div>
-<script type="text/javascript">
-
-</script>

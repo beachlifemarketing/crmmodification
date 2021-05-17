@@ -4,8 +4,9 @@
     if (isset($mestimate)) {
         echo form_hidden('isedit');
     }
+    echo form_hidden('mestimate_id_old', (isset($mestimate_id_old) ? $mestimate_id_old : 0));
     ?>
-    <div class="col-md-12">
+    <div class="col-md-12" id="row_mestimates_template">
         <?php $this->load->view('mestimates/includes/mestimates_template'); ?>
     </div>
     <div class="col-md-12" id="row_file_mestimates">

@@ -22,7 +22,6 @@ hooks()->add_filter('global_search_result_query', 'mestimates_global_search_resu
 hooks()->add_filter('global_search_result_output', 'mestimates_global_search_result_output', 10, 2);
 
 
-
 function mestimates_staff_member_deleted($data)
 {
     $CI = &get_instance();

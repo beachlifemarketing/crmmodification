@@ -32,7 +32,7 @@
 <?php init_tail(); ?>
 <script>
     $(function () {
-        initDataTable('.table-mestimates', window.location.href, [6], [6]);
+        initDataTable('.table-mestimates', window.location.href, [7], [7]);
         $('.table-mestimates').DataTable().on('draw', function () {
             var rows = $('.table-mestimates').find('tr');
             $.each(rows, function () {
