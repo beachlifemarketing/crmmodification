@@ -3,49 +3,54 @@
     <div class="panel-body">
         <div class="row">
             <?php echo form_hidden('mestimate_id', (isset($mestimate)) ? $mestimate->id : 0); ?>
-            <?php if (isset($mestimate_request_id) && $mestimate_request_id != '') {
-                echo form_hidden('mestimate_request_id', $mestimate_request_id);
-            }
-            ?>
             <div class="col-md-6">
-                <div class="form-group" app-field-wrapper="title">
-                    <label for="template_id" class="control-label"><?php echo _l('Select one template'); ?></label>
-                    <select class="form-control" id="template_id" name="template_id"
-                            aria-label="<?php echo _l('mestimate_select_template'); ?>" onchange="selectTemplate()"
-                            data-width="100%">>
-                        <option selected><?php echo _l('Select one template'); ?></option>
-                        <?php
-                        $templates = (isset($templates)) ? $templates : [];
-                        echo ' <option value="0">Emty template</option>';
-                        for ($i = 0; $i < count($templates); $i++) {
-                            $selected = (isset($mestimate_id) && $mestimate_id == $templates[$i]['id']) ? 'selected' : '';
-                            ?>
-                            <option value="<?= $templates[$i]['id'] ?>" <?= $selected ?>><?= $templates[$i]['title'] ?></option>
+
+                <div class="f_client_id">
+                    <div class="form-group select-placeholder">
+                        <label for="tenplate_id"
+                               class="control-label"><?php echo _l('estimate_select_template'); ?></label>
+                        <select id="template_id" name="template_id" class="selectpicker" data-live-search="true"
+                                onchange="selectTemplate()"
+                                data-width="100%">
+
                             <?php
-                        }
-                        ?>
-                    </select>
-
-                </div>
-
-                <div class="form-group" app-field-wrapper="title">
-                    <label for="client_id"
-                           class="control-label"><?php echo _l('or_select_client'); ?></label>
-                    <select id="client_id" name="client_id" class="form-control"
-                            data-width="100%" onchange="selectClient()">
-                        <?php
-                        if (isset($clients)) {
-                            echo ' <option value="0"></option>';
-                            for ($i = 0; $i < count($clients); $i++) {
-                                $selected = ($client_id == $clients[$i]['userid']) ? 'selected' : '';
+                            $templates = (isset($templates)) ? $templates : [];
+                            echo ' <option value="0">Emty template</option>';
+                            for ($i = 0; $i < count($templates); $i++) {
+                                $selected = (isset($mestimate_id) && $mestimate_id == $templates[$i]['id']) ? 'selected' : '';
                                 ?>
-                                <option value="<?= $clients[$i]['userid'] ?>" <?= $selected ?>><?= $clients[$i]['company'] ?></option>
+                                <option value="<?= $templates[$i]['id'] ?>" <?= $selected ?>><?= $templates[$i]['template_name'] ?></option>
                                 <?php
                             }
-                        }
-                        ?>
-                    </select>
+                            ?>
+                        </select>
+                    </div>
                 </div>
+
+
+                <div class="f_client_id">
+                    <div class="form-group select-placeholder">
+                        <label for="client_id"
+                               class="control-label"><?php echo _l('estimate_select_template'); ?></label>
+                        <select id="client_id" name="client_id" class="selectpicker" data-live-search="true"
+                                onchange="selectClient()"
+                                data-width="100%">
+
+                            <?php
+                            if (isset($clients)) {
+                                echo ' <option value="0"></option>';
+                                for ($i = 0; $i < count($clients); $i++) {
+                                    $selected = ($client_id == $clients[$i]['userid']) ? 'selected' : '';
+                                    ?>
+                                    <option value="<?= $clients[$i]['userid'] ?>" <?= $selected ?>><?= $clients[$i]['company'] ?></option>
+                                    <?php
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+
                 <div id="div_address">
                     <?php $this->load->view('mestimates/includes/info_company'); ?>
                 </div>

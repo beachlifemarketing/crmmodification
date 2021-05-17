@@ -20,9 +20,17 @@ class Mestimates_model extends App_Model
         $this->db->where('id', $id);
 
         $result = $this->db->get(db_prefix() . 'mestimates')->row();
+        //print_r($this->db->last_query());
         return $result;
     }
 
+
+    public function deleteFileMap($mestimate_id = '')
+    {
+        $this->db->where('mestimate_id', $mestimate_id);
+        $result = $this->db->delete(db_prefix() . 'mestimate_file');
+        return $result;
+    }
 
     public function get_all_mestimates()
     {
@@ -65,6 +73,9 @@ class Mestimates_model extends App_Model
         $dataupdate['due_date'] = to_sql_date($dataupdate['due_date']);
         $this->db->where('id', $id);
         $this->db->update(db_prefix() . 'mestimates', $dataupdate);
+
+        //print_r($this->db->last_query());
+
         if ($this->db->affected_rows() > 0) {
             log_activity('Mestimate Updated [ID:' . $id . ']');
 
@@ -100,46 +111,52 @@ class Mestimates_model extends App_Model
         ]);
     }
 
-    public function get_files($mestimate_id = 0, $staffid = null, $client_id = null)
+    public function get_file_map($template_id = 0)
     {
-        if (is_client_logged_in()) {
-            $this->db->where('visible_to_customer', 1);
-        }
-        $this->db->where('mestimate_id', $mestimate_id);
-        if (isset($staffid)) {
-            $this->db->where('staffid', $staffid);
-        }
-        if (isset($client_id)) {
-            $this->db->where('contact_id', $client_id);
-        }
-        $data = $this->db->get(db_prefix() . 'mestimate_files')->result_array();
-        //print_r($this->db->last_query());
+
+        $this->db->where('mestimate_id', $template_id);
+        $data = $this->db->get(db_prefix() . 'mestimate_file')->result_array();
         return $data;
     }
 
-    public function update_mestimate_file($mestimate_id = 0, $file_ids = [])
+    public function get_files($staffid = null, $client_id = null)
+    {
+        if ($client_id != null) {
+
+
+            if (is_client_logged_in()) {
+                $this->db->where('visible_to_customer', 1);
+            }
+            $this->db->where('contact_id', $client_id);
+            if (isset($staffid)) {
+                $this->db->where('staffid', $staffid);
+            }
+            $data = $this->db->get(db_prefix() . 'mestimate_files')->result_array();
+            //print_r($this->db->last_query());
+            return $data;
+        } else {
+            return array();
+        }
+    }
+
+    public function add_mestimate_file($mestimate_id = 0, $file_ids = [])
     {
         foreach ($file_ids as $file_id) {
-            $image = array('mestimate_id' => $mestimate_id);
-            $this->db->where('id', $file_id);
-            $this->db->update('mestimate_files', $image);
+            $data['file_id'] = $file_id;
+            $data['mestimate_id'] = $mestimate_id;
+            $this->db->insert(db_prefix() . 'mestimate_file', $data);
+            $insert_id = $this->db->insert_id();
         }
     }
 
 
-    public function get_file($id, $mestimate_id = false)
+    public function get_file($id)
     {
         if (is_client_logged_in()) {
             $this->db->where('visible_to_customer', 1);
         }
         $this->db->where('id', $id);
         $file = $this->db->get(db_prefix() . 'mestimate_files')->row();
-
-        if ($file && $mestimate_id) {
-            if ($file->mestimate_id != $mestimate_id) {
-                return false;
-            }
-        }
 
         return $file;
     }

@@ -24,28 +24,11 @@
                 } ?>
                 <?php
             } ?>
-            <?php if (!empty($file->external) && $file->external == 'dropbox') {
-                ?>
-                <a href="<?php echo $file->external_link; ?>" target="_blank" class="btn btn-info mbot20">
-                    <i class="fa fa-dropbox" aria-hidden="true"></i>
-                    <?php echo _l('open_in_dropbox'); ?>
-                </a>
-                <br/>
-                <?php
-            } elseif (!empty($file->external) && $file->external == 'gdrive') {
-                ?>
-                <a href="<?php echo $file->external_link; ?>" target="_blank" class="btn btn-info mbot20">
-                    <i class="fa fa-google" aria-hidden="true"></i>
-                    <?php echo _l('open_in_google'); ?>
-                </a>
-                <br/>
-                <?php
-            } ?>
             <?php
-            $path = FCPATH . 'uploads/mestimates' . '/' . $file->mestimate_id . '/' . $file->file_name;
+            $path = FCPATH . 'uploads/mestimates' . '/' . $file->contact_id . '/' . $file->file_name;
             if (is_image($path)) {
                 ?>
-                <img src="<?php echo base_url('uploads/mestimates/' . $file->mestimate_id . '/' . $file->file_name); ?>"
+                <img src="<?php echo base_url('uploads/mestimates/' . $file->contact_id . '/' . $file->file_name); ?>"
                      class="img img-responsive">
                 <?php
             } elseif (!empty($file->external) && !empty($file->thumbnail_link) && $file->external == 'dropbox') {
@@ -55,7 +38,7 @@
                 <?php
             } elseif (strpos($file->filetype, 'pdf') !== false && empty($file->external)) {
                 ?>
-                <iframe src="<?php echo base_url('uploads/mestimates/' . $file->mestimate_id . '/' . $file->file_name); ?>"
+                <iframe src="<?php echo base_url('uploads/mestimates/' . $file->contact_id . '/' . $file->file_name); ?>"
                         height="100%" width="100%" frameborder="0"></iframe>
                 <?php
             } elseif (is_html5_video($path)) {
@@ -70,7 +53,7 @@
                 echo $previewMarkdown;
             } else {
                 if (empty($file->external)) {
-                    echo '<a href="' . site_url('uploads/mestimates/' . $file->mestimate_id . '/' . $file->file_name) . '" download>' . $file->file_name . '</a>';
+                    echo '<a href="' . site_url('uploads/mestimates/' . $file->contact_id . '/' . $file->file_name) . '" download>' . $file->file_name . '</a>';
                 } else {
                     echo '<a href="' . $file->external_link . '" target="_blank">' . $file->file_name . '</a>';
                 }

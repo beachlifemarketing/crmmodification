@@ -33,6 +33,7 @@ if (!$CI->db->table_exists(db_prefix() . 'mestimates')) {
   `discount` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `title` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `adminnote` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `template_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
       )  ENGINE=InnoDB DEFAULT CHARSET=' . $CI->db->char_set . ';'
     );
@@ -62,7 +63,7 @@ if (!$CI->db->table_exists(db_prefix() . 'mestimates_detail')) {
 
 if (!$CI->db->table_exists(db_prefix() . 'mestimate_files')) {
     $CI->db->query('CREATE TABLE `' . db_prefix() . 'mestimate_files` (
-      `id` int NOT NULL AUTO_INCREMENT,
+    `id` int NOT NULL AUTO_INCREMENT,
   `file_name` varchar(191) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `subject` varchar(191) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `description` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
@@ -77,6 +78,15 @@ if (!$CI->db->table_exists(db_prefix() . 'mestimate_files')) {
   `external_link` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   `thumbnail_link` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   PRIMARY KEY (`id`) USING BTREE
+      )  ENGINE=InnoDB DEFAULT CHARSET=' . $CI->db->char_set . ';'
+    );
+}
+
+
+if (!$CI->db->table_exists(db_prefix() . 'mestimate_file')) {
+    $CI->db->query('CREATE TABLE `' . db_prefix() . 'mestimate_file` (
+    `mestimate_id` int NOT NULL,
+  `file_id` int NOT NULL
       )  ENGINE=InnoDB DEFAULT CHARSET=' . $CI->db->char_set . ';'
     );
 }

@@ -1,6 +1,5 @@
 <div class="panel_s no-shadow">
     <div class="row">
-
         <div class="col-md-6">
             <div class="form-group" app-field-wrapper="job_number">
                 <label for="job_number" class="control-label"><?php echo _l('job_number'); ?></label>
@@ -68,16 +67,8 @@
             <?php echo render_date_input('date', 'mestimate_add_edit_date', $value); ?>
         </div>
         <div class="col-md-6">
-            <?php
-            $value = '';
-            if (isset($mestimate)) {
-                $value = _d($mestimate->due_date);
-            } else {
-                if (get_option('mestimate_due_after') != 0) {
-                    $value = _d(date('Y-m-d', strtotime('+' . get_option('mestimate_due_after') . ' DAY', strtotime(date('Y-m-d')))));
-                }
-            }
-            echo render_date_input('due_date', 'due_date', $value); ?>
+            <?php $value = (isset($mestimate) ? _d($mestimate->due_date) : _d(date('Y-m-d'))); ?>
+            <?php echo render_date_input('due_date', 'mestimate_add_edit_due_date', $value); ?>
         </div>
 
 
@@ -99,11 +90,13 @@
 
     </div>
 </div>
-<script type="text/javascript">
-    $(function () {
-        $(".datepicker").datepicker({
-            autoclose: true,
-            todayHighlight: true
-        }).datepicker('update', new Date());
-    });
-</script>
+<?php
+if (isset($rtype) && $rtype === 'json') {
+    ?>
+    <script type="text/javascript">
+        init_datepicker();
+        init_selectpicker();
+    </script>
+    <?php
+}
+?>

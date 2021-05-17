@@ -16,10 +16,11 @@ $aColumns = [
 $sIndexColumn = 'id';
 $sTable = db_prefix() . 'mestimates';
 
-$join = ['LEFT JOIN ' . db_prefix() . 'staff ON ' . db_prefix() . 'staff.staffid = ' . db_prefix() . 'mestimates.staff_id'];
-$join = ['LEFT JOIN ' . db_prefix() . 'clients ON  ' . db_prefix() . 'clients.userid = ' . db_prefix() . 'mestimates.client_id'];
+$join[] = 'INNER JOIN ' . db_prefix() . 'staff ON ' . db_prefix() . 'staff.staffid = ' . db_prefix() . 'mestimates.staff_id';
+$join[] = 'INNER JOIN ' . db_prefix() . 'clients ON  ' . db_prefix() . 'clients.userid = ' . db_prefix() . 'mestimates.client_id';
 
-$result = data_tables_init($aColumns, $sIndexColumn, $sTable, $join, [], ['id']);
+$where[] = 'AND status = "active"';
+$result = data_tables_init($aColumns, $sIndexColumn, $sTable, $join, $where, ['id']);
 
 $output = $result['output'];
 $rResult = $result['rResult'];

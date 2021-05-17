@@ -2,7 +2,6 @@
 <?php
 $client_id = (isset($mestimate->client_id) ? $mestimate->client_id : (isset($client_id)) ? $client_id : null);
 if (isset($client_id) && $client_id != '') {
-    $mestimate_id = (isset($mestimate) ? $mestimate->id : (isset($mestimate_id) ? $mestimate_id : 0));
 
     ?>
     <div id="mestimate-files-upload">
@@ -11,10 +10,9 @@ if (isset($client_id) && $client_id != '') {
             Save File
         </button>
         <input type="hidden" name="client_id" id="hid_client_id" value="<?php echo $client_id ?>"/>
-        <input type="hidden" name="mestimate_id" id="hid_mestimate_id" value="<?php echo $mestimate_id ?>"/>
         <?php echo form_close(); ?>
         <div class="clearfix"></div>
-        <table class="table dt-table scroll-responsive table-mestimate-files" data-order-col="7" data-order-type="desc">
+        <table class="table scroll-responsive table-mestimate-files" data-order-col="7" data-order-type="desc">
             <thead>
             <tr>
                 <th data-orderable="false"><span class="hide"> - </span>
@@ -31,21 +29,23 @@ if (isset($client_id) && $client_id != '') {
             </thead>
             <tbody>
             <?php
+            $mestimate_id = (isset($mestimate_id) ? $mestimate_id : 0);
+            $fileMap = (isset($fileMap) ? $fileMap : []);
             $files = (isset($files) ? $files : []);
             ?>
             <?php foreach ($files as $file) {
-                $path = FCPATH . 'uploads/mestimates' . '/' . $mestimate_id . '/' . $file['file_name'];
+                $path = FCPATH . 'uploads/mestimates' . '/' . $file['contact_id'] . '/' . $file['file_name'];
                 ?>
                 <tr>
                     <td>
                         <div class="checkbox"><input
-                                    type="checkbox" <?= ($mestimate_id != 0 && $file['mestimate_id'] == $mestimate_id) ?>
+                                    type="checkbox" <?= ($mestimate_id != 0 && isset($fileMap[$file['id']]) && $fileMap[$file['id']] == $mestimate_id) ? 'checked' : '' ?>
                                     name="image_ids[]" value="<?php echo $file['id']; ?>"><label></label>
                         </div>
                     </td>
                     <td data-order="<?php echo $file['file_name']; ?>">
                         <a href="#"
-                           onclick="view_mestimate_file(<?php echo $file['id']; ?>,<?php echo $file['mestimate_id']; ?>); return false;">
+                           onclick="view_mestimate_file(<?php echo $file['id']; ?>); return false;">
                             <?php if (is_image($path) || (!empty($file['external']) && !empty($file['thumbnail_link']))) {
                                 echo '<img class="mestimate-file-image img-table-loading" src="' . mestimate_file_url($file, true) . '" data-orig="' . mestimate_file_url($file, true) . '" width="100">';
                             }
