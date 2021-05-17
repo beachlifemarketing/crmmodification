@@ -1,4 +1,28 @@
 <div class="row">
+
+
+    <h3 class="bold"><?php echo _l('Projects'); ?></h3>
+    <div class="col-md-12">
+        <div class="f_client_id">
+            <div class="form-group select-placeholder">
+                <select id="project_id" name="project_id" class="selectpicker" data-live-search="true"
+                        data-width="100%">
+                    <?php
+                    if (isset($projects)) {
+                        echo ' <option value="0"></option>';
+                        for ($i = 0; $i < count($projects); $i++) {
+                            $selected = (isset($mestimate) && $mestimate->project_id == $projects[$i]['id']) ? 'selected' : '';
+                            ?>
+                            <option value="<?= $projects[$i]['id'] ?>" <?= $selected ?>><?= $projects[$i]['name'] ?></option>
+                            <?php
+                        }
+                    }
+                    ?>
+                </select>
+            </div>
+        </div>
+    </div>
+
     <h3 class="bold"><?php echo _l('client_information'); ?></h3>
     <div class="col-md-6">
         <div class="form-group" app-field-wrapper="firstname">
@@ -72,3 +96,13 @@
         </div>
     </div>
 </div>
+
+<?php
+if (isset($rtype) && $rtype === 'json') {
+    ?>
+    <script type="text/javascript">
+        init_selectpicker();
+    </script>
+    <?php
+}
+?>

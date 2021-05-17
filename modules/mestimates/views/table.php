@@ -7,7 +7,7 @@ $aColumns = [
     'date',
     'representative',
     'sub_total',
-    'discount_percent',
+    'discount',
     'balance_due',
     'total'
 
