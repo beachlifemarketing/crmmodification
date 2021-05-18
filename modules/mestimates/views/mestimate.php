@@ -116,6 +116,9 @@
         simpleAjaxPostUpload(
             url, '#id_content_mestimate',
             function (res) {
+                if (typeof res.url_redirect != 'undefined' && res.url_redirect != null) {
+                    window.location.href = res.url_redirect;
+                }
                 alert_float('success', res.errorMessage);
             },
             function (res) {

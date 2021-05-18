@@ -15,7 +15,7 @@ if (!isset($mestimate_id_old) || $mestimate_id_old == 0 || $mestimate_id_old == 
         <button class="btn btn-danger only-save customer-form-submiter" onclick="delTemplate()">
             <?php echo _l('delete_this_template'); ?></button>
         <?php
-    }else{
+    } else {
         ?>
         <button type="button" class="btn btn-info save-and-add-contact customer-form-submiter"
                 data-toggle="modal" data-target="#exampleModal">
@@ -24,11 +24,18 @@ if (!isset($mestimate_id_old) || $mestimate_id_old == 0 || $mestimate_id_old == 
     }
 } else {
     if (isset($mestimate_id) && $mestimate_id != 0 && $mestimate_id != '') {
-        ?>
-        <button type="button" class="btn btn-info save-and-add-contact customer-form-submiter"
-                data-toggle="modal" data-target="#exampleModal">
-            <?php echo _l('save_template'); ?></button>
-        <?php
+        if ($mestimate_id != $mestimate_id_old) {
+            ?>
+            <button class="btn btn-danger only-save customer-form-submiter" onclick="delTemplate()">
+                <?php echo _l('delete_this_template'); ?></button>
+            <?php
+        } else {
+            ?>
+            <button type="button" class="btn btn-info save-and-add-contact customer-form-submiter"
+                    data-toggle="modal" data-target="#exampleModal">
+                <?php echo _l('save_template'); ?></button>
+            <?php
+        }
     }
 }
 ?>

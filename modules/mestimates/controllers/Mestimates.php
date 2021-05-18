@@ -83,6 +83,11 @@ class Mestimates extends AdminController
         if (($id != null && $id > 0)) {
             $this->mestimate_id = $id;
             $this->mestimate_id_old = $id;
+            $title = _l('edit', _l('mestimate_lowercase'));
+            $data['is_edit'] = true;
+        } else {
+            $title = _l('add_new', _l('mestimate_lowercase'));
+            $data['is_edit'] = false;
         }
 
         $contactId = null;
@@ -124,9 +129,6 @@ class Mestimates extends AdminController
         if (isset($mestimate_id_old) && $mestimate_id_old != 0 && $mestimate_id_old != '') {
             $title = _l('edit', _l('mestimate_lowercase'));
             $data['is_edit'] = true;
-        } else {
-            $title = _l('add_new', _l('mestimate_lowercase'));
-            $data['is_edit'] = false;
         }
 
         $data['title'] = $title;
@@ -176,7 +178,12 @@ class Mestimates extends AdminController
                         $this->update_mestimate_file($this->input->post('image_ids'), $mestimate_id);
                     }
                     $data['errorCode'] = 'SUCCESS';
+                    $data['mestimate_id'] = $mestimate_id;
                     $data['errorMessage'] = _l('added_successfully', _l('mestimate'));
+                    $data['url_redirect'] = admin_url('mestimates/mestimate/' . $mestimate_id);
+                    set_alert('success', 'Load M-Estimate #' . $mestimate_id . ' to update');
+                    echo json_encode($data);
+                    die();
                 } else {
                     if (!has_permission('mestimates', '', 'edit')) {
                         access_denied('mestimates');
