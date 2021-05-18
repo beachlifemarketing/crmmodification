@@ -37,6 +37,29 @@
 <script src="<?php echo base_url('modules/mestimates/assets/blm.js'); ?>"></script>
 <script src="<?php echo base_url('modules/mestimates/assets/mestimates.js'); ?>"></script>
 <script type="text/javascript">
+    function delTemplate() {
+        var template_id = $('select#template_id').val();
+        $("#hid_mestimate_id").val(template_id);
+        $("#mestimate_id").val(template_id);
+        $('input[name="mestimate_id"]').val(template_id);
+        var url = admin_url + 'mestimates/delete_template?rtype=json&url=mestimate';
+        simpleAjaxPostUpload(
+            url,
+            '#id_content_mestimate',
+            function (res) {
+                $('#template_list').html(res.html_template);
+                $('#div_button_save').html(res.html_button);
+                alert_float('success', res.errorMessage);
+            },
+            function (res) {
+                alert_float('danger', res.errorMessage);
+            },
+            function (res) {
+                alert_float('danger', res.errorMessage);
+            }
+        );
+    }
+
     function updateTemplateName() {
         var name = $('#template-name').val();
         $('#template_name').val(name);
@@ -110,8 +133,8 @@
         simpleAjaxPostUpload(
             url, '#id_content_mestimate',
             function (res) {
-                $('#div_address').html(res.view_address);
-                $('#row_file_mestimates').html(res.view_file);
+                $('#template_list').html(res.html_template);
+                $('#div_button_save').html(res.html_button);
                 alert_float('success', res.errorMessage);
             },
             function (res) {

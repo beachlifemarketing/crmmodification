@@ -78,4 +78,8 @@ $lang['create_template_success'] = "Create template success";
 $lang['client_note'] = "Client Note";
 $lang['term_and_condition'] = "Term and condition";
 $lang['mestimates_tracking'] = "M-Estimate manage";
-
+$lang['client_select_template'] = "Select Client";
+$lang['mestimates_template'] = 'Template manage';
+$lang['template_mestimate_lowercase'] = "Template M-Estimate";
+$lang['delete_this_template'] = "Delete this template";
+$lang['delete_template_success'] = 'Delete template success';

@@ -17,18 +17,8 @@
     <div class="col-md-12 mtop15">
         <div class="panel-body bottom-transaction">
             <div class="btn-bottom-toolbar text-right btn-toolbar-container-out">
-                <div class="btn-bottom-toolbar btn-toolbar-container-out text-right">
-                    <button class="btn btn-info only-save customer-form-submiter" onclick="saveMestimate()">
-                        <?php
-                        if (isset($mestimate_id_old) && $mestimate_id_old != 0 && $mestimate_id_old != '') {
-                            echo 'Update';
-                        } else {
-                            echo 'Create';
-                        }
-
-                        ?> </button>
-                    <button type="button" class="btn btn-info save-and-add-contact customer-form-submiter"
-                            data-toggle="modal" data-target="#exampleModal"> <?php echo _l('save_template'); ?></button>
+                <div class="btn-bottom-toolbar btn-toolbar-container-out text-right" id="div_button_save">
+                    <?php $this->load->view('mestimates/includes/_save_button'); ?>
                 </div>
 
             </div>

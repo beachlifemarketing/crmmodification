@@ -115,9 +115,15 @@ function mestimates_module_init_menu_items()
         ]);
         $CI->app_menu->add_sidebar_children_item('api-options', [
             'slug' => 'api-register-options',
-            'name' => _l('mestimates'),
+            'name' => 'M-Estimate - Manage',
             'href' => admin_url('mestimates'),
             'position' => 5,
+        ]);
+        $CI->app_menu->add_sidebar_children_item('api-options', [
+            'slug' => 'api-register-options',
+            'name' => 'Templates - Manage',
+            'href' => admin_url('mestimates/template'),
+            'position' => 6,
         ]);
     }
 }
