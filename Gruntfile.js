@@ -135,7 +135,6 @@ module.exports = function(grunt) {
                     'assets/plugins/internal/highlight/highlight.js',
                     'assets/plugins/internal/google-picker/picker.min.js',
                     'assets/js/app.js',
-                    'assets/js/blm.js',
                 ],
                 dest: 'assets/builds/common.js',
             },

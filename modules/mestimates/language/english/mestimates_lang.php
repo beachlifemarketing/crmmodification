@@ -75,6 +75,7 @@ $lang["save_file_success"] = "Save file success";
 $lang['load_template_success'] = "Load template success";
 $lang['mestimate_add_edit_due_date'] = "Due date";
 $lang['create_template_success'] = "Create template success";
-
-
+$lang['client_note'] = "Client Note";
+$lang['term_and_condition'] = "Term and condition";
+$lang['mestimates_tracking'] = "M-Estimate manage";
 

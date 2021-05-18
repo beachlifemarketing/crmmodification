@@ -35,6 +35,8 @@ if (!$CI->db->table_exists(db_prefix() . 'mestimates')) {
   `adminnote` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `template_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `project_id` int NULL DEFAULT NULL,
+  `client_note` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
+  `term_and_condition` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   PRIMARY KEY (`id`) USING BTREE
       )  ENGINE=InnoDB DEFAULT CHARSET=' . $CI->db->char_set . ';'
     );

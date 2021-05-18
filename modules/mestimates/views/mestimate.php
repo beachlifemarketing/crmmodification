@@ -48,7 +48,6 @@
         $("#mestimate_id").val(template_id);
         $('input[name="mestimate_id"]').val(template_id);
         var url = admin_url + 'mestimates/mestimate?rtype=json&change=template';
-
         simpleAjaxPostUpload(
             url,
             '#id_content_mestimate',

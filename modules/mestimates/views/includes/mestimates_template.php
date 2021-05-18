@@ -63,4 +63,21 @@
         <?php $this->load->view('mestimates/includes/_add_edit_items'); ?>
     </div>
 
+    <div class="col-md-12 panel-body mtop10" style="margin-bottom: 20px;">
+        <div class="col-md-12">
+            <div class="form-group" app-field-wrapper="client_note">
+                <label for="client_note" class="control-label"><?php echo _l('client_note'); ?></label>
+                <textarea id="client_note" name="client_note"
+                          class="form-control "><?= (isset($mestimate) ? $mestimate->client_note : ''); ?></textarea>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group" app-field-wrapper="term_and_condition">
+                <label for="term_and_condition" class="control-label"><?php echo _l('term_and_condition'); ?></label>
+                <textarea id="term_and_condition" name="term_and_condition"
+                          class="form-control "><?= (isset($mestimate) ? $mestimate->term_and_condition : ''); ?></textarea>
+            </div>
+        </div>
+    </div>
+
 </div>

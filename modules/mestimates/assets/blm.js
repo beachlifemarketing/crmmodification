@@ -21,16 +21,15 @@ function simpleAjaxPostUpload(url, formId, successCallBack, fieldErrorCallBack, 
             data.append(name, $(v).val());
         }
     });
-
     $.ajax({
         url: url,
         type: "POST",
         data: data,
         contentType: false,
+        dataType: 'json',
         cache: false,
         processData: false,
         success: function (res) {
-
             if (res.errorCode == "SUCCESS") {
                 if (typeof successCallBack != 'undefined' && successCallBack != null) {
                     successCallBack(res);

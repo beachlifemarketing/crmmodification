@@ -95,7 +95,6 @@ class Mestimates extends AdminController
         $data['mestimate_id'] = $this->mestimate_id;
         $data['mestimate_id_old'] = $this->mestimate_id_old;
 
-
         if (isset($this->mestimate_id_old) && $this->mestimate_id_old > 0) {
             $title = _l('add_new', _l('mestimate_lowercase'));
             $data['is_edit'] = false;
@@ -113,13 +112,13 @@ class Mestimates extends AdminController
         $data['rtype'] = isset($_REQUEST['rtype']) ? $_REQUEST['rtype'] : '';
         if (isset($_REQUEST['rtype']) && $_REQUEST['rtype'] === 'json') {
             $data['errorCode'] = 'SUCCESS';
-            $data['errorMessage'] = _l('load_info_client_success');
             if (isset($_REQUEST['change']) && $_REQUEST['change'] == 'template') {
                 $data['data_template'] = $this->load->view('mestimates/includes/mestimate_data', $data, true);
                 $data['errorMessage'] = _l('load_template_success');
             } else {
                 $data['view_address'] = $this->load->view('mestimates/includes/info_company', $data, true);
                 $data['view_file'] = $this->load->view('mestimates/includes/mestimate_files', $data, true);
+                $data['errorMessage'] = _l('load_info_client_success');
             }
             echo json_encode($data);
         } else {
@@ -220,6 +219,9 @@ class Mestimates extends AdminController
         $dataupdate['balance_due_val'] = $data['balance_due_val'];
         $dataupdate['balance_due_text'] = $data['balance_due_text'];
         $dataupdate['balance_due'] = $data['balance_due'];
+        $dataupdate['term_and_condition'] = $data['term_and_condition'];
+        $dataupdate['client_note'] = $data['client_note'];
+
         $dataupdate['paid_by_customer_percent'] = $data['paid_by_customer_percent'];
         $dataupdate['total'] = $data['total'];
         $dataupdate['discount_val'] = $data['discount_val'];

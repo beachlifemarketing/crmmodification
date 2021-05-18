@@ -11,6 +11,7 @@
     <div class="col-md-12" id="row_file_mestimates">
         <?php $this->load->view('mestimates/includes/mestimate_files'); ?>
     </div>
+    <div class="clearfix"></div>
     <?php echo form_close(); ?>
     <div class="clearfix"></div>
     <div class="col-md-12 mtop15">
