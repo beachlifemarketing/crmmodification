@@ -34,7 +34,7 @@
 </div>
 
 <?php init_tail(); ?>
-
+<script src="<?php echo base_url('modules/mestimates/assets/blm.js'); ?>"></script>
 <script src="<?php echo base_url('modules/mestimates/assets/mestimates.js'); ?>"></script>
 <script type="text/javascript">
     function updateTemplateName() {

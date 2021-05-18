@@ -73,16 +73,16 @@ class AdminController extends App_Controller
         hooks()->do_action('admin_init');
 
         $vars = [
-            'current_user' => $currentUser,
+            'current_user'    => $currentUser,
             'current_version' => $this->current_db_version,
-            'task_statuses' => $this->tasks_model->get_statuses(),
+            'task_statuses'   => $this->tasks_model->get_statuses(),
         ];
 
-        $is_load_template = (!$this->input->is_ajax_request());
-        if (!isset($_REQUEST['rtype']) || $_REQUEST['rtype'] == 'json') {
+        if (!$this->input->is_ajax_request()) {
             $vars['sidebar_menu'] = $this->app_menu->get_sidebar_menu_items();
-            $vars['setup_menu'] = $this->app_menu->get_setup_menu_items();
+            $vars['setup_menu']   = $this->app_menu->get_setup_menu_items();
         }
+
         /**
          * Autoloaded view variables
          * @var array
@@ -94,73 +94,73 @@ class AdminController extends App_Controller
     private function init_quick_actions_links()
     {
         $this->app->add_quick_actions_link([
-            'name' => _l('invoice'),
+            'name'       => _l('invoice'),
             'permission' => 'invoices',
-            'url' => 'invoices/invoice',
-            'position' => 5,
+            'url'        => 'invoices/invoice',
+            'position'   => 5,
         ]);
 
         $this->app->add_quick_actions_link([
-            'name' => _l('estimate'),
+            'name'       => _l('estimate'),
             'permission' => 'estimates',
-            'url' => 'estimates/estimate',
-            'position' => 10,
+            'url'        => 'estimates/estimate',
+            'position'   => 10,
         ]);
 
         $this->app->add_quick_actions_link([
-            'name' => _l('proposal'),
+            'name'       => _l('proposal'),
             'permission' => 'proposals',
-            'url' => 'proposals/proposal',
-            'position' => 15,
+            'url'        => 'proposals/proposal',
+            'position'   => 15,
         ]);
 
         $this->app->add_quick_actions_link([
-            'name' => _l('credit_note'),
+            'name'       => _l('credit_note'),
             'permission' => 'credit_notes',
-            'url' => 'credit_notes/credit_note',
-            'position' => 20,
+            'url'        => 'credit_notes/credit_note',
+            'position'   => 20,
         ]);
 
 
         $this->app->add_quick_actions_link([
-            'name' => _l('client'),
+            'name'       => _l('client'),
             'permission' => 'customers',
-            'url' => 'clients/client',
-            'position' => 25,
+            'url'        => 'clients/client',
+            'position'   => 25,
         ]);
 
         $this->app->add_quick_actions_link([
-            'name' => _l('subscription'),
+            'name'       => _l('subscription'),
             'permission' => 'subscriptions',
-            'url' => 'subscriptions/create',
-            'position' => 30,
+            'url'        => 'subscriptions/create',
+            'position'   => 30,
         ]);
 
 
         $this->app->add_quick_actions_link([
-            'name' => _l('project'),
-            'url' => 'projects/project',
+            'name'       => _l('project'),
+            'url'        => 'projects/project',
             'permission' => 'projects',
-            'position' => 35,
+            'position'   => 35,
         ]);
 
 
         $this->app->add_quick_actions_link([
-            'name' => _l('task'),
-            'url' => '#',
-            'custom_url' => true,
+            'name'            => _l('task'),
+            'url'             => '#',
+            'custom_url'      => true,
             'href_attributes' => [
                 'onclick' => 'new_task();return false;',
             ],
             'permission' => 'tasks',
-            'position' => 40,
+            'position'   => 40,
         ]);
 
         $this->app->add_quick_actions_link([
-            'name' => _l('lead'),
-            'url' => '#',
-            'custom_url' => true,
-            'permission' => 'is_staff_member',
+            'name'            => _l('lead'),
+            'url'             => '#',
+            'custom_url'      => true,
+            'permission'      => 'is_staff_member',
             'href_attributes' => [
                 'onclick' => 'init_lead(); return false;',
             ],
@@ -168,31 +168,31 @@ class AdminController extends App_Controller
         ]);
 
         $this->app->add_quick_actions_link([
-            'name' => _l('expense'),
+            'name'       => _l('expense'),
             'permission' => 'expenses',
-            'url' => 'expenses/expense',
-            'position' => 50,
+            'url'        => 'expenses/expense',
+            'position'   => 50,
         ]);
 
 
         $this->app->add_quick_actions_link([
-            'name' => _l('contract'),
+            'name'       => _l('contract'),
             'permission' => 'contracts',
-            'url' => 'contracts/contract',
-            'position' => 55,
+            'url'        => 'contracts/contract',
+            'position'   => 55,
         ]);
 
 
         $this->app->add_quick_actions_link([
-            'name' => _l('kb_article'),
+            'name'       => _l('kb_article'),
             'permission' => 'knowledge_base',
-            'url' => 'knowledge_base/article',
-            'position' => 60,
+            'url'        => 'knowledge_base/article',
+            'position'   => 60,
         ]);
 
         $tickets = [
-            'name' => _l('ticket'),
-            'url' => 'tickets/add',
+            'name'     => _l('ticket'),
+            'url'      => 'tickets/add',
             'position' => 65,
         ];
 
@@ -203,17 +203,17 @@ class AdminController extends App_Controller
         $this->app->add_quick_actions_link($tickets);
 
         $this->app->add_quick_actions_link([
-            'name' => _l('staff_member'),
-            'url' => 'staff/member',
+            'name'       => _l('staff_member'),
+            'url'        => 'staff/member',
             'permission' => 'staff',
-            'position' => 70,
+            'position'   => 70,
         ]);
 
         $this->app->add_quick_actions_link([
-            'name' => _l('calendar_event'),
-            'url' => 'utilities/calendar?new_event=true&date=' . _d(date('Y-m-d')),
+            'name'       => _l('calendar_event'),
+            'url'        => 'utilities/calendar?new_event=true&date=' . _d(date('Y-m-d')),
             'permission' => '',
-            'position' => 75,
+            'position'   => 75,
         ]);
     }
 }
