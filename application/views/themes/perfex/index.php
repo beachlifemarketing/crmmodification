@@ -32,10 +32,10 @@ get_template_part($navigationEnabled ? 'navigation' : '');
          </div>
       </div>
    </div>
-   <?php
-   echo theme_footer_view();
-   ?>
 </div>
+<?php
+   echo theme_footer_view();
+?>
 <?php
 /* Always have app_customers_footer() just before the closing </body>  */
 app_customers_footer();

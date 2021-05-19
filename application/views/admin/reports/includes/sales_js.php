@@ -103,6 +103,7 @@
        var creditNotesTable = $(this).DataTable();
        var sums = creditNotesTable.ajax.json().sums;
        add_common_footer_sums($(this),sums);
+       $(this).find('tfoot td.refund_amount').html(sums.refund_amount);
        $(this).find('tfoot td.remaining_amount').html(sums.remaining_amount);
        <?php foreach($credit_note_taxes as $key => $tax){ ?>
           $(this).find('tfoot td.total_tax_single_<?php echo $key; ?>').html(sums['total_tax_single_<?php echo $key; ?>']);

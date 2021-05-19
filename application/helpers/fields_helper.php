@@ -465,6 +465,11 @@ if (!function_exists('render_form_builder_field')) {
          </div>';
             } elseif ($type == 'text' || $type == 'number') {
                 $ftype = isset($field->subtype) ? $field->subtype : $type;
+
+                if($field->name === 'email' && is_client_logged_in()) {
+                    $field->value = $GLOBALS['contact']->email;
+                }
+
                 echo '<input' . (isset($field->required) ? ' required="true"': '') . (isset($field->placeholder) ? ' placeholder="' . $field->placeholder . '"' : '') . ' type="' . $ftype . '" name="' . $field->name . '" id="' . $field->name . '" class="' . (isset($field->className) ? $field->className : '') . '" value="' . (isset($field->value) ? $field->value : '') . '"' . ($field->type == 'file' ? ' accept="' . get_form_accepted_mimes() . '" filesize="' . file_upload_max_size() . '"' : '') . (isset($field->step) ? 'step="'. $field->step.'"' : '')  . (isset($field->min) ? 'min="'. $field->min.'"' : '') . (isset($field->max) ? 'max="'. $field->max.'"' : '')  . (isset($field->maxlength) ? 'maxlength="'. $field->maxlength.'"' : '') . '>';
             } elseif ($type == 'file') {
                 $ftype = isset($field->subtype) ? $field->subtype : $type;

@@ -543,17 +543,29 @@ body {
     background: #f9fafb;
     margin: 0;
     padding: 0;
-    height: 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    min-height: 100vh;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
 }
 
 #wrapper {
-    min-height: 100%;
-    position: relative;
+    -webkit-box-flex: 1;
+        -ms-flex: 1;
+            flex: 1;
 }
 
-#content {
-    padding-bottom: 80px;
-    /* Height of the footer element */
+footer {
+    background: #fff;
+    padding: 15px;
+    width: 100%;
+    height: 50px;
+    margin-top:25px;
+    border-top: 1px solid #e4e5e7;
 }
 
 h1,
@@ -821,14 +833,6 @@ label {
     font-size: 13px;
     font-weight: 500;
     padding: .3em .9em .3em;
-}
-
-footer {
-    background: #fff;
-    padding: 15px;
-    width: 100%;
-    height: 50px;
-    border-top: 1px solid #e4e5e7;
 }
 
 .navbar-default .navbar-brand.logo-text {
@@ -1457,20 +1461,6 @@ input[type="radio"] .styled:checked+label::after {
     border-right: 1px solid #bfcbd9;
 }
 
-table.dataTable.dtr-inline.collapsed>tbody>tr[role=row]>td:first-child:before,
-table.dataTable.dtr-inline.collapsed>tbody>tr[role=row]>th:first-child:before {
-    background-color: #84c529;
-    border: 1px solid #84c529;
-    height: 17px;
-    width: 18px;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-    top: 11px;
-    font-weight: 600;
-    border-radius: 4px;
-    line-height: 17px;
-}
-
 table.dataTable thead tr>th {
     color: #4e75ad;
 }
@@ -1973,11 +1963,6 @@ form.dropzone {
     color: #333;
 }
 
-#calendar .fc-header-toolbar button,
-#calendar .fc-day-header,
-#calendar .fc-toolbar .fc-center {
-    text-transform: capitalize;
-}
 
 .dataTables_filter input {
     margin-left: 0px !important;
@@ -2055,10 +2040,6 @@ form.dropzone {
     .table-responsive {
         padding: 15px 0px 15px 0px;
         border: 1px solid #F7F7F7;
-    }
-
-    .pusher {
-        margin-top: 50px;
     }
 
     .dataTables_filter input,
@@ -2280,11 +2261,6 @@ div.dataTables_wrapper div.dataTables_length label,
     height: auto;
 }
 
-.fc-toolbar h2 {
-    font-size: 20px;
-    margin-top: 4px;
-}
-
 .fc-event {
     padding: 8px !important;
     border: 0px !important;
@@ -2294,43 +2270,14 @@ div.dataTables_wrapper div.dataTables_length label,
     cursor: pointer;
 }
 
-.fc-widget-header .fc-day-header {
-    padding: 8px 0;
+.fc-view {
+    overflow-y: scroll;
 }
 
-.fc-view-container .fc-widget-header {
-    background: #f7f8fa;
-}
-
-.fc-basic-view .fc-day-number {
-    text-align: center;
-}
-
-.fc-state-default {
-    -webkit-box-shadow: 0px !important;
-    box-shadow: 0px !important;
-    text-shadow: none !important;
-    background: #03a9f4 !important;
-    color: #fff !important;
-}
-
-.fc-state-active,
-.fc-state-down {
-    -webkit-box-shadow: none !important;
-    box-shadow: none !important;
-    background: #0286c2 !important;
-}
-
-.fc-widget-header .fc-day-header {
-    padding: 8px 0;
-}
-
-.fc-view-container .fc-widget-header {
-    background: #f7f8fa;
-}
-
-.fc-basic-view .fc-day-number {
-    text-align: center;
+#calendar .fc-header-toolbar button,
+#calendar .fc-day-header,
+#calendar .fc-toolbar .fc-center {
+   text-transform: capitalize;
 }
 
 .tc-content ul,

@@ -9,16 +9,17 @@
     <?php app_external_form_header($form); ?>
     <?php hooks()->do_action('app_estimate_request_form_head'); ?>
 </head>
-<body class="estimate-request-form <?php echo $form->form_key; ?>"<?php if (is_rtl(true)) {
+<body class="estimate-request-form <?php echo $form->form_key . ($this->input->get('styled') === '1' ? ' styled' : ''); ?>"<?php if (is_rtl(true)) {
     echo ' dir="rtl"';
 } ?>>
 <div class="container-fluid">
     <div class="row">
-        <div class="<?php if ($this->input->get('col')) {
-            echo $this->input->get('col');
-        } else {
-            echo 'col-md-12';
-        } ?>">
+        <div class="<?php if($this->input->get('col')){echo $this->input->get('col');} else {echo $this->input->get('styled') === '1' ? 'col-md-6 col-md-offset-3' : 'col-md-12';} ?> form-col">
+            <?php if($this->input->get('with_logo')) { ?>
+                <div class="text-center mbot10 logo">
+                    <?php get_dark_company_logo(); ?>
+                </div>
+            <?php } ?>
             <div id="response"></div>
             <?php echo form_open_multipart($this->uri->uri_string(), array('id' => $form->form_key, 'class' => 'disable-on-submit')); ?>
             <?php hooks()->do_action('estimate_request_form_start'); ?>
@@ -31,7 +32,7 @@
                     <div class="col-md-12">
                         <div class="form-group">
                             <div class="g-recaptcha"
-                                 data-sitekey="<?php echo get_option('recaptcha_site_key'); ?>"></div>
+                            data-sitekey="<?php echo get_option('recaptcha_site_key'); ?>"></div>
                             <div id="recaptcha_response_field" class="text-danger"></div>
                         </div>
                     </div>
@@ -42,7 +43,7 @@
                         <div class="col-md-12 ">
                             <div class="checkbox chk">
                                 <input class="relative" type="checkbox" name="accept_terms_and_conditions" required="true"
-                                       id="accept_terms_and_conditions" <?php echo set_checkbox('accept_terms_and_conditions', 'on'); ?>>
+                                id="accept_terms_and_conditions" <?php echo set_checkbox('accept_terms_and_conditions', 'on'); ?>>
                                 <label for="accept_terms_and_conditions">
                                     <?php echo _l('gdpr_terms_agree', terms_url()); ?>
                                 </label>
@@ -53,7 +54,7 @@
                 <div class="clearfix"></div>
                 <div class="text-left col-md-12 submit-btn-wrapper">
                     <button class="btn btn-success" id="form_submit"
-                            type="submit"><?php echo $form->submit_btn_name; ?></button>
+                    type="submit"><?php echo $form->submit_btn_name; ?></button>
                 </div>
             </div>
 

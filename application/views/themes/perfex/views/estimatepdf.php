@@ -94,7 +94,7 @@ if (is_sale_discount_applied($estimate)) {
     <tr>
         <td align="right" width="85%"><strong>' . _l('estimate_discount');
     if (is_sale_discount($estimate, 'percent')) {
-        $tbltotal .= '(' . app_format_number($estimate->discount_percent, true) . '%)';
+        $tbltotal .= ' (' . app_format_number($estimate->discount_percent, true) . '%)';
     }
     $tbltotal .= '</strong>';
     $tbltotal .= '</td>';

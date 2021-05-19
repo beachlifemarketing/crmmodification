@@ -261,7 +261,7 @@ module.exports = function(grunt) {
         },
         watch: {
             scripts: {
-                files: ['assets/js/app.js', 'assets/js/blm.js'],
+                files: ['assets/js/app.js'],
                 tasks: ['build-assets'],
                 options: {
                     spawn: false,

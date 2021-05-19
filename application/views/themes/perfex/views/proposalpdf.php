@@ -64,7 +64,7 @@ if (is_sale_discount_applied($proposal)) {
     <tr>
         <td align="right" width="85%"><strong>' . _l('estimate_discount');
     if (is_sale_discount($proposal, 'percent')) {
-        $items_html .= '(' . app_format_number($proposal->discount_percent, true) . '%)';
+        $items_html .= ' (' . app_format_number($proposal->discount_percent, true) . '%)';
     }
     $items_html .= '</strong>';
     $items_html .= '</td>';

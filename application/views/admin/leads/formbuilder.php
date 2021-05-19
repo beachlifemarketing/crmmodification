@@ -35,14 +35,22 @@
                      </div>
                      <div role="tabpanel" class="tab-pane" id="tab_form_integration">
                         <p><?php echo _l('form_integration_code_help'); ?></p>
-                       <p>
-                         <span class="label label-default">
-                            <a href="<?php echo site_url('forms/wtl/'.$form->form_key); ?>" target="_blank">
-                          <?php echo site_url('forms/wtl/'.$form->form_key); ?>
-                         </span>
-                        </a>
-                       </p>
                         <textarea class="form-control" rows="2"><iframe width="600" height="850" src="<?php echo site_url('forms/wtl/'.$form->form_key); ?>" frameborder="0" allowfullscreen></iframe></textarea>
+                        <h4 class="mtop15 font-medium bold">Share direct link</h4>
+                        <p>
+                          <span class="label label-default">
+                            <a href="<?php echo site_url('forms/wtl/'.$form->form_key).'?styled=1'; ?>" target="_blank">
+                              <?php echo site_url('forms/wtl/'.$form->form_key).'?styled=1'; ?>
+                            </a>
+                          </span>
+                          <br />
+                          <br />
+                          <span class="label label-default">
+                            <a href="<?php echo site_url('forms/wtl/'.$form->form_key).'?styled=1&with_logo=1'; ?>" target="_blank">
+                              <?php echo site_url('forms/wtl/'.$form->form_key).'?styled=1&with_logo=1'; ?>
+                            </a>
+                          </span>
+                        </p>
                           <hr />
                           <p class="bold mtop15">When placing the iframe snippet code consider the following:</p>
                           <p class="<?php if(strpos(site_url(),'http://') !== false){echo 'bold text-success';} ?>">1. If the protocol of your installation is http use a http page inside the iframe.</p>

@@ -6,9 +6,10 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * Eq in the tasks section there is field where this task is related eq invoice with number INV-0005
  * @param  string $type
  * @param  string $rel_id
+ * @param  array $extra
  * @return mixed
  */
-function get_relation_data($type, $rel_id = '')
+function get_relation_data($type, $rel_id = '', $extra = [])
 {
     $CI = & get_instance();
     $q  = '';
@@ -19,7 +20,7 @@ function get_relation_data($type, $rel_id = '')
 
     $data = [];
     if ($type == 'customer' || $type == 'customers') {
-        $where_clients = '';
+        $where_clients = ''; 
         if ($q) {
             $where_clients .= '(company LIKE "%' . $CI->db->escape_like_str($q) . '%" ESCAPE \'!\' OR CONCAT(firstname, " ", lastname) LIKE "%' . $CI->db->escape_like_str($q) . '%" ESCAPE \'!\' OR email LIKE "%' . $CI->db->escape_like_str($q) . '%" ESCAPE \'!\') AND ' . db_prefix() . 'clients.active = 1';
         }
@@ -30,6 +31,10 @@ function get_relation_data($type, $rel_id = '')
             $data = $CI->clients_model->get_contact($rel_id);
         } else {
             $where_contacts = db_prefix() . 'contacts.active=1';
+            if (isset($extra['client_id']) && $extra['client_id'] != '') {
+                $where_contacts .= ' AND '. db_prefix() . 'contacts.userid='. $extra['client_id'];
+            }
+            
             if ($CI->input->post('tickets_contacts')) {
                 if (!has_permission('customers', '', 'view') && get_option('staff_members_open_tickets_to_all_contacts') == 0) {
                     $where_contacts .= ' AND ' . db_prefix() . 'contacts.userid IN (SELECT customer_id FROM ' . db_prefix() . 'customer_admins WHERE staff_id=' . get_staff_user_id() . ')';
@@ -135,6 +140,8 @@ function get_relation_data($type, $rel_id = '')
             $data = $CI->tasks_model->get($rel_id);
         }
     }
+
+    $data = hooks()->apply_filters('get_relation_data', $data, compact('type', 'rel_id', 'extra'));
 
     return $data;
 }
@@ -400,6 +407,8 @@ function init_relation_options($data, $type, $rel_id = '')
         $_data[] = $relation_values;
         //  echo '<option value="' . $relation_values['id'] . '"' . $selected . '>' . $relation_values['name'] . '</option>';
     }
+
+    $_data = hooks()->apply_filters('init_relation_options', $_data, compact('data', 'type', 'rel_id'));
 
     return $_data;
 }

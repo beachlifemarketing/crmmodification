@@ -14,7 +14,7 @@
 						<div class="clearfix"></div>
 						<hr class="hr-panel-heading" />
 						<?php if(count($statuses) > 0){ ?>
-						<table class="table dt-table scroll-responsive" data-order-col="1" data-order-type="asc">
+						<table class="table dt-table" data-order-col="1" data-order-type="asc">
 							<thead>
 								<th><?php echo _l('id'); ?></th>
 								<th><?php echo _l('leads_status_table_name'); ?></th>

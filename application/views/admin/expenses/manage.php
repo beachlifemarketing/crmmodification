@@ -25,7 +25,7 @@
                         <div class="clearfix"></div>
                         <!-- if expenseid found in url -->
                         <?php echo form_hidden('expenseid',$expenseid); ?>
-                        <?php $this->load->view('admin/expenses/table_html'); ?>
+                        <?php $this->load->view('admin/expenses/table_html', ['withBulkActions'=>true]); ?>
                      </div>
                   </div>
                </div>
@@ -84,10 +84,12 @@
    $(function(){
              // Expenses additional server params
              var Expenses_ServerParams = {};
+
              $.each($('._hidden_inputs._filters input'),function(){
                Expenses_ServerParams[$(this).attr('name')] = '[name="'+$(this).attr('name')+'"]';
              });
-             initDataTable('.table-expenses', admin_url+'expenses/table', 'undefined', 'undefined', Expenses_ServerParams, <?php echo hooks()->apply_filters('expenses_table_default_order', json_encode(array(5,'desc'))); ?>).column(0).visible(false, false).columns.adjust();
+
+             initDataTable('.table-expenses', admin_url+'expenses/table', [0], [0], Expenses_ServerParams, <?php echo hooks()->apply_filters('expenses_table_default_order', json_encode(array(5,'desc'))); ?>).column(1).visible(false, false).columns.adjust();
 
              init_expense();
 

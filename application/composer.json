@@ -11,7 +11,7 @@
         "phpmailer/phpmailer": "^5.2.26",
         "erusev/parsedown": "^1.7",
         "league/omnipay": "^3.0",
-        "omnipay/mollie": "^4.0",
+        "omnipay/mollie": "^5.0",
         "omnipay/braintree": "~4.0@dev",
         "omnipay/paypal": "^3.0",
         "willdurand/email-reply-parser": "^2.8",

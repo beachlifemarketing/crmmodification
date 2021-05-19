@@ -38,7 +38,7 @@
         <hr />
     </div>
     <div role="tabpanel" class="tab-pane" id="removal_requests">
-        <table class="table dt-table scroll-responsive" data-order-type="desc" data-order-col="4">
+        <table class="table dt-table" data-order-type="desc" data-order-col="4">
             <thead>
                 <tr>
                     <th>Request ID</th>

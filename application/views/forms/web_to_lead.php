@@ -9,25 +9,32 @@
   <?php app_external_form_header($form); ?>
   <?php hooks()->do_action('app_web_to_lead_form_head'); ?>
 </head>
-<body class="web-to-lead <?php echo $form->form_key; ?>"<?php if(is_rtl(true)){ echo ' dir="rtl"';} ?>>
-  <div class="container-fluid">
-    <div class="row">
-      <div class="<?php if($this->input->get('col')){echo $this->input->get('col');} else {echo 'col-md-12';} ?>">
-        <div id="response"></div>
-        <?php echo form_open_multipart($this->uri->uri_string(),array('id'=>$form->form_key,'class'=>'disable-on-submit')); ?>
-        <?php hooks()->do_action('web_to_lead_form_start'); ?>
-        <?php echo form_hidden('key',$form->form_key); ?>
-        <div class="row">
-          <?php foreach($form_fields as $field){
-           render_form_builder_field($field);
-         } ?>
-         <?php if(show_recaptcha() && $form->recaptcha == 1){ ?>
+<body class="web-to-lead <?php echo $form->form_key . ($this->input->get('styled') === '1' ? ' styled' : ''); ?>"<?php if (is_rtl(true)) {
+  echo ' dir="rtl"';
+} ?>>
+<div class="container-fluid">
+  <div class="row">
+    <div class="<?php if($this->input->get('col')){echo $this->input->get('col');} else {echo $this->input->get('styled') === '1' ? 'col-md-6 col-md-offset-3' : 'col-md-12';} ?> form-col">
+      <?php if($this->input->get('with_logo')) { ?>
+        <div class="text-center mbot10 logo">
+          <?php get_dark_company_logo(); ?>
+        </div>
+      <?php } ?>
+      <div id="response"></div>
+      <?php echo form_open_multipart($this->uri->uri_string(),array('id'=>$form->form_key,'class'=>'disable-on-submit')); ?>
+      <?php hooks()->do_action('web_to_lead_form_start'); ?>
+      <?php echo form_hidden('key',$form->form_key); ?>
+      <div class="row">
+        <?php foreach($form_fields as $field){
+         render_form_builder_field($field);
+       } ?>
+       <?php if(show_recaptcha() && $form->recaptcha == 1){ ?>
          <div class="col-md-12">
            <div class="form-group"><div class="g-recaptcha" data-sitekey="<?php echo get_option('recaptcha_site_key'); ?>"></div>
            <div id="recaptcha_response_field" class="text-danger"></div>
          </div>
-         <?php } ?>
-         <?php if (is_gdpr() && get_option('gdpr_enable_terms_and_conditions_lead_form') == 1) { ?>
+       <?php } ?>
+       <?php if (is_gdpr() && get_option('gdpr_enable_terms_and_conditions_lead_form') == 1) { ?>
          <div class="col-md-12">
           <div class="checkbox chk">
             <input type="checkbox" name="accept_terms_and_conditions" required="true" id="accept_terms_and_conditions" <?php echo set_checkbox('accept_terms_and_conditions', 'on'); ?>>
@@ -36,17 +43,17 @@
             </label>
           </div>
         </div>
-        <?php } ?>
-         <div class="clearfix"></div>
-         <div class="text-left col-md-12 submit-btn-wrapper">
-          <button class="btn btn-success" id="form_submit" type="submit"><?php echo $form->submit_btn_name; ?></button>
-        </div>
+      <?php } ?>
+      <div class="clearfix"></div>
+      <div class="text-left col-md-12 submit-btn-wrapper">
+        <button class="btn btn-success" id="form_submit" type="submit"><?php echo $form->submit_btn_name; ?></button>
       </div>
-
-      <?php hooks()->do_action('web_to_lead_form_end'); ?>
-      <?php echo form_close(); ?>
     </div>
+
+    <?php hooks()->do_action('web_to_lead_form_end'); ?>
+    <?php echo form_close(); ?>
   </div>
+</div>
 </div>
 <?php app_external_form_footer($form); ?>
 <script>
@@ -57,10 +64,10 @@
     onSubmit: function(form) {
 
      $("input[type=file]").each(function() {
-          if($(this).val() === "") {
-              $(this).prop('disabled', true);
-          }
-      });
+      if($(this).val() === "") {
+        $(this).prop('disabled', true);
+      }
+    });
 
      var formURL = $(form).attr("action");
      var formData = new FormData($(form)[0]);
@@ -75,12 +82,12 @@
        url: formURL
      }).always(function(){
       $('#form_submit').prop('disabled', false);
-     }).done(function(response){
+    }).done(function(response){
       response = JSON.parse(response);
                  // In case action hook is used to redirect
                  if (response.redirect_url) {
-                     window.top.location.href = response.redirect_url;
-                     return;
+                   window.top.location.href = response.redirect_url;
+                   return;
                  }
                  if (response.success == false) {
                      $('#recaptcha_response_field').html(response.message); // error message
@@ -97,15 +104,15 @@
                      grecaptcha.reset();
                    }
                  }).fail(function(data){
-                 if (typeof(grecaptcha) != 'undefined') {
-                   grecaptcha.reset();
-                 }
-                 if(data.status == 422) {
+                   if (typeof(grecaptcha) != 'undefined') {
+                     grecaptcha.reset();
+                   }
+                   if(data.status == 422) {
                     $('#response').html('<div class="alert alert-danger">Some fields that are required are not filled properly.</div>');
-                 } else {
+                  } else {
                     $('#response').html(data.responseText);
-                 }
-               });
+                  }
+                });
                  return false;
                }
              });

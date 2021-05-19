@@ -24,11 +24,11 @@ class Expenses extends AdminController
         }
 
         $this->load->model('payment_modes_model');
-        $data['payment_modes']  = $this->payment_modes_model->get('', [], true);
-        $data['expenseid']      = $id;
-        $data['categories']     = $this->expenses_model->get_category();
-        $data['years']          = $this->expenses_model->get_expenses_years();
-        $data['title']          = _l('expenses');
+        $data['payment_modes'] = $this->payment_modes_model->get('', [], true);
+        $data['expenseid']     = $id;
+        $data['categories']    = $this->expenses_model->get_category();
+        $data['years']         = $this->expenses_model->get_expenses_years();
+        $data['title']         = _l('expenses');
 
         $this->load->view('admin/expenses/manage', $data);
     }
@@ -118,6 +118,53 @@ class Expenses extends AdminController
         $data['currencies'] = $this->currencies_model->get();
         $data['title']      = $title;
         $this->load->view('admin/expenses/expense', $data);
+    }
+
+    public function bulk_action()
+    {
+        hooks()->do_action('before_do_bulk_action_for_expenses');
+        $total_deleted = 0;
+        $total_updated = 0;
+
+        if ($this->input->post()) {
+            $ids         = $this->input->post('ids');
+            $amount      = $this->input->post('amount');
+            $date        = $this->input->post('date');
+            $category    = $this->input->post('category');
+            $paymentmode = $this->input->post('paymentmode');
+
+            if (is_array($ids)) {
+                foreach ($ids as $id) {
+                    if ($this->input->post('mass_delete')) {
+                        if (staff_can('delete', 'expenses')) {
+                            if ($this->expenses_model->delete($id)) {
+                                $total_deleted++;
+                            }
+                        }
+                    } else {
+                        if (staff_can('edit', 'expenses')) {
+                            $this->db->where('id', $id);
+                            $this->db->update('expenses', array_filter([
+                                'paymentmode' => $paymentmode ?: null,
+                                'category'    => $category ?: null,
+                                'date'        => $date ? to_sql_date($date) : null,
+                                'amount'      => $amount ?: null,
+                            ]));
+
+                            if ($this->db->affected_rows() > 0) {
+                                $total_updated++;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if ($total_updated > 0) {
+                set_alert('success', _l('updated_successfully', _l('expenses')));
+            } elseif ($this->input->post('mass_delete')) {
+                set_alert('success', _l('total_expenses_deleted', $total_deleted));
+            }
+        }
     }
 
     public function get_expenses_total()

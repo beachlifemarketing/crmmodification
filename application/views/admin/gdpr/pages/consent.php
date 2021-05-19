@@ -20,7 +20,7 @@
 <h4 class="mbot30 mtop7 pull-left">Purposes of consent</h4>
 
 <div class="clearfix"></div>
-<table class="table dt-table scroll-responsive" data-order-type="desc" data-order-col="1">
+<table class="table dt-table" data-order-type="desc" data-order-col="1">
     <thead>
         <tr>
             <th>Name</th>
