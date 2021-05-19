@@ -33,6 +33,29 @@
     </div>
 </div>
 
+<div class="modal fade" id="create_new_confirm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Do you want redirect to create form?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="text-center">Existing estimates are not automatically saved.<br/>
+                    Are you sure you want to switch to the new create form?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="id_button_exampleModal" data-dismiss="modal">Cancel
+                </button>
+                <button type="button" class="btn btn-primary" onclick="createNew()">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php init_tail(); ?>
 <script src="<?php echo base_url('modules/mestimates/assets/blm.js'); ?>"></script>
 <script src="<?php echo base_url('modules/mestimates/assets/mestimates.js'); ?>"></script>
@@ -60,10 +83,19 @@
         );
     }
 
+    function backToList() {
+        window.location.href = admin_url + 'mestimates';
+    }
+
+    function createNew() {
+        window.location.href = admin_url + 'mestimates/mestimate';
+    }
+
     function updateTemplateName() {
         var name = $('#template-name').val();
         $('#template_name').val(name);
     }
+
 
     function selectTemplate() {
         var template_id = $('select#template_id').val();

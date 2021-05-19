@@ -1,12 +1,25 @@
-<button class="btn btn-info only-save customer-form-submiter" onclick="saveMestimate()">
-    <?php
-    if (isset($mestimate_id_old) && $mestimate_id_old != 0 && $mestimate_id_old != '') {
-        echo 'Update M-Estimate';
-    } else {
-        echo 'Create M-Estimate';
-    }
+<button type="button" class="btn btn-primary" onclick="backToList()">Back To List</button>
 
-    ?> </button>
+<?php
+if (isset($mestimate_id_old) && $mestimate_id_old != 0 && $mestimate_id_old != '') {
+    ?>
+    <button class="btn btn-info only-save customer-form-submiter" onclick="saveMestimate()">
+        Update M-Estimate
+    </button>
+    <button type="button" class="btn btn-warning save-and-add-contact customer-form-submiter"
+            data-toggle="modal" data-target="#create_new_confirm">
+        Create New
+    </button>
+    <?php
+} else {
+    ?>
+    <button class="btn btn-info only-save customer-form-submiter" onclick="saveMestimate()">
+        Create M-Estimate
+    </button>
+    <?php
+}
+
+?>
 
 <?php
 if (!isset($mestimate_id_old) || $mestimate_id_old == 0 || $mestimate_id_old == '') {
