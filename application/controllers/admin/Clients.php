@@ -160,6 +160,48 @@ class Clients extends AdminController
                         $contact_data['password'] = $this->input->post('password');
                     }
                     $success_contact = $this->clients_model->update_contact($contact_data, $this->input->post("contact_id"), false, true);
+                }else{
+                    $contact_data = [
+                        'is_primary' => 1,
+                        'firstname' => $this->input->post('firstname'),
+                        'lastname' => $this->input->post('lastname'),
+                        'title' => "",
+                        'email' => $this->input->post('email'),
+                        'phonenumber' => "",
+                        'direction' => "",
+                        'invoice_emails' => isset($data['invoice_emails']) ? 1 : 0,
+                        'credit_note_emails' => isset($data['credit_note_emails']) ? 1 : 0,
+                        'estimate_emails' => isset($data['estimate_emails']) ? 1 : 0,
+                        'ticket_emails' => isset($data['ticket_emails']) ? 1 : 0,
+                        'contract_emails' => isset($data['contract_emails']) ? 1 : 0,
+                        'project_emails' => isset($data['project_emails']) ? 1 : 0,
+                        'task_emails' => isset($data['task_emails']) ? 1 : 0,
+                        'custom_fields' => isset($data['custom_fields']) && is_array($data['custom_fields']) ? $data['custom_fields'] : [],
+                    ];
+
+                    if (isset($data['password'])) {
+                        $contact_data['password'] = $this->input->post('password', false);
+                    }
+                    $save_and_add_contact = false;
+                    if (isset($data['save_and_add_contact'])) {
+                        unset($data['save_and_add_contact']);
+                        $save_and_add_contact = true;
+                    }
+
+                    $contact_data['userid'] = $id;
+                    $success_contact = $this->clients_model->add_contact_via_customers_area($contact_data, $id);
+                    if ($id) {
+                        set_alert('success', _l('added_successfully', _l('client')));
+                        if ($save_and_add_contact == false) {
+                            redirect(admin_url('clients/client/' . $id));
+                        } else {
+                            if ($contactId != '') {
+                                redirect(admin_url('clients/client/' . $id . '?group=contacts'));
+                            }else{
+                                redirect(admin_url('clients/client/' . $id . '?group=contacts&new_contact=true'));
+                            }
+                        }
+                    }
                 }
                 $data_update_client = $this->input->post();
                 unset($data_update_client["contact_id"]);
@@ -190,7 +232,6 @@ class Clients extends AdminController
         } else {
             $client = $this->clients_model->get($id);
             $data['customer_tabs'] = get_customer_profile_tabs();
-
             if (!$client) {
                 show_404();
             }

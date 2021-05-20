@@ -75,7 +75,7 @@
                             <label for="show_primary_contact"><?php echo _l('show_primary_contact', _l('invoices') . ', ' . _l('estimates') . ', ' . _l('payments') . ', ' . _l('credit_notes')); ?></label>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <?php $value = (isset($client) ? $client->company : ''); ?>
                         <?php $attrs = (isset($client) ? array() : array('autofocus' => true)); ?>
                         <?php echo render_input('company', 'client_company', $value, 'text', $attrs); ?>
