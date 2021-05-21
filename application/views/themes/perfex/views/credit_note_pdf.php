@@ -86,7 +86,7 @@ if (is_sale_discount_applied($credit_note)) {
     <tr>
         <td align="right" width="85%"><strong>' . _l('credit_note_discount');
     if (is_sale_discount($credit_note, 'percent')) {
-        $tbltotal .= '(' . app_format_number($credit_note->discount_percent, true) . '%)';
+        $tbltotal .= ' (' . app_format_number($credit_note->discount_percent, true) . '%)';
     }
     $tbltotal .= '</strong>';
     $tbltotal .= '</td>';

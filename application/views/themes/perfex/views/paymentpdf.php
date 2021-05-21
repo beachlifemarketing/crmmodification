@@ -1,4 +1,6 @@
-<?php defined('BASEPATH') or exit('No direct script access allowed');
+<?php
+
+defined('BASEPATH') or exit('No direct script access allowed');
 
 $dimensions = $pdf->getPageDimensions();
 
@@ -25,20 +27,27 @@ $pdf->writeHTMLCell(0, '', '', '', $receit_heading, 0, 1, false, true, 'L', true
 $pdf->SetFontSize($font_size);
 $pdf->Ln(20);
 $pdf->Cell(0, 0, _l('payment_date') . ' ' . _d($payment->date), 0, 1, 'L', 0, '', 0);
-$pdf->Ln(2);
-$pdf->writeHTMLCell(80, '', '', '', '<hr/>', 0, 1, false, true, 'L', true);
+$pdf->Ln(3);
+$pdf->Line($pdf->getX(), $pdf->getY(), 90, $pdf->getY());
+$pdf->Ln(3);
 $payment_name = $payment->name;
+
 if (!empty($payment->paymentmethod)) {
     $payment_name .= ' - ' . $payment->paymentmethod;
 }
+
 $pdf->Cell(0, 0, _l('payment_view_mode') . ' ' . $payment_name, 0, 1, 'L', 0, '', 0);
+
 if (!empty($payment->transactionid)) {
-    $pdf->Ln(2);
-    $pdf->writeHTMLCell(80, '', '', '', '<hr/>', 0, 1, false, true, 'L', true);
+    $pdf->Ln(3);
+    $pdf->Line($pdf->getX(), $pdf->getY(), 90, $pdf->getY());
+    $pdf->Ln(3);
     $pdf->Cell(0, 0, _l('payment_transaction_id') . ': ' . $payment->transactionid, 0, 1, 'L', 0, '', 0);
 }
-$pdf->Ln(2);
-$pdf->writeHTMLCell(80, '', '', '', '<hr />', 0, 1, false, true, 'L', true);
+
+$pdf->Ln(3);
+$pdf->Line($pdf->getX(), $pdf->getY(), 90, $pdf->getY());
+$pdf->Ln(3);
 $pdf->SetFillColor(132, 197, 41);
 $pdf->SetTextColor(255);
 $pdf->SetFontSize(12);

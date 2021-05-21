@@ -99,7 +99,7 @@ if (is_sale_discount_applied($invoice)) {
     <tr>
         <td align="right" width="85%"><strong>' . _l('invoice_discount');
     if (is_sale_discount($invoice, 'percent')) {
-        $tbltotal .= '(' . app_format_number($invoice->discount_percent, true) . '%)';
+        $tbltotal .= ' (' . app_format_number($invoice->discount_percent, true) . '%)';
     }
     $tbltotal .= '</strong>';
     $tbltotal .= '</td>';

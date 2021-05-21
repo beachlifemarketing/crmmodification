@@ -5,5 +5,5 @@
    _l('reports_sales_dt_customers_total_invoices'),
    _l('reports_sales_dt_items_customers_amount'),
    _l('reports_sales_dt_items_customers_amount_with_tax'),
-   ),'customers-report scroll-responsive'); ?>
+   ),'customers-report'); ?>
 </div>

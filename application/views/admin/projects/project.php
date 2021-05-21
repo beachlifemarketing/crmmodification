@@ -184,6 +184,32 @@
                 <p class="bold"><?php echo _l('project_description'); ?></p>
                 <?php $contents = ''; if(isset($project)){$contents = $project->description;} ?>
                 <?php echo render_textarea('description','',$contents,array(),array(),'','tinymce'); ?>
+
+                <?php if (isset($estimate)) {?>
+                <hr class="hr-panel-heading" />
+                <h5 class="font-medium"><?php echo _l('estimate_items_convert_to_tasks') ?></h5>
+                <input type="hidden" name="estimate_id" value="<?php echo $estimate->id ?>">
+                <div class="row">
+                    <?php foreach($estimate->items as $item) { ?>
+                    <div class="col-md-8 border-right">
+                        <div class="checkbox mbot15">
+                            <input type="checkbox" name="items[]" value="<?php echo $item['id'] ?>" checked id="item-<?php echo $item['id'] ?>">
+                            <label for="item-<?php echo $item['id'] ?>">
+                                <h5 class="no-mbot no-mtop text-uppercase"><?php echo $item['description'] ?></h5>
+                                <span class="text-muted"><?php echo $item['long_description'] ?></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div data-toggle="tooltip" title="<?php echo _l('task_single_assignees_select_title'); ?>">
+                            <?php echo render_select('items_assignee[]',$staff,array('staffid',array('firstname','lastname')),'', get_staff_user_id(),array('data-actions-box'=>true),array(),'','clean-select',false); ?>
+                        </div>
+                    </div>
+                    <?php } ?>
+                </div>
+                <?php } ?>
+                <hr class="hr-panel-heading" />
+
                 <?php if(is_email_template_active('assigned-to-project')){ ?>
                     <div class="checkbox checkbox-primary">
                      <input type="checkbox" name="send_created_email" id="send_created_email">
@@ -203,6 +229,41 @@
                <?php echo _l('project_settings'); ?>
            </h4>
            <hr class="hr-panel-heading" />
+           <div class="form-group select-placeholder">
+                <label for="contact_notification" class="control-label">
+                    <span class="text-danger">*</span>
+                    <?php echo _l('projects_send_contact_notification'); ?>
+                </label>
+                <select name="contact_notification" id="contact_notification" class="form-control selectpicker"
+                        data-none-selected-text="<?php echo _l('dropdown_non_selected_tex'); ?>" required>
+                    <?php
+                    $options = [
+                        ['id'=> 1 , 'name' => _l('project_send_all_contacts_with_notifications_enabled')],
+                        ['id'=> 2 , 'name' => _l('project_send_specific_contacts_with_notification')],
+                        ['id'=> 0 , 'name' => _l('project_do_not_send_contacts_notifications')]
+                    ];
+                    foreach ($options as $option) { ?>
+                        <option value="<?php echo $option['id']; ?>" <?php if ((isset($project) && $project->contact_notification == $option['id'])) {
+                            echo ' selected';
+                        } ?>><?php echo $option['name']; ?></option>
+                    <?php } ?>
+                </select>
+            </div>
+            <!-- hide class -->
+            <div class="form-group select-placeholder <?php echo (isset($project) && $project->contact_notification == 2) ? '' : 'hide' ?>" id="notify_contacts_wrapper">
+                <label for="notify_contacts" class="control-label"><span class="text-danger">*</span> <?php echo _l('project_contacts_to_notify') ?></label>
+                <select name="notify_contacts[]" data-id="notify_contacts" id="notify_contacts" class="ajax-search" data-width="100%" data-live-search="true"
+                data-none-selected-text="<?php echo _l('dropdown_non_selected_tex'); ?>" multiple>
+                    <?php
+                    $notify_contact_ids = isset($project) ? unserialize($project->notify_contacts) : [];
+                    foreach ($notify_contact_ids as $contact_id) {
+                        $rel_data = get_relation_data('contact',$contact_id);
+                        $rel_val = get_relation_values($rel_data,'contact');
+                        echo '<option value="'.$rel_val['id'].'" selected>'.$rel_val['name'].'</option>';
+                    }
+                    ?>
+                </select>
+            </div>
            <?php foreach($settings as $setting){
 
             $checked = ' checked';
@@ -309,7 +370,50 @@
     <?php if(isset($project)){ ?>
         var original_project_status = '<?php echo $project->status; ?>';
     <?php } ?>
-    $(function(){
+
+        $(function(){
+
+            $contacts_select = $('#notify_contacts'),
+            $contacts_wrapper = $('#notify_contacts_wrapper'),
+            $clientSelect = $('#clientid'),
+            $contact_notification_select = $('#contact_notification');
+
+            init_ajax_search('contacts', $contacts_select, {
+                rel_id: $contacts_select.val(),
+                type: 'contacts',
+                extra: {
+                    client_id: function () {return $clientSelect.val();}
+                }
+            });
+
+            if ($clientSelect.val() == '') {
+                $contacts_select.prop('disabled', true);
+                $contacts_select.selectpicker('refresh');
+            } else {
+                $contacts_select.siblings().find('input[type="search"]').val(' ').trigger('keyup');
+            }
+
+            $clientSelect.on('changed.bs.select', function () {
+                if ($clientSelect.selectpicker('val') == '') {
+                    $contacts_select.prop('disabled', true);
+                } else {
+                    $contacts_select.siblings().find('input[type="search"]').val(' ').trigger('keyup');
+                    $contacts_select.prop('disabled', false);
+                }
+                deselect_ajax_search($contacts_select[0]);
+                $contacts_select.find('option').remove();
+                $contacts_select.selectpicker('refresh');
+            });
+
+            $contact_notification_select.on('changed.bs.select', function () {
+                if ($contact_notification_select.selectpicker('val') == 2) {
+                    $contacts_select.siblings().find('input[type="search"]').val(' ').trigger('keyup');
+                    $contacts_wrapper.removeClass('hide');
+                } else {
+                    $contacts_wrapper.addClass('hide');
+                    deselect_ajax_search($contacts_select[0]);
+                }
+            });
 
         $('select[name="billing_type"]').on('change',function(){
             var type = $(this).val();
@@ -325,7 +429,19 @@
             }
         });
 
-        appValidateForm($('form'),{name:'required',clientid:'required',start_date:'required',billing_type:'required'});
+        appValidateForm($('form'), {
+            name: 'required',
+            clientid: 'required',
+            start_date: 'required',
+            billing_type: 'required',
+            'notify_contacts[]': {
+                required: {
+                    depends: function() {
+                        return !$contacts_wrapper.hasClass('hide');
+                    }
+                }
+            },
+        });
 
         $('select[name="status"]').on('change',function(){
             var status = $(this).val();

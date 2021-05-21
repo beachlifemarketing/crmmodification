@@ -299,12 +299,19 @@ if (!function_exists('format_customer_info')) {
         $format   = get_option('customer_info_format');
         $clientId = '';
 
-
         if ($for == 'statement') {
             $clientId = $data->userid;
         } elseif ($type == 'billing') {
             $clientId = $data->clientid;
         }
+
+        $filterData = [
+            'data'         => $data,
+            'for'          => $for,
+            'type'         => $type,
+            'client_id'    => $clientId,
+            'company_link' => $companyLink,
+        ];
 
         $companyName = '';
         if ($for == 'statement') {
@@ -313,51 +320,26 @@ if (!function_exists('format_customer_info')) {
             $companyName = $data->client->company;
         }
 
-        if ($for == 'invoice' || $for == 'estimate' || $for == 'payment' || $for == 'credit_note') {
-            if (isset($data->client->show_primary_contact) && $data->client->show_primary_contact == 1) {
-                $primaryContactId = get_primary_contact_user_id($clientId);
-                if ($primaryContactId) {
-                    $companyName = get_contact_full_name($primaryContactId) . '<br />' . $companyName;
-                }
-            }
+        $acceptsPrimaryContactDisplay = ['invoice', 'estimate', 'payment', 'credit_note'];
+
+        if (in_array($for, $acceptsPrimaryContactDisplay) &&
+            isset($data->client->show_primary_contact) &&
+            $data->client->show_primary_contact == 1 &&
+            $primaryContactId = get_primary_contact_user_id($clientId)) {
+            $companyName = get_contact_full_name($primaryContactId) . '<br />' . $companyName;
         }
 
-        $street = '';
-        if ($type == 'billing') {
-            $street = $data->billing_street;
-        } elseif ($type == 'shipping') {
-            $street = $data->shipping_street;
-        }
+        $companyName = hooks()->apply_filters('customer_info_format_company_name', $companyName, $filterData);
 
-        $city = '';
-        if ($type == 'billing') {
-            $city = $data->billing_city;
-        } elseif ($type == 'shipping') {
-            $city = $data->shipping_city;
-        }
-        $state = '';
-        if ($type == 'billing') {
-            $state = $data->billing_state;
-        } elseif ($type == 'shipping') {
-            $state = $data->shipping_state;
-        }
-        $zipCode = '';
-        if ($type == 'billing') {
-            $zipCode = $data->billing_zip;
-        } elseif ($type == 'shipping') {
-            $zipCode = $data->shipping_zip;
-        }
+        $street  = in_array($type, ['billing', 'shipping']) ? $data->{$type . '_street'} : '';
+        $city    = in_array($type, ['billing', 'shipping']) ? $data->{$type . '_city'} : '';
+        $state   = in_array($type, ['billing', 'shipping']) ? $data->{$type . '_state'} : '';
+        $zipCode = in_array($type, ['billing', 'shipping']) ? $data->{$type . '_zip'} : '';
 
         $countryCode = '';
         $countryName = '';
-        $country     = null;
-        if ($type == 'billing') {
-            $country = get_country($data->billing_country);
-        } elseif ($type == 'shipping') {
-            $country = get_country($data->shipping_country);
-        }
 
-        if ($country) {
+        if ($country = in_array($type, ['billing', 'shipping']) ? get_country($data->{$type . '_country'}) : '') {
             $countryCode = $country->iso2;
             $countryName = $country->short_name;
         }
@@ -376,7 +358,9 @@ if (!function_exists('format_customer_info')) {
             $vat = $data->client->vat;
         }
 
-        if ($companyLink && (!isset($data->deleted_customer_name) || (isset($data->deleted_customer_name) && empty($data->deleted_customer_name)))) {
+        if ($companyLink && (!isset($data->deleted_customer_name) ||
+            (isset($data->deleted_customer_name) &&
+                empty($data->deleted_customer_name)))) {
             $companyName = '<a href="' . admin_url('clients/client/' . $clientId) . '" target="_blank"><b>' . $companyName . '</b></a>';
         } elseif ($companyName != '') {
             $companyName = '<b>' . $companyName . '</b>';
@@ -420,12 +404,7 @@ if (!function_exists('format_customer_info')) {
         $format = preg_replace('/\s+/', ' ', $format);
         $format = trim($format);
 
-        return hooks()->apply_filters('customer_info_text', $format, [
-            'data'         => $data,
-            'for'          => $for,
-            'type'         => $type,
-            'company_link' => $companyLink,
-        ]);
+        return hooks()->apply_filters('customer_info_text', $format, $filterData);
     }
 }
 
@@ -442,9 +421,8 @@ if (!function_exists('format_proposal_info')) {
 
         $countryCode = '';
         $countryName = '';
-        $country     = get_country($proposal->country);
 
-        if ($country) {
+        if ($country = get_country($proposal->country)) {
             $countryCode = $country->iso2;
             $countryName = $country->short_name;
         }

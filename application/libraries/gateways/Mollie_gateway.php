@@ -3,6 +3,7 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 
 use Omnipay\Omnipay;
+use Money\Exception\UnknownCurrencyException;
 
 class Mollie_gateway extends App_gateway
 {
@@ -45,7 +46,6 @@ class Mollie_gateway extends App_gateway
                 'name'          => 'currencies',
                 'label'         => 'currency',
                 'default_value' => 'EUR',
-                'field_attributes'=>['disabled'=>true],
             ],
             [
                 'name'          => 'test_mode_enabled',
@@ -56,51 +56,72 @@ class Mollie_gateway extends App_gateway
         ]);
     }
 
+    /**
+     * Process the payment
+     *
+     * @param  array $data
+     *
+     * @return mixed
+     */
     public function process_payment($data)
     {
         $gateway = Omnipay::create('Mollie');
         $gateway->setApiKey($this->decryptSetting('api_key'));
 
-        $webhookKey = app_generate_hash();
+        $webhookKey    = app_generate_hash();
         $invoiceNumber = format_invoice_number($data['invoice']->id);
-        $description = str_replace('{invoice_number}', $invoiceNumber, $this->getSetting('description_dashboard'));
-        $returnUrl = site_url('gateways/mollie/verify_payment?invoiceid=' . $data['invoice']->id . '&hash=' . $data['invoice']->hash);
-        $webhookUrl = site_url('gateways/mollie/webhook/'.$webhookKey);
+        $description   = str_replace('{invoice_number}', $invoiceNumber, $this->getSetting('description_dashboard'));
+        $returnUrl     = site_url('gateways/mollie/verify_payment?invoiceid=' . $data['invoice']->id . '&hash=' . $data['invoice']->hash);
+        $webhookUrl    = site_url('gateways/mollie/webhook/' . $webhookKey);
+        $invoiceUrl    = site_url('invoice/' . $data['invoice']->id . '/' . $data['invoice']->hash);
 
-        $oResponse = $gateway->purchase([
+        try {
+            $oResponse = $gateway->purchase([
             'amount'      => number_format($data['amount'], 2, '.', ''),
+            'currency'    => $data['invoice']->currency_name,
             'description' => $description,
             'returnUrl'   => $returnUrl,
             'notifyUrl'   => $webhookUrl,
             'metadata'    => [
-                'order_id' => $data['invoice']->id,
-                'webhookKey'=>$webhookKey,
+                'order_id'   => $data['invoice']->id,
+                'webhookKey' => $webhookKey,
             ],
         ])->send();
+        } catch (UnknownCurrencyException $e) {
+            set_alert('danger', 'Invalid currency, ' . $e->getMessage());
+            redirect($invoiceUrl);
+        }
 
         // Add the token to database
         $this->ci->db->where('id', $data['invoiceid']);
-        $this->ci->db->update(db_prefix().'invoices', [
+        $this->ci->db->update(db_prefix() . 'invoices', [
             'token' => $oResponse->getTransactionReference(),
         ]);
 
         if ($oResponse->isRedirect()) {
             $oResponse->redirect();
-            exit;
         } elseif ($oResponse->isPending()) {
             echo 'Pending, Reference: ' . $oResponse->getTransactionReference();
         } else {
-            echo '<p class="text-danger">Error ' . $oResponse->getCode() . ': ' . $oResponse->getMessage() . '</p>';
+            set_alert('danger', $oResponse->getData()['detail']);
+            redirect($invoiceUrl);
         }
     }
 
-    public function fetch_payment($data)
+    /**
+     * Retrieve payment from Mollie
+     *
+     * @param  string $transactionId
+     *
+     * @return mixed
+     */
+    public function fetch_payment($transactionId)
     {
         $gateway = Omnipay::create('Mollie');
         $gateway->setApiKey($this->decryptSetting('api_key'));
 
         return $gateway->fetchTransaction([
-            'transactionReference' => $data['transaction_id'],
+            'transactionReference' => $transactionId,
         ])->send();
     }
 }

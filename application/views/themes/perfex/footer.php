@@ -1,6 +1,5 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
-<div class="pusher"></div>
-<footer class="navbar-fixed-bottom footer">
+<footer class="footer">
 	<div class="container">
 		<div class="row">
 			<div class="col-md-12 text-center">

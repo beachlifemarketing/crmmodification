@@ -62,7 +62,7 @@ foreach($purposes as $purpose) { ?>
 <hr />
 <div class="col-md-12">
     <h4>History</h4>
-    <table class="table dt-table scroll-responsive" data-order-type="asc" data-order-col="2" id="consentHistoryTable">
+    <table class="table dt-table" data-order-type="asc" data-order-col="2" id="consentHistoryTable">
         <thead>
             <tr>
                 <th>Purpose</th>

@@ -5,42 +5,47 @@
         <?php $this->load->view('mestimates/includes/mestimate_data'); ?>
     </div>
 </div>
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Save as template?</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="form-group">
-                        <label for="template-name" class="col-form-label">Template name:</label>
-                        <input type="text" class="form-control" id="template-name" onkeyup="updateTemplateName()"
-                               onchange="updateTemplateName()">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="id_button_exampleModal" data-dismiss="modal">Close
-                </button>
-                <button type="button" class="btn btn-primary" onclick="saveTemplateMestimate()">Save</button>
-            </div>
-        </div>
-    </div>
-</div>
-
+<?php $this->load->view('mestimates/includes/modals') ?>
 <?php init_tail(); ?>
-
+<script src="<?php echo base_url('modules/mestimates/assets/blm.js'); ?>"></script>
 <script src="<?php echo base_url('modules/mestimates/assets/mestimates.js'); ?>"></script>
 <script type="text/javascript">
+    function delTemplate() {
+        var template_id = $('select#template_id').val();
+        $("#hid_mestimate_id").val(template_id);
+        $("#mestimate_id").val(template_id);
+        $('input[name="mestimate_id"]').val(template_id);
+        var url = admin_url + 'mestimates/delete_template?rtype=json&url=mestimate';
+        simpleAjaxPostUpload(
+            url,
+            '#id_content_mestimate',
+            function (res) {
+                $('#template_list').html(res.html_template);
+                $('#div_button_save').html(res.html_button);
+                alert_float('success', res.errorMessage);
+            },
+            function (res) {
+                alert_float('danger', res.errorMessage);
+            },
+            function (res) {
+                alert_float('danger', res.errorMessage);
+            }
+        );
+    }
+
+    function backToList() {
+        window.location.href = admin_url + 'mestimates';
+    }
+
+    function createNew() {
+        window.location.href = admin_url + 'mestimates/mestimate';
+    }
+
     function updateTemplateName() {
         var name = $('#template-name').val();
         $('#template_name').val(name);
     }
+
 
     function selectTemplate() {
         var template_id = $('select#template_id').val();
@@ -48,7 +53,6 @@
         $("#mestimate_id").val(template_id);
         $('input[name="mestimate_id"]').val(template_id);
         var url = admin_url + 'mestimates/mestimate?rtype=json&change=template';
-
         simpleAjaxPostUpload(
             url,
             '#id_content_mestimate',
@@ -94,6 +98,9 @@
         simpleAjaxPostUpload(
             url, '#id_content_mestimate',
             function (res) {
+                if (typeof res.url_redirect != 'undefined' && res.url_redirect != null) {
+                    window.location.href = res.url_redirect;
+                }
                 alert_float('success', res.errorMessage);
             },
             function (res) {
@@ -111,8 +118,8 @@
         simpleAjaxPostUpload(
             url, '#id_content_mestimate',
             function (res) {
-                $('#div_address').html(res.view_address);
-                $('#row_file_mestimates').html(res.view_file);
+                $('#template_list').html(res.html_template);
+                $('#div_button_save').html(res.html_button);
                 alert_float('success', res.errorMessage);
             },
             function (res) {
@@ -129,10 +136,30 @@
         var discount = $('#discount').val();
         var paid_by_customer_percent = $('#paid_by_customer_percent').val();
         $('input[name="detail[amount][]"]').each(function () {
-            var qty = $(this).closest('tr').children('td:eq(3)').children('input').val();
-            var unix = $(this).closest('tr').children('td:eq(4)').children('input').val();
-            var duration = $(this).closest('tr').children('td:eq(5)').children('input').val();
-            var amount = qty * unix * duration;
+            var qty_input = $(this).closest('tr').children('td:eq(3)').children('input').val();
+            var qty_array = qty_input.split(" ");
+            var qty = qty_array[0];
+            parseFloat(qty).toFixed(2);
+
+            var unix_input = $(this).closest('tr').children('td:eq(4)').children('input').val();
+            var unix_input = unix_input.split(" ");
+            var unix = parseFloat(unix_input[0]).toFixed(2);
+
+            var duration_input = $(this).closest('tr').children('td:eq(5)').children('input').val();
+            var duration_array = duration_input.split(" ");
+            var duration = duration_array[0];
+
+            var amount = 1;
+            if (typeof qty == 'undefined' || qty == null || qty == '' || $.isNumeric(qty) == false) {
+                amount = unix * duration;
+            } else if (typeof unix == 'undefined' || unix == null || unix == '' || $.isNumeric(unix) == false) {
+                amount = qty * duration;
+            } else if (typeof duration == 'undefined' || duration == null || duration == '' || $.isNumeric(duration) == false) {
+                amount = qty * unix;
+            } else {
+                amount = qty * unix * duration;
+            }
+
             $(this).val(amount);
             sub_total += amount;
         });

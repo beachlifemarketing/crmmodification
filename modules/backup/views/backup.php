@@ -23,7 +23,7 @@
 							<?php echo _l('utility_db_backup_note'); ?>
 						</p>
 
-						<table class="table dt-table scroll-responsive" data-order-col="2" data-order-type="desc">
+						<table class="table dt-table" data-order-col="2" data-order-type="desc">
 							<thead>
 								<th><?php echo _l('utility_backup_table_backupname'); ?></th>
 								<th><?php echo _l('utility_backup_table_backupsize'); ?></th>
@@ -71,6 +71,9 @@
 			</div>
 			<div class="modal-body">
 				<?php echo render_yes_no_option('auto_backup_enabled','auto_backup_enabled'); ?>
+				<div data-toggle="tooltip" title="<?php echo _l('hour_of_day_perform_auto_operations_format'); ?>">
+					<?php echo render_input('auto_backup_hour','auto_backup_hour',get_option('auto_backup_hour'),'number'); ?>
+				</div>
 				<?php echo render_input('auto_backup_every','auto_backup_every',get_option('auto_backup_every'),'number'); ?>
 				<?php echo render_input('delete_backups_older_then','delete_backups_older_then',get_option('delete_backups_older_then'),'number'); ?>
 			</div>

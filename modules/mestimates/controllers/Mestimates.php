@@ -46,6 +46,32 @@ class Mestimates extends AdminController
         $this->load->view('manage', $data);
     }
 
+    /* List all announcements */
+    public function template()
+    {
+        if (!has_permission('mestimates', '', 'view')) {
+            access_denied('mestimates');
+        }
+        if ($this->input->is_ajax_request()) {
+            $this->app->get_table_data(module_views_path('mestimates', 'table_template'));
+        }
+        $this->app_scripts->add('circle-progress-js', 'assets/plugins/jquery-circle-progress/circle-progress.min.js');
+        $data['title'] = _l('mestimates_template');
+        $this->load->view('manage_template', $data);
+    }
+
+
+    public function tmp($id = 0)
+    {
+        if (!has_permission('mestimates', '', 'view')) {
+            access_denied('mestimates');
+        }
+        if (($id == null || $id == 0)) {
+            access_denied('mestimates');
+        }
+        $data['tpl'] = $id;
+        $this->load->view('mestimate', $data);
+    }
 
     public function mestimate($id = 0)
     {
@@ -57,6 +83,11 @@ class Mestimates extends AdminController
         if (($id != null && $id > 0)) {
             $this->mestimate_id = $id;
             $this->mestimate_id_old = $id;
+            $title = _l('edit', _l('mestimate_lowercase'));
+            $data['is_edit'] = true;
+        } else {
+            $title = _l('add_new', _l('mestimate_lowercase'));
+            $data['is_edit'] = false;
         }
 
         $contactId = null;
@@ -95,11 +126,7 @@ class Mestimates extends AdminController
         $data['mestimate_id'] = $this->mestimate_id;
         $data['mestimate_id_old'] = $this->mestimate_id_old;
 
-
-        if (isset($this->mestimate_id_old) && $this->mestimate_id_old > 0) {
-            $title = _l('add_new', _l('mestimate_lowercase'));
-            $data['is_edit'] = false;
-        } else {
+        if (isset($mestimate_id_old) && $mestimate_id_old != 0 && $mestimate_id_old != '') {
             $title = _l('edit', _l('mestimate_lowercase'));
             $data['is_edit'] = true;
         }
@@ -113,13 +140,13 @@ class Mestimates extends AdminController
         $data['rtype'] = isset($_REQUEST['rtype']) ? $_REQUEST['rtype'] : '';
         if (isset($_REQUEST['rtype']) && $_REQUEST['rtype'] === 'json') {
             $data['errorCode'] = 'SUCCESS';
-            $data['errorMessage'] = _l('load_info_client_success');
             if (isset($_REQUEST['change']) && $_REQUEST['change'] == 'template') {
                 $data['data_template'] = $this->load->view('mestimates/includes/mestimate_data', $data, true);
                 $data['errorMessage'] = _l('load_template_success');
             } else {
                 $data['view_address'] = $this->load->view('mestimates/includes/info_company', $data, true);
                 $data['view_file'] = $this->load->view('mestimates/includes/mestimate_files', $data, true);
+                $data['errorMessage'] = _l('load_info_client_success');
             }
             echo json_encode($data);
         } else {
@@ -151,7 +178,12 @@ class Mestimates extends AdminController
                         $this->update_mestimate_file($this->input->post('image_ids'), $mestimate_id);
                     }
                     $data['errorCode'] = 'SUCCESS';
+                    $data['mestimate_id'] = $mestimate_id;
                     $data['errorMessage'] = _l('added_successfully', _l('mestimate'));
+                    $data['url_redirect'] = admin_url('mestimates/mestimate/' . $mestimate_id);
+                    set_alert('success', 'Load M-Estimate #' . $mestimate_id . ' to update');
+                    echo json_encode($data);
+                    die();
                 } else {
                     if (!has_permission('mestimates', '', 'edit')) {
                         access_denied('mestimates');
@@ -171,7 +203,15 @@ class Mestimates extends AdminController
                     $data['errorMessage'] = _l('updated_successfully', _l('mestimate'));
                 }
                 if ($sat === 'template') {
+                    if (isset($_REQUEST['rtype']) && $_REQUEST['rtype'] == 'json') {
+                        $data['rtype'] = 'json';
+                    }
                     $data['errorMessage'] = _l('create_template_success', _l('mestimate'));
+                    $data['templates'] = $this->mestimates_model->get_all_template();
+                    $data["mestimate_id"] = $mestimate_id;
+                    $data["mestimate_id_old"] = $this->mestimate_id_old;
+                    $data['html_template'] = $this->load->view('mestimates/includes/_template_list.php', $data, true);
+                    $data['html_button'] = $this->load->view('mestimates/includes/_save_button.php', $data, true);
                 }
                 echo json_encode($data);
             }
@@ -200,6 +240,39 @@ class Mestimates extends AdminController
         redirect(admin_url('mestimates'));
     }
 
+    /* Delete announcement from database */
+    public function delete_template($id = null)
+    {
+        if (!has_permission('mestimates', '', 'delete')) {
+            access_denied('mestimates');
+        }
+        if (!isset($id) || $id == '' || $id == 0) {
+            if (isset($_REQUEST['url']) && $_REQUEST['url'] == 'mestimate' && isset($_REQUEST['mestimate_id'])) {
+                if ($_REQUEST['rtype'] && $_REQUEST['rtype'] == 'json') {
+                    $response = $this->mestimates_model->delete($_REQUEST['mestimate_id']);
+                    $data['rtype'] = 'json';
+                    $data['errorCode'] = 'SUCCESS';
+                    $data['errorMessage'] = _l('delete_template_success');
+                    $data['templates'] = $this->mestimates_model->get_all_template();
+                    $data["mestimate_id"] = (isset($_REQUEST['mestimate_id']) ? $_REQUEST['mestimate_id'] : '');
+                    $data["mestimate_id_old"] = (isset($_REQUEST['mestimate_id_old']) ? $_REQUEST['mestimate_id_old'] : '');
+                    $data['html_template'] = $this->load->view('mestimates/includes/_template_list.php', $data, true);
+                    $data["mestimate_id"] = '';
+                    $data['html_button'] = $this->load->view('mestimates/includes/_save_button.php', $data, true);
+                    echo json_encode($data);
+                }
+            }
+        } else {
+            $response = $this->mestimates_model->delete($id);
+            if ($response == true) {
+                set_alert('success', _l('deleted', _l('template_mestimate_lowercase')));
+            } else {
+                set_alert('warning', _l('problem_deleting', _l('template_mestimate_lowercase')));
+            }
+            redirect(admin_url('mestimates/template'));
+        }
+    }
+
     function build_base_mestimate($data, $client_id, $mestimate_id = 0, $sat = 'active')
     {
         $dataupdate = [];
@@ -220,6 +293,9 @@ class Mestimates extends AdminController
         $dataupdate['balance_due_val'] = $data['balance_due_val'];
         $dataupdate['balance_due_text'] = $data['balance_due_text'];
         $dataupdate['balance_due'] = $data['balance_due'];
+        $dataupdate['term_and_condition'] = $data['term_and_condition'];
+        $dataupdate['client_note'] = $data['client_note'];
+
         $dataupdate['paid_by_customer_percent'] = $data['paid_by_customer_percent'];
         $dataupdate['total'] = $data['total'];
         $dataupdate['discount_val'] = $data['discount_val'];

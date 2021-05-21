@@ -30,11 +30,11 @@ foreach ($rResult as $aRow) {
 
     $nameRow = $aRow['name'];
 
-    if (has_permission('projects', '', 'edit')) {
+    if (staff_can('edit_milestones', 'projects')) {
         $nameRow = '<a href="#" onclick="edit_milestone(this,' . $aRow['id'] . '); return false" data-name="' . $aRow['name'] . '" data-due_date="' . _d($aRow['due_date']) . '" data-order="' . $aRow['milestone_order'] . '" data-description="' . htmlspecialchars(clear_textarea_breaks($aRow['description'])) . '" data-description-visible-to-customer="' . $aRow['description_visible_to_customer'] . '">' . $nameRow . '</a>';
     }
 
-    if (has_permission('projects', '', 'delete')) {
+    if (staff_can('delete_milestones', 'projects')) {
         $nameRow .= '<div class="row-options">';
         $nameRow .= '<a href="' . admin_url('projects/delete_milestone/' . $project_id . '/' . $aRow['id']) . '" class="text-danger _delete">' . _l('delete') . '</a>';
         $nameRow .= '</div>';

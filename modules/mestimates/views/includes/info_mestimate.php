@@ -87,7 +87,6 @@
                        value="<?= (isset($mestimate) ? $mestimate->title : ''); ?>">
             </div>
         </div>
-
     </div>
 </div>
 <?php
@@ -96,6 +95,7 @@ if (isset($rtype) && $rtype === 'json') {
     <script type="text/javascript">
         init_datepicker();
         init_selectpicker();
+        init_tags_inputs();
     </script>
     <?php
 }

@@ -43,6 +43,6 @@
    $(function(){
      init_selectpicker();
      init_datepicker();
-     appValidateForm($('#credit_note_refund_form'),{amount:'required',refunded_on:'required'});
+     appValidateForm($('#credit_note_refund_form'),{amount:'required',refunded_on:'required', payment_mode: 'required'});
  });
 </script>
