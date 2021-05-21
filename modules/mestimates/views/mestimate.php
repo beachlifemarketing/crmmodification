@@ -5,57 +5,7 @@
         <?php $this->load->view('mestimates/includes/mestimate_data'); ?>
     </div>
 </div>
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Save as template?</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="form-group">
-                        <label for="template-name" class="col-form-label">Template name:</label>
-                        <input type="text" class="form-control" id="template-name" onkeyup="updateTemplateName()"
-                               onchange="updateTemplateName()">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="id_button_exampleModal" data-dismiss="modal">Close
-                </button>
-                <button type="button" class="btn btn-primary" onclick="saveTemplateMestimate()">Save</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="create_new_confirm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Do you want redirect to create form?</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p class="text-center">Existing estimates are not automatically saved.<br/>
-                    Are you sure you want to switch to the new create form?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" id="id_button_exampleModal" data-dismiss="modal">Cancel
-                </button>
-                <button type="button" class="btn btn-primary" onclick="createNew()">OK</button>
-            </div>
-        </div>
-    </div>
-</div>
-
+<?php $this->load->view('mestimates/includes/modals') ?>
 <?php init_tail(); ?>
 <script src="<?php echo base_url('modules/mestimates/assets/blm.js'); ?>"></script>
 <script src="<?php echo base_url('modules/mestimates/assets/mestimates.js'); ?>"></script>
@@ -186,10 +136,30 @@
         var discount = $('#discount').val();
         var paid_by_customer_percent = $('#paid_by_customer_percent').val();
         $('input[name="detail[amount][]"]').each(function () {
-            var qty = $(this).closest('tr').children('td:eq(3)').children('input').val();
-            var unix = $(this).closest('tr').children('td:eq(4)').children('input').val();
-            var duration = $(this).closest('tr').children('td:eq(5)').children('input').val();
-            var amount = qty * unix * duration;
+            var qty_input = $(this).closest('tr').children('td:eq(3)').children('input').val();
+            var qty_array = qty_input.split(" ");
+            var qty = qty_array[0];
+            parseFloat(qty).toFixed(2);
+
+            var unix_input = $(this).closest('tr').children('td:eq(4)').children('input').val();
+            var unix_input = unix_input.split(" ");
+            var unix = parseFloat(unix_input[0]).toFixed(2);
+
+            var duration_input = $(this).closest('tr').children('td:eq(5)').children('input').val();
+            var duration_array = duration_input.split(" ");
+            var duration = duration_array[0];
+
+            var amount = 1;
+            if (typeof qty == 'undefined' || qty == null || qty == '' || $.isNumeric(qty) == false) {
+                amount = unix * duration;
+            } else if (typeof unix == 'undefined' || unix == null || unix == '' || $.isNumeric(unix) == false) {
+                amount = qty * duration;
+            } else if (typeof duration == 'undefined' || duration == null || duration == '' || $.isNumeric(duration) == false) {
+                amount = qty * unix;
+            } else {
+                amount = qty * unix * duration;
+            }
+
             $(this).val(amount);
             sub_total += amount;
         });
