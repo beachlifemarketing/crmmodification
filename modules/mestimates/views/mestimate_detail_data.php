@@ -101,31 +101,6 @@
                     ?>
                 </ul>
             </div>
-            <?php if ($mestimate->invoiceid == NULL) { ?>
-                <?php if (has_permission('invoices', '', 'create') && !empty($mestimate->clientid)) { ?>
-                    <div class="btn-group pull-right mleft5">
-                        <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false">
-                            <?php echo _l('mestimate_convert_to_invoice'); ?> <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="<?php echo admin_url('mestimates/convert_to_invoice/' . $mestimate->id . '?save_as_draft=true'); ?>"><?php echo _l('convert_and_save_as_draft'); ?></a>
-                            </li>
-                            <li class="divider">
-                            <li>
-                                <a href="<?php echo admin_url('mestimates/convert_to_invoice/' . $mestimate->id); ?>"><?php echo _l('convert'); ?></a>
-                            </li>
-                            </li>
-                        </ul>
-                    </div>
-                <?php } ?>
-            <?php } else { ?>
-                <a href="<?php echo admin_url('invoices/list_invoices/' . $mestimate->invoice->id); ?>"
-                   data-placement="bottom" data-toggle="tooltip"
-                   title="<?php echo _l('mestimate_invoiced_date', _dt($mestimate->invoiced_date)); ?>"
-                   class="btn mleft10 btn-info"><?php echo format_invoice_number($mestimate->invoice->id); ?></a>
-            <?php } ?>
         </div>
     </div>
 </div>
@@ -177,7 +152,7 @@
                         ?>
                         <a href="<?php echo admin_url('mestimates/mestimate/' . $mestimate->id); ?>">
                            <span id="mestimate-number">
-                           <?php echo format_mestimate_number($mestimate->id); ?>
+                           <?php echo $mestimate->id; ?>
                            </span>
                         </a>
                     </h4>
@@ -271,11 +246,6 @@
                                 </td>
                             </tr>
                         <?php } ?>
-                        <?php
-                        foreach ($items->taxes() as $tax) {
-                            echo '<tr class="tax-area"><td class="bold">' . $tax['taxname'] . ' (' . app_format_number($tax['taxrate']) . '%)</td><td>' . app_format_money($tax['total_tax'], $mestimate->currency_name) . '</td></tr>';
-                        }
-                        ?>
                         <?php if ((int)$mestimate->adjustment != 0) { ?>
                             <tr>
                                 <td>

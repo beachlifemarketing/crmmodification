@@ -241,11 +241,17 @@ class Mestimates extends AdminController
     }
 
 
-    public function show_detail($id)
+    public function show_detail($id = null)
     {
         if (!has_permission('mestimates', '', 'view') && !has_permission('mestimates', '', 'view_own') && get_option('allow_staff_view_mestimates_assigned') == '0') {
             echo _l('access_denied');
             die;
+        }
+
+        if ($_REQUEST['mestimate_id_view']) {
+            if (!$id) {
+                $id = $_REQUEST['mestimate_id_view'];
+            }
         }
 
         if (!$id) {
@@ -253,18 +259,8 @@ class Mestimates extends AdminController
         }
 
         $mestimate = $this->mestimates_model->get($id);
-
-        if (!$mestimate || !user_can_view_mestimate($id)) {
-            echo _l('mestimate_not_found');
-            die;
-        }
-
         $mestimate->date = _d($mestimate->date);
         $mestimate->due_date = _d($mestimate->due_date);
-        if ($mestimate->invoiceid !== null) {
-            $this->load->model('invoices_model');
-            $mestimate->invoice = $this->invoices_model->get($mestimate->invoiceid);
-        }
 
         if ($mestimate->sent == 0) {
             $template_name = 'mestimate_send_to_customer';
@@ -272,21 +268,12 @@ class Mestimates extends AdminController
             $template_name = 'mestimate_send_to_customer_already_sent';
         }
 
-        $data = prepare_mail_preview_data($template_name, $mestimate->clientid);
-
         //$data['activity'] = $this->mestimates_model->get_estimate_activity($id);
         $data['mestimate'] = $mestimate;
         $data['members'] = $this->staff_model->get('', ['active' => 1]);
-        $data['mestimate_statuses'] = $this->mestimates_model->get_statuses();
-
-        $data['send_later'] = false;
-        if ($this->session->has_userdata('send_later')) {
-            $data['send_later'] = true;
-            $this->session->unset_userdata('send_later');
-        }
 
         $data['errorCode'] = 'SUCCESS';
-        $data['html_detail'] = $this->load->view('mestimates/includes/mestimate_detail_data', $data, true);
+        $data['html_detail'] = $this->load->view('mestimates/mestimate_detail_data', $data, true);
         $data['errorMessage'] = _l('load_template_success');
         echo json_encode($data);
     }

@@ -3,7 +3,7 @@
 <div id="wrapper">
     <div class="content">
         <div class="row">
-            <div class="col-md-6" id="manage_table_id">
+            <div id="manage_table_id" style="width: 100%">
                 <div class="panel_s">
                     <div class="panel-body">
                         <?php if (has_permission('mestimates', '', 'create')) { ?>
@@ -27,7 +27,7 @@
                 </div>
             </div>
 
-            <div class="col-md-6">
+            <div id="div_mestimate_detail_id" style="display: none">
                 <div class="panel_s">
                     <div class="panel-body" id="mestimate_detail_id">
                         <?php /*$this->load->view('mestimates/mestimate_detail_data') */ ?>
@@ -55,7 +55,29 @@ echo form_close();
         })
     });
 
+
     function showDetailMestimate(id) {
+        var contentToggle = 0;
+        if (contentToggle == 0) {
+            $('#manage_table_id').animate({
+                width: '50%'
+            });
+            $("#div_mestimate_detail_id").slideDown("slow");
+            $('#div_mestimate_detail_id').animate({
+                width: '50%',
+                float: 'left'
+            });
+            contentToggle = 1;
+        } else if (contentToggle == 1) {
+            $('#manage_table_id').animate({
+                width: '100%'
+            });
+            $("#div_mestimate_detail_id").slideUp("slow");
+            $('#div_mestimate_detail_id').animate({
+                width: '0',
+            });
+            contentToggle = 0;
+        }
         document.getElementsByName("mestimate_id_view")[0].value = id;
         var url = admin_url + 'mestimates/show_detail?rtype=json';
         simpleAjaxPostUpload(

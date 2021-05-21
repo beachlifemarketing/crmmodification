@@ -30,7 +30,7 @@ foreach ($rResult as $aRow) {
     for ($i = 0; $i < count($aColumns); $i++) {
         $_data = $aRow[$aColumns[$i]];
         if ($aColumns[$i] == 'job_number') {
-            $_data = '<a href="#" onclick="showDetailMestimate(' . $aRow["id"] . ')">' . $aRow['id'] . '</a>';
+            $_data = '<a href="#" class="a_view_detail" onclick="showDetailMestimate(' . $aRow["id"] . '); return false;">' . $aRow['id'] . '</a>';
             $_data .= '<div class="row-options">';
             $_data .= '<a href="' . admin_url('mestimates/mestimate/' . $aRow['id']) . '">' . _l('view') . '</a>';
 
