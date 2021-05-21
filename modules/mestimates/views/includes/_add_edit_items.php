@@ -71,11 +71,11 @@
                     <td><textarea value="<?= $detail['description'] ?>" name="detail[description][]"
                                   class="col-xs-12 col-sm-12 description ui-autocomplete-input"
                                   autocomplete="off"><?= $detail['description'] ?></textarea></td>
-                    <td><input value="<?= $detail['qty'] ?>" name="detail[qty][]" type="number" placeholder="0"
+                    <td><input value="<?= $detail['qty_unit'] ?>" name="detail[qty_unit][]" type="text" placeholder="0"
                                class="col-xs-12 col-sm-12 center"
                                onkeyup="computeLineAmount()" onchange="computeLineAmount()"><br><span
                                 class="quantity_uom_1"></span></td>
-                    <td><input value="<?= $detail['px'] ?>" name="detail[unix][]" type="number"
+                    <td><input value="<?= $detail['px_unit'] ?>" name="detail[px_unit][]" type="text"
                                placeholder="0.00"
                                class="col-xs-12 col-sm-12 right"
                                onkeyup="computeLineAmount()" onchange="computeLineAmount()"><br><span
@@ -131,7 +131,7 @@
         </tr>
         <tr>
             <td colspan="5" style="text-align: right"><?php echo _l('discount'); ?></td>
-            <td><input type="number" id="discount" name="discount" placeholder="0.00"
+            <td><input type="text" id="discount" name="discount" placeholder="0.00"
                        value="<?= (isset($mestimate) && isset($mestimate->discount)) ? $mestimate->discount : 0.00 ?>"
                        onkeyup="computeLineAmount()" onchange="computeLineAmount()"
                        class="col-xs-12 col-sm-12 center"></td>

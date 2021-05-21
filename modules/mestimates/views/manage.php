@@ -3,7 +3,7 @@
 <div id="wrapper">
     <div class="content">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6" id="manage_table_id">
                 <div class="panel_s">
                     <div class="panel-body">
                         <?php if (has_permission('mestimates', '', 'create')) { ?>
@@ -26,10 +26,27 @@
                     </div>
                 </div>
             </div>
+
+            <div class="col-md-6">
+                <div class="panel_s">
+                    <div class="panel-body" id="mestimate_detail_id">
+                        <?php /*$this->load->view('mestimates/mestimate_detail_data') */ ?>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+<?php
+echo form_open('', array('id' => 'id_to_view_form'));
+echo form_hidden('mestimate_id_view');
+echo form_close();
+?>
+
 <?php init_tail(); ?>
+
+<script src="<?php echo base_url('modules/mestimates/assets/blm.js'); ?>"></script>
+<script src="<?php echo base_url('modules/mestimates/assets/mestimates.js'); ?>"></script>
 <script>
     $(function () {
         initDataTable('.table-mestimates', window.location.href, [6], [6]);
@@ -37,6 +54,25 @@
 
         })
     });
+
+    function showDetailMestimate(id) {
+        document.getElementsByName("mestimate_id_view")[0].value = id;
+        var url = admin_url + 'mestimates/show_detail?rtype=json';
+        simpleAjaxPostUpload(
+            url,
+            '#id_to_view_form',
+            function (res) {
+                alert_float('success', res.errorMessage);
+            },
+            function (res) {
+                alert_float('danger', res.errorMessage);
+            },
+            function (res) {
+                alert_float('danger', res.errorMessage);
+            }
+        );
+    }
+
 </script>
 </body>
 </html>

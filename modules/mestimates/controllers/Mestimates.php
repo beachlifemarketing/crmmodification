@@ -240,6 +240,119 @@ class Mestimates extends AdminController
         redirect(admin_url('mestimates'));
     }
 
+
+    public function show_detail($id)
+    {
+        if (!has_permission('mestimates', '', 'view') && !has_permission('mestimates', '', 'view_own') && get_option('allow_staff_view_mestimates_assigned') == '0') {
+            echo _l('access_denied');
+            die;
+        }
+
+        if (!$id) {
+            die('No mestimate found');
+        }
+
+        $mestimate = $this->mestimates_model->get($id);
+
+        if (!$mestimate || !user_can_view_mestimate($id)) {
+            echo _l('mestimate_not_found');
+            die;
+        }
+
+        $mestimate->date = _d($mestimate->date);
+        $mestimate->due_date = _d($mestimate->due_date);
+        if ($mestimate->invoiceid !== null) {
+            $this->load->model('invoices_model');
+            $mestimate->invoice = $this->invoices_model->get($mestimate->invoiceid);
+        }
+
+        if ($mestimate->sent == 0) {
+            $template_name = 'mestimate_send_to_customer';
+        } else {
+            $template_name = 'mestimate_send_to_customer_already_sent';
+        }
+
+        $data = prepare_mail_preview_data($template_name, $mestimate->clientid);
+
+        //$data['activity'] = $this->mestimates_model->get_estimate_activity($id);
+        $data['mestimate'] = $mestimate;
+        $data['members'] = $this->staff_model->get('', ['active' => 1]);
+        $data['mestimate_statuses'] = $this->mestimates_model->get_statuses();
+
+        $data['send_later'] = false;
+        if ($this->session->has_userdata('send_later')) {
+            $data['send_later'] = true;
+            $this->session->unset_userdata('send_later');
+        }
+
+        $data['errorCode'] = 'SUCCESS';
+        $data['html_detail'] = $this->load->view('mestimates/includes/mestimate_detail_data', $data, true);
+        $data['errorMessage'] = _l('load_template_success');
+        echo json_encode($data);
+    }
+
+
+    public function send_expiry_reminder($id)
+    {
+        $canView = user_can_view_estimate($id);
+        if (!$canView) {
+            access_denied('Estimates');
+        } else {
+            if (!has_permission('estimates', '', 'view') && !has_permission('estimates', '', 'view_own') && $canView == false) {
+                access_denied('Estimates');
+            }
+        }
+
+        $success = $this->mestimates_model->send_expiry_reminder($id);
+        if ($success) {
+            set_alert('success', _l('sent_expiry_reminder_success'));
+        } else {
+            set_alert('danger', _l('sent_expiry_reminder_fail'));
+        }
+        if ($this->set_estimate_pipeline_autoload($id)) {
+            redirect($_SERVER['HTTP_REFERER']);
+        } else {
+            redirect(admin_url('estimates/list_estimates/' . $id));
+        }
+    }
+
+    /* Send estimate to email */
+    public function send_to_email($id)
+    {
+        $canView = user_can_view_estimate($id);
+        if (!$canView) {
+            access_denied('estimates');
+        } else {
+            if (!has_permission('estimates', '', 'view') && !has_permission('estimates', '', 'view_own') && $canView == false) {
+                access_denied('estimates');
+            }
+        }
+
+        try {
+            $success = $this->estimates_model->send_estimate_to_client($id, '', $this->input->post('attach_pdf'), $this->input->post('cc'));
+        } catch (Exception $e) {
+            $message = $e->getMessage();
+            echo $message;
+            if (strpos($message, 'Unable to get the size of the image') !== false) {
+                show_pdf_unable_to_get_image_size_error();
+            }
+            die;
+        }
+
+        // In case client use another language
+        load_admin_language();
+        if ($success) {
+            set_alert('success', _l('estimate_sent_to_client_success'));
+        } else {
+            set_alert('danger', _l('estimate_sent_to_client_fail'));
+        }
+        if ($this->set_estimate_pipeline_autoload($id)) {
+            redirect($_SERVER['HTTP_REFERER']);
+        } else {
+            redirect(admin_url('estimates/list_estimates/' . $id));
+        }
+    }
+
     /* Delete announcement from database */
     public function delete_template($id = null)
     {
@@ -469,6 +582,51 @@ class Mestimates extends AdminController
             $data['errorMessage'] = _l('select_file_to_remove');
             echo json_encode($data);
         }
+    }
+
+    /* Generates estimate PDF and senting to email  */
+    public function pdf($id)
+    {
+        $canView = user_can_view_estimate($id);
+        if (!$canView) {
+            access_denied('Mestimates');
+        } else {
+            if (!has_permission('mestimates', '', 'view') && !has_permission('mestimates', '', 'view_own') && $canView == false) {
+                access_denied('Mestimates');
+            }
+        }
+        if (!$id) {
+            redirect(admin_url('mestimates'));
+        }
+        $mestimate = $this->mestimates_model->get($id);
+
+        try {
+            $pdf = mestimate_pdf($mestimate);
+        } catch (Exception $e) {
+            $message = $e->getMessage();
+            echo $message;
+            if (strpos($message, 'Unable to get the size of the image') !== false) {
+                show_pdf_unable_to_get_image_size_error();
+            }
+            die;
+        }
+
+        $type = 'D';
+
+        if ($this->input->get('output_type')) {
+            $type = $this->input->get('output_type');
+        }
+
+        if ($this->input->get('print')) {
+            $type = 'I';
+        }
+
+        $fileNameHookData = hooks()->apply_filters('mestimate_file_name_admin_area', [
+            'file_name' => mb_strtoupper(slug_it($mestimate->id . '_' . date('Y-m-d H:i:s'))) . '.pdf',
+            'mestimate' => $mestimate,
+        ]);
+
+        $pdf->Output($fileNameHookData['file_name'], $type);
     }
 
 }
