@@ -25,7 +25,7 @@
    <?php } ?>
    <div class="clearfix"></div>
 </div>
-<table class="table table-invoices-report scroll-responsive">
+<table class="table table-invoices-report">
    <thead>
       <tr>
          <th><?php echo _l('report_invoice_number'); ?></th>

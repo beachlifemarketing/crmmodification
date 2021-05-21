@@ -6,8 +6,8 @@
             <div class="col-md-9">
                <h3 class="no-mbot bold pull-left">
                   <?php if(
-                     $project->settings->edit_tasks == 1 && 
-                     $view_task->is_added_from_contact == 1 && 
+                     $project->settings->edit_tasks == 1 &&
+                     $view_task->is_added_from_contact == 1 &&
                      $view_task->addedfrom == get_contact_user_id() &&
                      $view_task->billed == 0
                      ){ ?>
@@ -219,7 +219,7 @@
             <?php echo $view_task->description; ?>
          </div>
          <?php } ?>
-         <?php if($project->settings->upload_files == 1){ ?>
+         <?php if($project->settings->upload_on_tasks == 1){ ?>
          <hr />
          <?php echo form_open_multipart(site_url('clients/project/'.$project->id),array('class'=>'dropzone mtop15','id'=>'task-file-upload')); ?>
          <input type="file" name="file" multiple class="hide"/>

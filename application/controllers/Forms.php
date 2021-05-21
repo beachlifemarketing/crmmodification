@@ -168,25 +168,17 @@ class Forms extends ClientsController
                     handle_estimate_request_attachments($estimate_request_id, 'file-input', $form->name);
 
                     if ($form->notify_request_submitted != 0) {
-                        if ($form->notify_type == 'assigned') {
-                            $to_responsible = true;
-                        } else {
-                            $ids            = @unserialize($form->notify_ids);
-                            $to_responsible = false;
-                            if ($form->notify_type == 'specific_staff') {
-                                $field = 'staffid';
-                            } elseif ($form->notify_type == 'roles') {
-                                $field = 'role';
-                            }
-                        }
+                        $staff = [];
+                        if ($form->notify_type != 'assigned') {
+                            $ids = @unserialize($form->notify_ids);
 
-                        if (
-                            $to_responsible == false && is_array($ids) && count($ids) > 0
-                        ) {
-                            $this->db->where('active', 1);
-                            $this->db->where_in($field, $ids);
-                            $staff = $this->db->get(db_prefix() . 'staff')->result_array();
-                        } else {
+                            if (is_array($ids) && count($ids) > 0) {
+                                $this->db->where('active', 1)
+                                ->where_in($form->notify_type == 'specific_staff' ? 'staffid' : 'role', $ids);
+
+                                $staff = $this->db->get(db_prefix() . 'staff')->result_array();
+                            }
+                        } elseif ($form->responsible) {
                             $staff = [
                                 [
                                     'staffid' => $form->responsible,
@@ -196,26 +188,24 @@ class Forms extends ClientsController
                         }
 
                         $notifiedUsers = [];
+
                         foreach ($staff as $member) {
-                            if ($member['staffid'] != 0) {
-                                $notified = add_notification([
-                                    'description'     => 'new_estimate_request_submitted_from_form',
-                                    'touserid'        => $member['staffid'],
-                                    'fromcompany'     => 1,
-                                    'fromuserid'      => 0,
+                            if (add_notification([
+                                    'description' => 'new_estimate_request_submitted_from_form',
+                                    'touserid' => $member['staffid'],
+                                    'fromcompany' => 1,
+                                    'fromuserid' => 0,
                                     'additional_data' => serialize([
                                         $form->name,
                                     ]),
                                     'link' => 'estimate_request/view/' . $estimate_request_id,
-                                ]);
-
-                                if ($notified) {
-                                    array_push($notifiedUsers, $member['staffid']);
-                                }
-
-                                send_mail_template('estimate_request_form_submitted', $estimate_request_id, $member['email']);
+                                ])) {
+                                array_push($notifiedUsers, $member['staffid']);
                             }
+
+                            send_mail_template('estimate_request_form_submitted', $estimate_request_id, $member['email']);
                         }
+
                         pusher_trigger_notification($notifiedUsers);
                     }
 
@@ -498,49 +488,41 @@ class Forms extends ClientsController
                         handle_lead_attachments($lead_id, 'file-input', $form->name);
 
                         if ($form->notify_lead_imported != 0) {
-                            if ($form->notify_type == 'assigned') {
-                                $to_responsible = true;
-                            } else {
-                                $ids            = @unserialize($form->notify_ids);
-                                $to_responsible = false;
-                                if ($form->notify_type == 'specific_staff') {
-                                    $field = 'staffid';
-                                } elseif ($form->notify_type == 'roles') {
-                                    $field = 'role';
+                            $staff = [];
+                            if ($form->notify_type != 'assigned') {
+                                $ids = @unserialize($form->notify_ids);
+
+                                if (is_array($ids) && count($ids) > 0) {
+                                    $this->db->where('active', 1)
+                                    ->where_in($form->notify_type == 'specific_staff' ? 'staffid' : 'role', $ids);
+                                    $staff = $this->db->get(db_prefix() . 'staff')->result_array();
                                 }
+                            } elseif ($form->responsible) {
+                                $staff = [
+                                [
+                                    'staffid' => $form->responsible,
+                                ],
+                            ];
                             }
 
-                            if ($to_responsible == false && is_array($ids) && count($ids) > 0) {
-                                $this->db->where('active', 1);
-                                $this->db->where_in($field, $ids);
-                                $staff = $this->db->get(db_prefix() . 'staff')->result_array();
-                            } else {
-                                $staff = [
-                                    [
-                                        'staffid' => $form->responsible,
-                                    ],
-                                ];
-                            }
                             $notifiedUsers = [];
                             foreach ($staff as $member) {
-                                if ($member['staffid'] != 0) {
-                                    $notified = add_notification([
-                                        'description'     => 'not_lead_imported_from_form',
-                                        'touserid'        => $member['staffid'],
-                                        'fromcompany'     => 1,
-                                        'fromuserid'      => 0,
+                                if (add_notification([
+                                        'description' => 'not_lead_imported_from_form',
+                                        'touserid' => $member['staffid'],
+                                        'fromcompany' => 1,
+                                        'fromuserid' => 0,
                                         'additional_data' => serialize([
                                             $form->name,
                                         ]),
                                         'link' => '#leadid=' . $lead_id,
-                                    ]);
-                                    if ($notified) {
-                                        array_push($notifiedUsers, $member['staffid']);
-                                    }
+                                    ])) {
+                                    array_push($notifiedUsers, $member['staffid']);
                                 }
                             }
                             pusher_trigger_notification($notifiedUsers);
                         }
+
                         if (isset($regular_fields['email']) && $regular_fields['email'] != '') {
                             $lead = $this->leads_model->get($lead_id);
                             send_mail_template('lead_web_form_submitted', $lead);

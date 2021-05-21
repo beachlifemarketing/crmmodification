@@ -216,19 +216,18 @@
 
     function save_estimate_request_assigned_staff() {
         $.post(
-        $.post(
             admin_url + 'estimate_request/update_assigned_staff/',
             {
                 assigned: $('select#assigned').val(),
                 requestid: "<?php echo $estimate_request->id ?>",
             }
-            ).done(function (response) {
-                response = JSON.parse(response);
-                if (response.success == 'true' || response.success == true) {
-                    alert_float('success', response.message);
-                }
-            });
-        }
+        ).done(function (response) {
+            response = JSON.parse(response);
+            if (response.success == 'true' || response.success == true) {
+                alert_float('success', response.message);
+            }
+        });
+    }
 
         function mark_estimate_request_as(status_id, request_id) {
             $.post(admin_url + 'estimate_request/update_request_status', {

@@ -133,6 +133,11 @@ class Estimate_request_model extends App_Model
         return $this->db->get(db_prefix() . 'estimate_requests')->result_array();
     }
 
+    public function get_forms()
+    {
+        return $this->db->get(db_prefix() . 'estimate_request_forms')->result_array();
+    }
+
     public function get_form($where)
     {
         $this->db->where($where);

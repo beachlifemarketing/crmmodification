@@ -538,15 +538,18 @@ class Reports_model extends App_Model
         $this->db->where('YEAR(' . db_prefix() . 'invoicepaymentrecords.date)', $year);
         $this->db->join(db_prefix() . 'invoices', '' . db_prefix() . 'invoices.id = ' . db_prefix() . 'invoicepaymentrecords.invoiceid');
         $by_currency = $this->input->post('report_currency');
+
         if ($by_currency) {
             $this->db->where('currency', $by_currency);
         }
+
         $payments       = $this->db->get()->result_array();
         $data           = [];
         $data['months'] = [];
         $data['temp']   = [];
         $data['total']  = [];
         $data['labels'] = [];
+
         foreach ($payments as $payment) {
             $month   = date('m', strtotime($payment['date']));
             $dateObj = DateTime::createFromFormat('!m', $month);
@@ -555,24 +558,29 @@ class Reports_model extends App_Model
                 $data['months'][$month] = $month;
             }
         }
+
         usort($data['months'], function ($a, $b) {
             $month1 = date_parse($a);
             $month2 = date_parse($b);
 
             return $month1['month'] - $month2['month'];
         });
+
         foreach ($data['months'] as $month) {
             foreach ($payments as $payment) {
-                $_month  = date('m', strtotime($payment['date']));
-                $dateObj = DateTime::createFromFormat('!m', $_month);
-                $_month  = $dateObj->format('F');
+                $monthNumber = date('m', strtotime($payment['date']));
+                $dateObj     = DateTime::createFromFormat('!m', $monthNumber);
+                $_month      = $dateObj->format('F');
                 if ($month == $_month) {
                     $data['temp'][$month][] = $payment['amount'];
                 }
             }
+
             array_push($data['labels'], _l($month) . ' - ' . $year);
-            $data['total'][] = array_sum($data['temp'][$month]);
+
+            $data['total'][] = array_sum($data['temp'][$month]) - $this->calculate_refunded_amount($year, $monthNumber, $by_currency);
         }
+
         $chart = [
             'labels'   => $data['labels'],
             'datasets' => [
@@ -598,5 +606,25 @@ class Reports_model extends App_Model
     public function get_distinct_customer_invoices_years()
     {
         return $this->db->query('SELECT DISTINCT(YEAR(date)) as year FROM ' . db_prefix() . 'invoices WHERE clientid=' . get_client_user_id())->result_array();
+    }
+
+    protected function calculate_refunded_amount($year, $month, $currency)
+    {
+        $sql = 'SELECT
+        SUM(' . db_prefix() . 'creditnote_refunds.amount) as refunds_amount
+        FROM ' . db_prefix() . 'creditnote_refunds
+        WHERE YEAR(refunded_on) = ' . $year . ' AND MONTH(refunded_on) = ' . $month;
+
+        if ($currency) {
+            $sql .= ' AND credit_note_id IN (SELECT id FROM ' . db_prefix() . 'creditnotes WHERE currency=' . $currency . ')';
+        }
+
+        $refunds_amount = $this->db->query($sql)->row()->refunds_amount;
+
+        if ($refunds_amount === null) {
+            $refunds_amount = 0;
+        }
+
+        return $refunds_amount;
     }
 }

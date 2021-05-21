@@ -65,7 +65,8 @@ class Clients_model extends App_Model
 
         $this->db->order_by('is_primary', 'DESC');
 
-        return $this->db->get(db_prefix() . 'contacts')->result_array();
+        $list =  $this->db->get(db_prefix() . 'contacts')->result_array();
+        return $list;
     }
 
     /**

@@ -278,7 +278,7 @@
                </div>
                <div class="clearfix"></div>
                <div class="mtop15">
-                  <table class="table dt-table scroll-responsive" data-order-col="2" data-order-type="desc">
+                  <table class="table dt-table" data-order-col="2" data-order-type="desc">
                      <thead>
                         <tr>
                            <th width="50%"><?php echo _l('staff_notes_table_description_heading'); ?></th>
@@ -351,7 +351,7 @@
                </div>
                <?php echo form_close(); ?>
                <hr class="hr-panel-heading" />
-                  <table class="table dt-table scroll-responsive">
+                  <table class="table dt-table">
                      <thead>
                         <th><?php echo _l('task'); ?></th>
                         <th><?php echo _l('timesheet_start_time'); ?></th>

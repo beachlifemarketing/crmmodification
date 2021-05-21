@@ -20,3 +20,5 @@ application/logs/*
 !application/logs/.htaccess
 /vendor/
 /application/vendor/ezyang/htmlpurifier/library/HTMLPurifier/DefinitionCache/Serializer/HTML/4.13.0,412a9d47bd7834fc4f4ad0ac37feb538261ec913,282.ser
+/uploads/
+/temp/

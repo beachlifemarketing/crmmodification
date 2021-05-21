@@ -20,7 +20,7 @@
                             <hr class="hr-panel-heading" />
                         </div>
                         <?php if(count($groups) > 0){ ?>
-                            <table class="table dt-table scroll-responsive">
+                            <table class="table dt-table">
                                 <thead>
                                     <th><?php echo _l('group_table_name_heading'); ?></th>
                                     <th><?php echo _l('group_table_isactive_heading'); ?></th>

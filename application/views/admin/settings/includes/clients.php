@@ -52,6 +52,29 @@
 <hr />
 <?php render_yes_no_option('knowledge_base_without_registration','settings_clients_allow_kb_view_without_registration'); ?>
 <hr />
+<div class="form-group">
+	<?php
+	$this->load->model('estimate_request_model');
+	$estimateRequestForms = $this->estimate_request_model->get_forms();
+	?>
+	<label for="show_estimate_request_in_customers_area"
+		class="control-label">
+		<?php echo _l('show_estimate_request_in_customers_area'); ?>
+	</label>
+	<select name="settings[show_estimate_request_in_customers_area]"
+		id="show_estimate_request_in_customers_area"
+		class="form-control selectpicker"
+		data-none-selected-text="<?php echo _l('settings_no'); ?>">
+			<option value="0"<?php if(get_option('show_estimate_request_in_customers_area') == 0){echo ' selected';} ?>>
+				<?php echo _l('settings_no'); ?>
+			</option>
+		<?php foreach($estimateRequestForms as $form){ ?>
+			<option value="<?php echo $form['id']; ?>"<?php if(get_option('show_estimate_request_in_customers_area') == $form['id']){echo ' selected';} ?>>
+				<?php echo $form['name']; ?>
+			</option>
+		<?php } ?>
+	</select>
+</div>
 <?php $default_contact_permissions = unserialize(get_option('default_contact_permissions')); ?>
 <div class="form-group">
 	<label for="" class="control-label"><?php echo _l('default_contact_permissions'); ?></label>

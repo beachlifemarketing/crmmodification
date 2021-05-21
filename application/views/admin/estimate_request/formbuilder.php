@@ -38,14 +38,22 @@
                                 </div>
                                 <div role="tabpanel" class="tab-pane" id="tab_form_integration">
                                     <p><?php echo _l('form_integration_code_help'); ?></p>
-                                    <p>
-                              <span class="label label-default">
-                                 <a href="<?php echo site_url('forms/quote/' . $form->form_key); ?>" target="_blank">
-                                    <?php echo site_url('forms/quote/' . $form->form_key); ?>
-                              </span>
-                                        </a>
-                                    </p>
                                     <textarea class="form-control" rows="2"><iframe width="600" height="850" src="<?php echo site_url('forms/quote/' . $form->form_key); ?>" frameborder="0" allowfullscreen></iframe></textarea>
+                                    <h4 class="mtop15 font-medium bold">Share direct link</h4>
+                                    <p>
+                                        <span class="label label-default">
+                                            <a href="<?php echo site_url('forms/quote/' . $form->form_key).'?styled=1'; ?>" target="_blank">
+                                                <?php echo site_url('forms/quote/' . $form->form_key).'?styled=1'; ?>
+                                            </a>
+                                        </span>
+                                        <br />
+                                        <br />
+                                        <span class="label label-default">
+                                            <a href="<?php echo site_url('forms/quote/' . $form->form_key).'?styled=1&with_logo=1'; ?>" target="_blank">
+                                                <?php echo site_url('forms/quote/' . $form->form_key).'?styled=1&with_logo=1'; ?>
+                                            </a>
+                                        </span>
+                                    </p>
                                     <hr/>
                                     <p class="bold mtop15">When placing the iframe snippet code consider the
                                         following:</p>
@@ -410,9 +418,7 @@
             responsible: {
                 required: {
                     depends: function (element) {
-                        var isRequiredByNotifyType = ($('input[name="notify_type"]:checked').val() == 'assigned') ? true : false;
-                        var isRequiredByAssignTask = ($create_task_on_duplicate.is(':checked')) ? true : false;
-                        var isRequired = isRequiredByNotifyType || isRequiredByAssignTask;
+                        var isRequired = ($('input[name="notify_type"]:checked').val() == 'assigned') ? true : false;
                         if (isRequired) {
                             $('[for="responsible"]').find('.req').removeClass('hide');
                         } else {

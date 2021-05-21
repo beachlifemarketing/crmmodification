@@ -769,6 +769,7 @@ class Reports extends AdminController
                   (SELECT COALESCE(SUM(amount),0) FROM ' . db_prefix() . 'creditnote_refunds WHERE ' . db_prefix() . 'creditnote_refunds.credit_note_id=' . db_prefix() . 'creditnotes.id)
                   )
                 ) as remaining_amount',
+                '(SELECT SUM(amount) FROM  ' . db_prefix() . 'creditnote_refunds WHERE credit_note_id=' . db_prefix() . 'creditnotes.id) as refund_amount',
                 'status',
             ];
 
@@ -843,6 +844,7 @@ class Reports extends AdminController
                 'discount_total'   => 0,
                 'adjustment'       => 0,
                 'remaining_amount' => 0,
+                'refund_amount'    => 0,
             ];
 
             foreach ($credit_note_taxes as $key => $tax) {
@@ -889,6 +891,9 @@ class Reports extends AdminController
 
                 $row[] = app_format_money($aRow['remaining_amount'], $currency->name);
                 $footer_data['remaining_amount'] += $aRow['remaining_amount'];
+
+                $row[] = app_format_money($aRow['refund_amount'], $currency->name);
+                $footer_data['refund_amount'] += $aRow['refund_amount'];
 
                 $row[] = format_credit_note_status($aRow['status']);
 
@@ -1106,11 +1111,11 @@ class Reports extends AdminController
             $data['years']      = $this->expenses_model->get_expenses_years();
 
             $this->load->model('payment_modes_model');
-            $data['payment_modes']  = $this->payment_modes_model->get('', [], true);
+            $data['payment_modes'] = $this->payment_modes_model->get('', [], true);
 
             if ($this->input->is_ajax_request()) {
                 $aColumns = [
-                    db_prefix().'expenses.category',
+                    db_prefix() . 'expenses.category',
                     'amount',
                     'expense_name',
                     'tax',

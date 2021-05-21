@@ -44,7 +44,7 @@ function theme_assets()
 
         $CI->app_css->theme('jquery-comments-css', 'assets/plugins/jquery-comments/css/jquery-comments.css');
         $CI->app_css->theme('frappe-gantt-css', 'assets/plugins/frappe/frappe-gantt.css');
-        add_calendar_assets($groupName, false);
+        add_calendar_assets($groupName);
 
         if (get_option('enable_google_picker') == '1') {
             add_google_api_js_assets($groupName);

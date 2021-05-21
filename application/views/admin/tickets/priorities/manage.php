@@ -13,7 +13,7 @@
 						<hr class="hr-panel-heading" />
 						<?php if(count($priorities) > 0){ ?>
 
-						<table class="table dt-table scroll-responsive">
+						<table class="table dt-table">
 							<thead>
 								<th><?php echo _l('id'); ?></th>
 								<th><?php echo _l('ticket_priority_dt_name'); ?></th>

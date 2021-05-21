@@ -48,8 +48,6 @@
       </div>
 
       <div role="tabpanel" class="tab-pane" id="settings_tables">
-        <?php echo render_yes_no_option('scroll_responsive_tables','scroll_responsive_tables','scroll_responsive_tables_help'); ?>
-        <hr />
         <div class="form-group">
           <label for="save_last_order_for_tables" class="control-label clearfix">
             <i class="fa fa-question-circle pointer" data-toggle="popover" data-html="true" data-content="Currently supported tables: Customers, Leads, Tickets, Tasks, Projects, Payments, Subscriptions, Expenses, Proposals, Knowledge Base, Contracts <br /><br /> Note: Changing this option will delete all saved table orders!" data-position="top"></i> <?php echo _l('save_last_order_for_tables'); ?>
