@@ -50,7 +50,7 @@ define('APP_DB_PASSWORD', 'Vbrand@t2d');
 /**
  * The name of the database you want to connect to
  */
-define('APP_DB_NAME', 'crmmodbe_staging');
+define('APP_DB_NAME', 'crmmodbe_dev');
 
 /**
  * @since  2.3.0
