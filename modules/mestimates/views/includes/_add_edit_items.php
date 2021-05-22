@@ -1,22 +1,20 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
 
-<div class="table-responsive s_table">
-
-    <table id="mestimate_details" width="100%" class="table table-striped">
+<div class="col-md-12" style="overflow-x:auto;">
+    <table id="mestimate_details" class="table table-bordered table-striped mb-0">
         <thead>
         <tr>
-            <th width="12%"><?php echo _l('are'); ?></th>
-            <th width="10%"><?php echo _l('size'); ?></th>
-            <th><?php echo _l('description'); ?></th>
-            <th width="8%"><?php echo _l('qty'); ?></th>
-            <th width="10%"><?php echo _l('unix_px'); ?></th>
-            <th width="10%"><?php echo _l('duration'); ?></th>
-            <th width="12%"><?php echo _l('amount'); ?></th>
-            <th width="8%">&nbsp;</th>
+            <th style="min-width: 100px"><?php echo _l('are'); ?></th>
+            <th style="min-width: 100px"><?php echo _l('size'); ?></th>
+            <th style="min-width: 100px"><?php echo _l('description'); ?></th>
+            <th style="min-width: 100px"><?php echo _l('qty'); ?></th>
+            <th style="min-width: 100px"><?php echo _l('unix_px'); ?></th>
+            <th style="min-width: 100px"><?php echo _l('duration'); ?></th>
+            <th style="min-width: 100px"><?php echo _l('amount'); ?></th>
+            <th style="min-width: 100px">&nbsp;</th>
         </tr>
         </thead>
         <tbody id="mestimate_details_body">
-
         <?php
         $details = isset($details) ? $details : [];
         if (count($details) == 0) {

@@ -1,0 +1,31 @@
+#tbl_info_company td {
+    text-align: left;
+    padding: 3px;
+    border: 1px solid black;
+}
+
+#tbl_info_company tr td:first-child {
+    background-color: yellow;
+}
+
+#tbl_info_company {
+    width: 100%;
+}
+
+#tbl_info_company_2 tr:first-child {
+    background-color: yellow;
+}
+
+#tbl_info_company_2 {
+    width: 100%;
+}
+
+#tbl_info_company_2 td {
+    text-align: left;
+    padding: 3px;
+    border: 1px solid black;
+}
+
+#div_button_save button {
+    margin: 5px 5px;
+}

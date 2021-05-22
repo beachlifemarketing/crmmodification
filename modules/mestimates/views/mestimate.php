@@ -1,5 +1,6 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
 <?php init_head(); ?>
+<link rel="stylesheet" type="text/css" href="<?php echo base_url('modules/mestimates/assets/blm.css'); ?>">
 <div id="wrapper">
     <div class="content" id="id_content_mestimate">
         <?php $this->load->view('mestimates/includes/mestimate_data'); ?>

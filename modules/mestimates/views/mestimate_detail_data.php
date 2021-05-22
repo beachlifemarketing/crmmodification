@@ -123,86 +123,99 @@
         <div id="mestimate-preview">
             <div class="row">
                 <div class="col-md-6 col-sm-6">
-                    <h4 class="bold">
-                        <a href="https://localhost/blm/admin/estimates/estimate/1">
-                           <span id="estimate-number">
-                           <?= $mestimate->id ?></span>
-                        </a>
-                    </h4>
+                    <div class="col-md-6 col-sm-6">
+                        <?php get_company_logo(get_admin_uri() . '/') ?><br/>
+                        <b><?= get_option('companyname'); ?></b><b/>
+                        <b><a href="<?= get_option('main_domain'); ?>"><?= get_option('main_domain'); ?></a> </b>
+                    </div>
                     <address>
                     </address>
                 </div>
                 <div class="col-sm-6 text-right">
-                    <span class="bold">To:</span>
-                    <address>
-                        <a href="https://localhost/blm/admin/clients/client/8"
-                           target="_blank"><b><?= (isset($contact) ? $contact->firstname : '') . " " . (isset($contact) ? $contact->lastname : '') ?>
-                                <br><?=(isset($client) ? $client->company : '')?></b></a><br> <?=(isset($client) ? $client->address : '')?><br> 1212 121<br><br> VAT Number: 123123
-                    </address>
-                    <span class="bold">Ship to:</span>
-                    <address>
-                        212<br> 1 12
-                    </address>
-                    <p class="no-mbot">
-                           <span class="bold">
-                           Estimate Date:
-                           </span>
-                        2021-05-14 </p>
-                    <p class="no-mbot">
-                        <span class="bold">Expiry Date:</span>
-                        2021-05-21 </p>
+                    <span class="bold" style="float: left; font-weight: bold">Customer Information</span>
+                    <table border="1" id="tbl_info_company">
+                        <tr>
+                            <td>Job #:</td>
+                            <td><?= (isset($mestimate) ? $mestimate->job_number : '') ?></td>
+                        </tr>
+                        <tr>
+                            <td>Name:</td>
+                            <td><?= (isset($contact) ? $contact->name = "firstname" : '') ?> <?= (isset($contact) ? $contact->name = "lastname" : '') ?></td>
+                        </tr>
+                        <tr>
+                            <td>Phone #:</td>
+                            <td><?= (isset($contact) ? $contact->phonenumber : '') ?></td>
+                        </tr>
+                        <tr>
+                            <td>Claim #:</td>
+                            <td><?= (isset($mestimate) ? $mestimate->job_number : '') ?></td>
+                        </tr>
+                        <tr>
+                            <td>Policy #:</td>
+                            <td><?= (isset($mestimate) ? $mestimate->claim_number : '') ?></td>
+                        </tr>
+
+                        <tr>
+                            <td>Property Address:</td>
+                            <td><?= (isset($client) ? $client->company : '') ?></td>
+                        </tr>
+                        <tr>
+                            <td>Email:</td>
+                            <td><?= (isset($contact) ? $contact->email : '') ?></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="clearfix"></div>
+                <div class="col-sm-12 " style="margin: 10px 0px 10px 0px">
+                    <table border="1" id="tbl_info_company_2">
+                        <tr>
+                            <td>Representative</td>
+                            <td>Date</td>
+                            <td>Payment Options</td>
+                            <td>Due Date</td>
+                        </tr>
+                        <tr>
+                            <td><?= (isset($mestimate) ? $mestimate->representative : '') ?></td>
+                            <td><?= (isset($mestimate) ? $mestimate->date : '') ?></td>
+                            <td><?= (isset($mestimate) ? $mestimate->pymt_option : '') ?></td>
+                            <td><?= (isset($mestimate) ? $mestimate->due_date : '') ?></td>
+                        </tr>
+                    </table>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-responsive">
+                        <div class="clearfix"></div>
+                        <div class="col-sm-12 ">
+                            <table style="width: 100%">
+                                <tr>
+                                    <td style="text-align: left; font-weight: bold">Receipt for Services</td>
+                                    <td style="text-align: right; font-weight: bold">License No: MRSR2240</td>
+                                </tr>
+                            </table>
+                        </div>
                         <table class="table items items-preview estimate-items-preview" data-type="estimate">
                             <thead>
                             <tr>
-                                <th align="center">#</th>
-                                <th class="description" width="38%" align="left">Item</th>
-                                <th align="right">Qty</th>
-                                <th align="right">Rate</th>
-                                <th align="right">Tax</th>
-                                <th align="right">Amount</th>
+                                <th>AREA</th>
+                                <th>SIZE</th>
+                                <th>DESCRIPTION</th>
+                                <th>QUANTITY</th>
+                                <th>UNIT PRICE ($)</th>
+                                <th>DURATION</th>
+                                <th>AMOUNT ($)</th>
                             </tr>
                             </thead>
-                            <tbody class="ui-sortable">
+                            <tbody>
                             <tr class="sortable" data-item-id="1">
-                                <td class="dragger item_no ui-sortable-handle" align="center" width="5%">1</td>
-                                <td class="description" align="left;" width="33%"><span style="font-size:px;"><strong>Item 3 Group 1</strong></span>
-                                </td>
-                                <td align="right" width="9%">1</td>
-                                <td align="right" width="9%">122.00</td>
-                                <td align="right" width="9%">0%</td>
-                                <td class="amount" align="right" width="9%">122.00</td>
-                            </tr>
-                            <tr class="sortable" data-item-id="2">
-                                <td class="dragger item_no ui-sortable-handle" align="center" width="5%">2</td>
-                                <td class="description" align="left;" width="33%"><span style="font-size:px;"><strong>Item 3 Group 1</strong></span>
-                                </td>
-                                <td align="right" width="9%">1</td>
-                                <td align="right" width="9%">122.00</td>
-                                <td align="right" width="9%">0%</td>
-                                <td class="amount" align="right" width="9%">122.00</td>
-                            </tr>
-                            <tr class="sortable" data-item-id="3">
-                                <td class="dragger item_no ui-sortable-handle" align="center" width="5%">3</td>
-                                <td class="description" align="left;" width="33%"><span style="font-size:px;"><strong>Item 3 Group 1</strong></span>
-                                </td>
-                                <td align="right" width="9%">1</td>
-                                <td align="right" width="9%">122.00</td>
-                                <td align="right" width="9%">0%</td>
-                                <td class="amount" align="right" width="9%">122.00</td>
-                            </tr>
-                            <tr class="sortable" data-item-id="4">
-                                <td class="dragger item_no ui-sortable-handle" align="center" width="5%">4</td>
-                                <td class="description" align="left;" width="33%"><span style="font-size:px;"><strong>Item 2 Group 1</strong></span>
-                                </td>
-                                <td align="right" width="9%">1</td>
-                                <td align="right" width="9%">12.00</td>
-                                <td align="right" width="9%">0%</td>
-                                <td class="amount" align="right" width="9%">12.00</td>
+                                <td>1</td>
+                                <td>2</td>
+                                <td>1</td>
+                                <td>2</td>
+                                <td>1</td>
+                                <td>2</td>
+                                <td>1</td>
                             </tr>
                             </tbody>
                         </table>
@@ -212,14 +225,35 @@
                     <table class="table text-right">
                         <tbody>
                         <tr id="subtotal">
-                            <td><span class="bold">Sub Total</span>
+                            <td><span class="bold">REMEDIATION</span>
                             </td>
                             <td class="subtotal">
                                 $378.00
                             </td>
                         </tr>
                         <tr>
-                            <td><span class="bold">Total</span>
+                            <td><span class="bold">DISCOUNT 0.00%</span>
+                            </td>
+                            <td class="total">
+                                $378.00
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="bold">TOTAL</span>
+                            </td>
+                            <td class="total">
+                                $378.00
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="bold">PERCENTAGE PAID 100.00%</span>
+                            </td>
+                            <td class="total">
+                                $378.00
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="bold">PAID IN FULL -</span>
                             </td>
                             <td class="total">
                                 $378.00

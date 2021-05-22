@@ -1,5 +1,6 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
 <?php init_head(); ?>
+<link rel="stylesheet" type="text/css" href="<?php echo base_url('modules/mestimates/assets/blm.css'); ?>">
 <div id="wrapper">
     <div class="content">
         <div class="row">
@@ -28,7 +29,7 @@
                 </div>
             </div>
 
-            <div id="div_mestimate_detail_id" class="col-md-12">
+            <div id="div_mestimate_detail_id" class="col-md-12" style="background-color: white;">
                 <div class="panel_s">
                     <div class="panel-body" id="mestimate_detail_id">
                         <?php /*$this->load->view('mestimates/mestimate_detail_data') */ ?>
