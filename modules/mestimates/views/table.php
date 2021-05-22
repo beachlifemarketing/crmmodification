@@ -3,6 +3,7 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 
 $aColumns = [
+    'id',
     'job_number',
     'date',
     'representative',
@@ -29,7 +30,7 @@ foreach ($rResult as $aRow) {
     $row = [];
     for ($i = 0; $i < count($aColumns); $i++) {
         $_data = $aRow[$aColumns[$i]];
-        if ($aColumns[$i] == 'job_number') {
+        if ($aColumns[$i] == 'id') {
             $_data = '<a href="#" class="a_view_detail" onclick="showDetailMestimate(' . $aRow["id"] . '); return false;">' . $aRow['id'] . '</a>';
             $_data .= '<div class="row-options">';
             $_data .= '<a href="' . admin_url('mestimates/mestimate/' . $aRow['id']) . '">' . _l('view') . '</a>';

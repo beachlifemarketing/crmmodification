@@ -3,7 +3,7 @@
 <div id="wrapper">
     <div class="content">
         <div class="row">
-            <div id="manage_table_id" style="width: 100%">
+            <div id="manage_table_id" class="col-md-12">
                 <div class="panel_s">
                     <div class="panel-body">
                         <?php if (has_permission('mestimates', '', 'create')) { ?>
@@ -15,6 +15,7 @@
                             <hr class="hr-panel-heading"/>
                         <?php } ?>
                         <?php render_datatable(array(
+                            'ID',
                             _l('job_number'),
                             _l('date'),
                             _l('representative'),
@@ -27,7 +28,7 @@
                 </div>
             </div>
 
-            <div id="div_mestimate_detail_id" style="display: none">
+            <div id="div_mestimate_detail_id" class="col-md-12">
                 <div class="panel_s">
                     <div class="panel-body" id="mestimate_detail_id">
                         <?php /*$this->load->view('mestimates/mestimate_detail_data') */ ?>
@@ -39,51 +40,35 @@
 </div>
 <?php
 echo form_open('', array('id' => 'id_to_view_form'));
-echo form_hidden('mestimate_id_view');
+echo '<input type="hidden" name="mestimate_id_view" id="mestimate_id_view" >';
 echo form_close();
 ?>
-
 <?php init_tail(); ?>
 
 <script src="<?php echo base_url('modules/mestimates/assets/blm.js'); ?>"></script>
 <script src="<?php echo base_url('modules/mestimates/assets/mestimates.js'); ?>"></script>
 <script>
     $(function () {
-        initDataTable('.table-mestimates', window.location.href, [6], [6]);
+        initDataTable('.table-mestimates', window.location.href, [7], [7]);
         $('.table-mestimates').DataTable().on('draw', function () {
 
-        })
+        });
+        $('#div_mestimate_detail_id').hide();
     });
 
 
     function showDetailMestimate(id) {
-        var contentToggle = 0;
-        if (contentToggle == 0) {
-            $('#manage_table_id').animate({
-                width: '50%'
-            });
-            $("#div_mestimate_detail_id").slideDown("slow");
-            $('#div_mestimate_detail_id').animate({
-                width: '50%',
-                float: 'left'
-            });
-            contentToggle = 1;
-        } else if (contentToggle == 1) {
-            $('#manage_table_id').animate({
-                width: '100%'
-            });
-            $("#div_mestimate_detail_id").slideUp("slow");
-            $('#div_mestimate_detail_id').animate({
-                width: '0',
-            });
-            contentToggle = 0;
-        }
-        document.getElementsByName("mestimate_id_view")[0].value = id;
-        var url = admin_url + 'mestimates/show_detail?rtype=json';
+        $("#mestimate_id_view").val(id);
+        var url = admin_url + 'mestimates/mestimate/' + id + '?rtype=json';
         simpleAjaxPostUpload(
             url,
             '#id_to_view_form',
             function (res) {
+                $('#div_mestimate_detail_id').html(res.data_template);
+                $('#manage_table_id').removeClass('col-md-12');
+                $('#manage_table_id').addClass('col-md-6');
+                $('#div_mestimate_detail_id').show();
+                $('#div_mestimate_detail_id').addClass('col-md-6');
                 alert_float('success', res.errorMessage);
             },
             function (res) {

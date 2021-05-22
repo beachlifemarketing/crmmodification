@@ -30,10 +30,10 @@
                 <td><textarea name="detail[description][]"
                               class="col-xs-12 col-sm-12 description ui-autocomplete-input"
                               autocomplete="off"></textarea></td>
-                <td><input name="detail[qty][]" type="number" placeholder="0" class="col-xs-12 col-sm-12 center"
+                <td><input name="detail[qty_unit][]" type="text" placeholder="0" class="col-xs-12 col-sm-12 center"
                            onkeyup="computeLineAmount()" onchange="computeLineAmount()"><br><span
                             class="quantity_uom_1"></span></td>
-                <td><input name="detail[unix][]" type="number" placeholder="0.00" class="col-xs-12 col-sm-12 right"
+                <td><input name="detail[px_unit][]" type="text" placeholder="0.00" class="col-xs-12 col-sm-12 right"
                            onkeyup="computeLineAmount()" onchange="computeLineAmount()"><br><span
                             class="quantity_uom_1"></span></td>
                 <td><input name="detail[duration][]" type="text" placeholder="<?php echo _l('duration'); ?>"
@@ -60,7 +60,7 @@
             for ($i = 0; $i < count($details); $i++) {
                 $detail = $details[$i];
                 ?>
-
+                <!--                update calculate-->
                 <tr class="tr_parent">
                     <td><input value="<?= $detail['area'] ?>" name="detail[are][]" type="text"
                                placeholder="<?php echo _l('are'); ?>"

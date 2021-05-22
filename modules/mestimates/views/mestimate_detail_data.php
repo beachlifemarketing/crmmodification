@@ -1,6 +1,7 @@
 <div class="row mtop10">
     <div class="col-md-3">
-        <?php /*echo format_mestimate_status($mestimate->status, 'mtop5'); */ ?>
+        <?php
+        ?>
     </div>
     <div class="col-md-9">
         <div class="visible-xs">
@@ -121,321 +122,134 @@
         <?php } ?>
         <div id="mestimate-preview">
             <div class="row">
-                <?php if ($mestimate->status == 4 && !empty($mestimate->acceptance_firstname) && !empty($mestimate->acceptance_lastname) && !empty($mestimate->acceptance_email)) { ?>
-                    <div class="col-md-12">
-                        <div class="alert alert-info mbot15">
-                            <?php echo _l('accepted_identity_info', array(
-                                _l('mestimate_lowercase'),
-                                '<b>' . $mestimate->acceptance_firstname . ' ' . $mestimate->acceptance_lastname . '</b> (<a href="mailto:' . $mestimate->acceptance_email . '">' . $mestimate->acceptance_email . '</a>)',
-                                '<b>' . _dt($mestimate->acceptance_date) . '</b>',
-                                '<b>' . $mestimate->acceptance_ip . '</b>' . (is_admin() ? '&nbsp;<a href="' . admin_url('mestimates/clear_acceptance_info/' . $mestimate->id) . '" class="_delete text-muted" data-toggle="tooltip" data-title="' . _l('clear_this_information') . '"><i class="fa fa-remove"></i></a>' : '')
-                            )); ?>
-                        </div>
-                    </div>
-                <?php } ?>
-                <?php if ($mestimate->project_id != 0) { ?>
-                    <div class="col-md-12">
-                        <h4 class="font-medium mbot15"><?php echo _l('related_to_project', array(
-                                _l('mestimate_lowercase'),
-                                _l('project_lowercase'),
-                                '<a href="' . admin_url('projects/view/' . $mestimate->project_id) . '" target="_blank">' . $mestimate->project_data->name . '</a>',
-                            )); ?></h4>
-                    </div>
-                <?php } ?>
                 <div class="col-md-6 col-sm-6">
                     <h4 class="bold">
-                        <?php
-                        $tags = get_tags_in($mestimate->id, 'mestimate');
-                        if (count($tags) > 0) {
-                            echo '<i class="fa fa-tag" aria-hidden="true" data-toggle="tooltip" data-title="' . html_escape(implode(', ', $tags)) . '"></i>';
-                        }
-                        ?>
-                        <a href="<?php echo admin_url('mestimates/mestimate/' . $mestimate->id); ?>">
-                           <span id="mestimate-number">
-                           <?php echo $mestimate->id; ?>
-                           </span>
+                        <a href="https://localhost/blm/admin/estimates/estimate/1">
+                           <span id="estimate-number">
+                           <?= $mestimate->id ?></span>
                         </a>
                     </h4>
                     <address>
-                        <?php echo format_organization_info(); ?>
                     </address>
                 </div>
                 <div class="col-sm-6 text-right">
-                    <span class="bold"><?php echo _l('mestimate_to'); ?>:</span>
+                    <span class="bold">To:</span>
                     <address>
-                        <?php echo format_customer_info($mestimate, 'mestimate', 'billing', true); ?>
+                        <a href="https://localhost/blm/admin/clients/client/8"
+                           target="_blank"><b><?= (isset($contact) ? $contact->firstname : '') . " " . (isset($contact) ? $contact->lastname : '') ?>
+                                <br><?=(isset($client) ? $client->company : '')?></b></a><br> <?=(isset($client) ? $client->address : '')?><br> 1212 121<br><br> VAT Number: 123123
                     </address>
-                    <?php if ($mestimate->include_shipping == 1 && $mestimate->show_shipping_on_mestimate == 1) { ?>
-                        <span class="bold"><?php echo _l('ship_to'); ?>:</span>
-                        <address>
-                            <?php echo format_customer_info($mestimate, 'mestimate', 'shipping'); ?>
-                        </address>
-                    <?php } ?>
+                    <span class="bold">Ship to:</span>
+                    <address>
+                        212<br> 1 12
+                    </address>
                     <p class="no-mbot">
                            <span class="bold">
-                           <?php echo _l('mestimate_data_date'); ?>:
+                           Estimate Date:
                            </span>
-                        <?php echo $mestimate->date; ?>
-                    </p>
-                    <?php if (!empty($mestimate->expirydate)) { ?>
-                        <p class="no-mbot">
-                            <span class="bold"><?php echo _l('mestimate_data_expiry_date'); ?>:</span>
-                            <?php echo $mestimate->expirydate; ?>
-                        </p>
-                    <?php } ?>
-                    <?php if (!empty($mestimate->reference_no)) { ?>
-                        <p class="no-mbot">
-                            <span class="bold"><?php echo _l('reference_no'); ?>:</span>
-                            <?php echo $mestimate->reference_no; ?>
-                        </p>
-                    <?php } ?>
-                    <?php if ($mestimate->sale_agent != 0 && get_option('show_sale_agent_on_mestimates') == 1) { ?>
-                        <p class="no-mbot">
-                            <span class="bold"><?php echo _l('sale_agent_string'); ?>:</span>
-                            <?php echo get_staff_full_name($mestimate->sale_agent); ?>
-                        </p>
-                    <?php } ?>
-                    <?php if ($mestimate->project_id != 0 && get_option('show_project_on_mestimate') == 1) { ?>
-                        <p class="no-mbot">
-                            <span class="bold"><?php echo _l('project'); ?>:</span>
-                            <?php echo get_project_name_by_id($mestimate->project_id); ?>
-                        </p>
-                    <?php } ?>
-                    <?php $pdf_custom_fields = get_custom_fields('mestimate', array('show_on_pdf' => 1));
-                    foreach ($pdf_custom_fields as $field) {
-                        $value = get_custom_field_value($mestimate->id, $field['id'], 'mestimate');
-                        if ($value == '') {
-                            continue;
-                        } ?>
-                        <p class="no-mbot">
-                            <span class="bold"><?php echo $field['name']; ?>: </span>
-                            <?php echo $value; ?>
-                        </p>
-                    <?php } ?>
+                        2021-05-14 </p>
+                    <p class="no-mbot">
+                        <span class="bold">Expiry Date:</span>
+                        2021-05-21 </p>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-responsive">
-                        <?php
-                        $items = get_items_table_data($mestimate, 'mestimate', 'html', true);
-                        echo $items->table();
-                        ?>
+                        <table class="table items items-preview estimate-items-preview" data-type="estimate">
+                            <thead>
+                            <tr>
+                                <th align="center">#</th>
+                                <th class="description" width="38%" align="left">Item</th>
+                                <th align="right">Qty</th>
+                                <th align="right">Rate</th>
+                                <th align="right">Tax</th>
+                                <th align="right">Amount</th>
+                            </tr>
+                            </thead>
+                            <tbody class="ui-sortable">
+                            <tr class="sortable" data-item-id="1">
+                                <td class="dragger item_no ui-sortable-handle" align="center" width="5%">1</td>
+                                <td class="description" align="left;" width="33%"><span style="font-size:px;"><strong>Item 3 Group 1</strong></span>
+                                </td>
+                                <td align="right" width="9%">1</td>
+                                <td align="right" width="9%">122.00</td>
+                                <td align="right" width="9%">0%</td>
+                                <td class="amount" align="right" width="9%">122.00</td>
+                            </tr>
+                            <tr class="sortable" data-item-id="2">
+                                <td class="dragger item_no ui-sortable-handle" align="center" width="5%">2</td>
+                                <td class="description" align="left;" width="33%"><span style="font-size:px;"><strong>Item 3 Group 1</strong></span>
+                                </td>
+                                <td align="right" width="9%">1</td>
+                                <td align="right" width="9%">122.00</td>
+                                <td align="right" width="9%">0%</td>
+                                <td class="amount" align="right" width="9%">122.00</td>
+                            </tr>
+                            <tr class="sortable" data-item-id="3">
+                                <td class="dragger item_no ui-sortable-handle" align="center" width="5%">3</td>
+                                <td class="description" align="left;" width="33%"><span style="font-size:px;"><strong>Item 3 Group 1</strong></span>
+                                </td>
+                                <td align="right" width="9%">1</td>
+                                <td align="right" width="9%">122.00</td>
+                                <td align="right" width="9%">0%</td>
+                                <td class="amount" align="right" width="9%">122.00</td>
+                            </tr>
+                            <tr class="sortable" data-item-id="4">
+                                <td class="dragger item_no ui-sortable-handle" align="center" width="5%">4</td>
+                                <td class="description" align="left;" width="33%"><span style="font-size:px;"><strong>Item 2 Group 1</strong></span>
+                                </td>
+                                <td align="right" width="9%">1</td>
+                                <td align="right" width="9%">12.00</td>
+                                <td align="right" width="9%">0%</td>
+                                <td class="amount" align="right" width="9%">12.00</td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
                 <div class="col-md-5 col-md-offset-7">
                     <table class="table text-right">
                         <tbody>
                         <tr id="subtotal">
-                            <td><span class="bold"><?php echo _l('mestimate_subtotal'); ?></span>
+                            <td><span class="bold">Sub Total</span>
                             </td>
                             <td class="subtotal">
-                                <?php echo app_format_money($mestimate->subtotal, $mestimate->currency_name); ?>
+                                $378.00
                             </td>
                         </tr>
-                        <?php if (is_sale_discount_applied($mestimate)) { ?>
-                            <tr>
-                                <td>
-                                    <span class="bold"><?php echo _l('mestimate_discount'); ?>
-                                        <?php if (is_sale_discount($mestimate, 'percent')) { ?>
-                                            (<?php echo app_format_number($mestimate->discount_percent, true); ?>%)
-                                        <?php } ?></span>
-                                </td>
-                                <td class="discount">
-                                    <?php echo '-' . app_format_money($mestimate->discount_total, $mestimate->currency_name); ?>
-                                </td>
-                            </tr>
-                        <?php } ?>
-                        <?php if ((int)$mestimate->adjustment != 0) { ?>
-                            <tr>
-                                <td>
-                                    <span class="bold"><?php echo _l('mestimate_adjustment'); ?></span>
-                                </td>
-                                <td class="adjustment">
-                                    <?php echo app_format_money($mestimate->adjustment, $mestimate->currency_name); ?>
-                                </td>
-                            </tr>
-                        <?php } ?>
                         <tr>
-                            <td><span class="bold"><?php echo _l('mestimate_total'); ?></span>
+                            <td><span class="bold">Total</span>
                             </td>
                             <td class="total">
-                                <?php echo app_format_money($mestimate->total, $mestimate->currency_name); ?>
+                                $378.00
                             </td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
-                <?php if (count($mestimate->attachments) > 0) { ?>
-                    <div class="clearfix"></div>
-                    <hr/>
-                    <div class="col-md-12">
-                        <p class="bold text-muted"><?php echo _l('mestimate_files'); ?></p>
-                    </div>
-                    <?php foreach ($mestimate->attachments as $attachment) {
-                        $attachment_url = site_url('download/file/sales_attachment/' . $attachment['attachment_key']);
-                        if (!empty($attachment['external'])) {
-                            $attachment_url = $attachment['external_link'];
-                        }
-                        ?>
-                        <div class="mbot15 row col-md-12" data-attachment-id="<?php echo $attachment['id']; ?>">
-                            <div class="col-md-8">
-                                <div class="pull-left"><i
-                                            class="<?php echo get_mime_class($attachment['filetype']); ?>"></i></div>
-                                <a href="<?php echo $attachment_url; ?>"
-                                   target="_blank"><?php echo $attachment['file_name']; ?></a>
-                                <br/>
-                                <small class="text-muted"> <?php echo $attachment['filetype']; ?></small>
-                            </div>
-                            <div class="col-md-4 text-right">
-                                <?php if ($attachment['visible_to_customer'] == 0) {
-                                    $icon = 'fa fa-toggle-off';
-                                    $tooltip = _l('show_to_customer');
-                                } else {
-                                    $icon = 'fa fa-toggle-on';
-                                    $tooltip = _l('hide_from_customer');
-                                }
-                                ?>
-                                <a href="#" data-toggle="tooltip"
-                                   onclick="toggle_file_visibility(<?php echo $attachment['id']; ?>,<?php echo $mestimate->id; ?>,this); return false;"
-                                   data-title="<?php echo $tooltip; ?>"><i class="<?php echo $icon; ?>"
-                                                                           aria-hidden="true"></i></a>
-                                <?php if ($attachment['staffid'] == get_staff_user_id() || is_admin()) { ?>
-                                    <a href="#" class="text-danger"
-                                       onclick="delete_mestimate_attachment(<?php echo $attachment['id']; ?>); return false;"><i
-                                                class="fa fa-times"></i></a>
-                                <?php } ?>
-                            </div>
+                <div class="clearfix"></div>
+                <hr>
+                <div class="col-md-12">
+                    <p class="bold text-muted">Estimate Files</p>
+                </div>
+                <div class="mbot15 row col-md-12" data-attachment-id="3">
+                    <div class="col-md-8">
+                        <div class="pull-left"><i class="mime mime-image"></i>
                         </div>
-                    <?php } ?>
-                <?php } ?>
-                <?php if ($mestimate->clientnote != '') { ?>
-                    <div class="col-md-12 mtop15">
-                        <p class="bold text-muted"><?php echo _l('mestimate_note'); ?></p>
-                        <p><?php echo $mestimate->clientnote; ?></p>
+                        <a href="https://localhost/blm/download/file/sales_attachment/c1ec5603c758f680a620f7f8fb5eb05c"
+                           target="_blank">399468-20.jpg</a>
+                        <br>
+                        <small class="text-muted"> image/jpeg</small>
                     </div>
-                <?php } ?>
-                <?php if ($mestimate->terms != '') { ?>
-                    <div class="col-md-12 mtop15">
-                        <p class="bold text-muted"><?php echo _l('terms_and_conditions'); ?></p>
-                        <p><?php echo $mestimate->terms; ?></p>
+                    <div class="col-md-4 text-right">
+                        <a href="#" data-toggle="tooltip" onclick="toggle_file_visibility(3,1,this); return false;"
+                           data-title="Show to customer"><i class="fa fa-toggle-off" aria-hidden="true"></i></a>
+                        <a href="#" class="text-danger" onclick="delete_estimate_attachment(3); return false;"><i
+                                    class="fa fa-times"></i></a>
                     </div>
-                <?php } ?>
+                </div>
             </div>
         </div>
-    </div>
-    <div role="tabpanel" class="tab-pane" id="tab_tasks">
-        <?php init_relation_tasks_table(array('data-new-rel-id' => $mestimate->id, 'data-new-rel-type' => 'mestimate')); ?>
-    </div>
-    <div role="tabpanel" class="tab-pane" id="tab_reminders">
-        <a href="#" data-toggle="modal" class="btn btn-info"
-           data-target=".reminder-modal-mestimate-<?php echo $mestimate->id; ?>"><i
-                    class="fa fa-bell-o"></i> <?php echo _l('mestimate_set_reminder_title'); ?></a>
-        <hr/>
-        <?php render_datatable(array(_l('reminder_description'), _l('reminder_date'), _l('reminder_staff'), _l('reminder_is_notified')), 'reminders'); ?>
-        <?php $this->load->view('admin/includes/modals/reminder', array('id' => $mestimate->id, 'name' => 'mestimate', 'members' => $members, 'reminder_title' => _l('mestimate_set_reminder_title'))); ?>
-    </div>
-    <div role="tabpanel" class="tab-pane" id="tab_emails_tracking">
-        <?php
-        $this->load->view('admin/includes/emails_tracking', array(
-                'tracked_emails' =>
-                    get_tracked_emails($mestimate->id, 'mestimate'))
-        );
-        ?>
-    </div>
-    <div role="tabpanel" class="tab-pane" id="tab_notes">
-        <?php echo form_open(admin_url('mestimates/add_note/' . $mestimate->id), array('id' => 'sales-notes', 'class' => 'mestimate-notes-form')); ?>
-        <?php echo render_textarea('description'); ?>
-        <div class="text-right">
-            <button type="submit" class="btn btn-info mtop15 mbot15"><?php echo _l('mestimate_add_note'); ?></button>
-        </div>
-        <?php echo form_close(); ?>
-        <hr/>
-        <div class="panel_s mtop20 no-shadow" id="sales_notes_area">
-        </div>
-    </div>
-    <div role="tabpanel" class="tab-pane" id="tab_activity">
-        <div class="row">
-            <div class="col-md-12">
-                <?php
-                if ($activity) {
-                    ?>
-                    <div class="activity-feed">
-                        <?php foreach ($activity as $activity) {
-                            $_custom_data = false;
-                            ?>
-                            <div class="feed-item" data-sale-activity-id="<?php echo $activity['id']; ?>">
-                                <div class="date">
-                              <span class="text-has-action" data-toggle="tooltip"
-                                    data-title="<?php echo _dt($activity['date']); ?>">
-                              <?php echo time_ago($activity['date']); ?>
-                              </span>
-                                </div>
-                                <div class="text">
-                                    <?php if (is_numeric($activity['staffid']) && $activity['staffid'] != 0) { ?>
-                                        <a href="<?php echo admin_url('profile/' . $activity["staffid"]); ?>">
-                                            <?php echo staff_profile_image($activity['staffid'], array('staff-profile-xs-image pull-left mright5'));
-                                            ?>
-                                        </a>
-                                    <?php } ?>
-                                    <?php
-                                    $additional_data = '';
-                                    if (!empty($activity['additional_data'])) {
-                                        $additional_data = unserialize($activity['additional_data']);
-                                        $i = 0;
-                                        foreach ($additional_data as $data) {
-                                            if (strpos($data, '<original_status>') !== false) {
-                                                $original_status = get_string_between($data, '<original_status>', '</original_status>');
-                                                $additional_data[$i] = format_mestimate_status($original_status, '', false);
-                                            } else if (strpos($data, '<new_status>') !== false) {
-                                                $new_status = get_string_between($data, '<new_status>', '</new_status>');
-                                                $additional_data[$i] = format_mestimate_status($new_status, '', false);
-                                            } else if (strpos($data, '<status>') !== false) {
-                                                $status = get_string_between($data, '<status>', '</status>');
-                                                $additional_data[$i] = format_mestimate_status($status, '', false);
-                                            } else if (strpos($data, '<custom_data>') !== false) {
-                                                $_custom_data = get_string_between($data, '<custom_data>', '</custom_data>');
-                                                unset($additional_data[$i]);
-                                            }
-                                            $i++;
-                                        }
-                                    }
-                                    $_formatted_activity = _l($activity['description'], $additional_data);
-                                    if ($_custom_data !== false) {
-                                        $_formatted_activity .= ' - ' . $_custom_data;
-                                    }
-                                    if (!empty($activity['full_name'])) {
-                                        $_formatted_activity = $activity['full_name'] . ' - ' . $_formatted_activity;
-                                    }
-                                    echo $_formatted_activity;
-                                    if (is_admin()) {
-                                        echo '<a href="#" class="pull-right text-danger" onclick="delete_sale_activity(' . $activity['id'] . '); return false;"><i class="fa fa-remove"></i></a>';
-                                    }
-                                    ?>
-                                </div>
-                            </div>
-                        <?php } ?>
-                    </div>
-                    <?php
-                }
-                ?>
-            </div>
-        </div>
-    </div>
-    <div role="tabpanel" class="tab-pane" id="tab_views">
-        <?php
-        $views_activity = get_views_tracking('mestimate', $mestimate->id);
-        if (count($views_activity) === 0) {
-            echo '<h4 class="no-mbot">' . _l('not_viewed_yet', _l('mestimate_lowercase')) . '</h4>';
-        }
-        foreach ($views_activity as $activity) { ?>
-            <p class="text-success no-margin">
-                <?php echo _l('view_date') . ': ' . _dt($activity['date']); ?>
-            </p>
-            <p class="text-muted">
-                <?php echo _l('view_ip') . ': ' . $activity['view_ip']; ?>
-            </p>
-            <hr/>
-        <?php } ?>
     </div>
 </div>
