@@ -44,11 +44,10 @@
                 $_tooltip_already_send = _l('mestimate_already_send_to_client_tooltip', time_ago($mestimate->datesend));
             }
             ?>
-            <?php if (!empty($mestimate->clientid)) { ?>
-                <a href="#" class="mestimate-send-to-client btn btn-default btn-with-tooltip" data-toggle="tooltip"
-                   title="<?php echo $_tooltip; ?>" data-placement="bottom"><span data-toggle="tooltip"
-                                                                                  data-title="<?php echo $_tooltip_already_send; ?>"><i
-                                class="fa fa-envelope"></i></span></a>
+            <?php if (!empty($mestimate->client_id)) { ?>
+                <a href="#" onclick="sendEmailMestimate(); return false;" title="<?php echo $_tooltip; ?>" data-placement="bottom">
+                    <span data-toggle="tooltip" data-title="<?php echo $_tooltip_already_send; ?>">
+                        <i class="fa fa-envelope"></i></span></a>
             <?php } ?>
             <div class="btn-group">
                 <button type="button" class="btn btn-default pull-left dropdown-toggle" data-toggle="dropdown"
@@ -208,15 +207,22 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr class="sortable" data-item-id="1">
-                                <td>1</td>
-                                <td>2</td>
-                                <td>1</td>
-                                <td>2</td>
-                                <td>1</td>
-                                <td>2</td>
-                                <td>1</td>
-                            </tr>
+                            <?php
+                            for ($i = 0; $i < count($details); $i++) {
+                                $detail = $details[$i];
+                                ?>
+                                <tr class="tr_parent">
+                                    <td><?= $detail['area'] ?></td>
+                                    <td><?= $detail['size'] ?></td>
+                                    <td><?= $detail['description'] ?></td>
+                                    <td><?= $detail['qty_unit'] ?></td>
+                                    <td><?= $detail['px_unit'] ?></td>
+                                    <td><?= $detail['duration'] ?></td>
+                                    <td><?= $detail['amount'] ?></td>
+                                </tr>
+                                <?php
+                            } ?>
+
                             </tbody>
                         </table>
                     </div>
@@ -228,35 +234,37 @@
                             <td><span class="bold">REMEDIATION</span>
                             </td>
                             <td class="subtotal">
-                                $378.00
+                                <?= (isset($mestimate) && isset($mestimate->sub_total)) ? $mestimate->sub_total : 0.00 ?>
                             </td>
                         </tr>
                         <tr>
-                            <td><span class="bold">DISCOUNT 0.00%</span>
+                            <td>
+                                <span class="bold">DISCOUNT <?= (isset($mestimate) && isset($mestimate->discount)) ? $mestimate->discount : 0.00 ?></span>
                             </td>
                             <td class="total">
-                                $378.00
+                                <?= (isset($mestimate) && isset($mestimate->discount_val)) ? $mestimate->discount_val : 0.00 ?>
                             </td>
                         </tr>
                         <tr>
                             <td><span class="bold">TOTAL</span>
                             </td>
                             <td class="total">
-                                $378.00
+                                <?= (isset($mestimate) && isset($mestimate->total)) ? $mestimate->total : 0.00 ?>
                             </td>
                         </tr>
                         <tr>
-                            <td><span class="bold">PERCENTAGE PAID 100.00%</span>
+                            <td>
+                                <span class="bold">PERCENTAGE PAID <?= (isset($mestimate) && isset($mestimate->paid_by_customer_percent)) ? $mestimate->paid_by_customer_percent : 0.00 ?></span>
                             </td>
                             <td class="total">
-                                $378.00
+                                <?= (isset($mestimate) && isset($mestimate->paid_by_customer_text)) ? $mestimate->paid_by_customer_text : "" ?>
                             </td>
                         </tr>
                         <tr>
                             <td><span class="bold">PAID IN FULL -</span>
                             </td>
                             <td class="total">
-                                $378.00
+                                <?= (isset($mestimate) && isset($mestimate->balance_due_val)) ? $mestimate->balance_due_val : "" ?>
                             </td>
                         </tr>
                         </tbody>
@@ -268,20 +276,34 @@
                     <p class="bold text-muted">Estimate Files</p>
                 </div>
                 <div class="mbot15 row col-md-12" data-attachment-id="3">
-                    <div class="col-md-8">
-                        <div class="pull-left"><i class="mime mime-image"></i>
-                        </div>
-                        <a href="https://localhost/blm/download/file/sales_attachment/c1ec5603c758f680a620f7f8fb5eb05c"
-                           target="_blank">399468-20.jpg</a>
-                        <br>
-                        <small class="text-muted"> image/jpeg</small>
-                    </div>
-                    <div class="col-md-4 text-right">
-                        <a href="#" data-toggle="tooltip" onclick="toggle_file_visibility(3,1,this); return false;"
-                           data-title="Show to customer"><i class="fa fa-toggle-off" aria-hidden="true"></i></a>
-                        <a href="#" class="text-danger" onclick="delete_estimate_attachment(3); return false;"><i
-                                    class="fa fa-times"></i></a>
-                    </div>
+
+                    <table class="table table-bordered table-striped mb-0 table-mestimate-files" data-order-col="7"
+                           data-order-type="desc">
+                        <thead>
+                        <tr>
+                            <th style="min-width: 100px"><?php echo _l('mestimate_file_filename'); ?></th>
+                            <th style="min-width: 100px"><?php echo _l('mestimate_file__filetype'); ?></th>
+                            <th style="min-width: 100px"><?php echo _l('mestimate_file_dateadded'); ?></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php foreach ($files as $file) {
+                            $path = FCPATH . 'uploads/mestimates' . '/' . $file['contact_id'] . '/' . $file['file_name'];
+                            ?>
+                            <tr>
+                                <td data-order="<?php echo $file['file_name']; ?>">
+                                    <a href="<?=mestimate_file_url($file, true)?>">
+                                        <?php if (is_image($path) || (!empty($file['external']) && !empty($file['thumbnail_link']))) {
+                                            echo '<img class="mestimate-file-image img-table-loading" src="' . mestimate_file_url($file, true) . '" data-orig="' . mestimate_file_url($file, true) . '" width="100">';
+                                        }
+                                        echo $file['subject']; ?></a>
+                                </td>
+                                <td data-order="<?php echo $file['filetype']; ?>"><?php echo $file['filetype']; ?></td>
+                                <td data-order="<?php echo $file['dateadded']; ?>"><?php echo _dt($file['dateadded']); ?></td>
+                            </tr>
+                        <?php } ?>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

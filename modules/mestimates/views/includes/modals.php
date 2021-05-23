@@ -48,4 +48,9 @@
         </div>
     </div>
 </div>
-<?php
+
+
+<div class="modal fade" id="send_email_mestimate" tabindex="-1" role="dialog" aria-labelledby="sendEmailMestimate"
+     aria-hidden="true">
+
+</div>

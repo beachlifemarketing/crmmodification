@@ -143,9 +143,25 @@ class Mestimates extends AdminController
         $data['clients'] = $clients;
         $data['rtype'] = isset($_REQUEST['rtype']) ? $_REQUEST['rtype'] : '';
         if (isset($_REQUEST['rtype']) && $_REQUEST['rtype'] === 'json') {
+            $data['errorCode'] = 'SUCCESS';
+            if ($_REQUEST['mestimate_id_view']) {
+                $data['data_template'] = $this->load->view('mestimates/mestimate_detail_data', $data, true);
+                $data['errorMessage'] = _l('load_template_success');
+            } elseif ($_REQUEST['load_model_send_email']) {
+                $template_name = 'mestimate-send-to-client';
+                $this->load->model('emails_model');
+                $template_name = $template_name;
+                $slug = $this->CI->app_mail_template->get_default_property_value('slug', $template_name);
+                $template = $this->emails_model->get(['slug' => $slug, 'language' => 'english'], 'row');
 
-            if (!isset($_REQUEST['mestimate_id_view'])) {
-                $data['errorCode'] = 'SUCCESS';
+                $data['template'] = $template;
+                $data['template_name'] = $template_name;
+                $data['template_disabled'] = $template->active == 0;
+                $data['template_id'] = $template->emailtemplateid;
+                $data['template_system_name'] = $template->name;
+                $data['data_template'] = $this->load->view('mestimates/includes/send_email_modal_data', $data, true);
+                $data['errorMessage'] = _l('load_template_success');
+            } else {
                 if (isset($_REQUEST['change']) && $_REQUEST['change'] == 'template') {
                     $data['data_template'] = $this->load->view('mestimates/includes/mestimate_data', $data, true);
                     $data['errorMessage'] = _l('load_template_success');
@@ -154,11 +170,8 @@ class Mestimates extends AdminController
                     $data['view_file'] = $this->load->view('mestimates/includes/mestimate_files', $data, true);
                     $data['errorMessage'] = _l('load_info_client_success');
                 }
-            } else {
-                $data['errorCode'] = 'SUCCESS';
-                $data['data_template'] = $this->load->view('mestimates/mestimate_detail_data', $data, true);
-                $data['errorMessage'] = _l('load_template_success');
             }
+
             echo json_encode($data);
         } else {
             $this->load->view('mestimate', $data);
@@ -578,6 +591,12 @@ class Mestimates extends AdminController
             $data['errorMessage'] = _l('select_file_to_remove');
             echo json_encode($data);
         }
+    }
+
+
+    public function loadFormSendEmail()
+    {
+
     }
 
     /* Generates estimate PDF and senting to email  */

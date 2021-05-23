@@ -44,6 +44,7 @@ echo form_open('', array('id' => 'id_to_view_form'));
 echo '<input type="hidden" name="mestimate_id_view" id="mestimate_id_view" >';
 echo form_close();
 ?>
+<?php $this->load->view('mestimates/includes/modals') ?>
 <?php init_tail(); ?>
 
 <script src="<?php echo base_url('modules/mestimates/assets/blm.js'); ?>"></script>
@@ -79,6 +80,32 @@ echo form_close();
                 alert_float('danger', res.errorMessage);
             }
         );
+    }
+
+    function sendEmailMestimate() {
+        var id = $("#mestimate_id_view").val();
+        if (id == null || id == '') {
+            alert_float('danger', "Ërror: Can't load info mestimate");
+        } else {
+            var gurl = admin_url + 'mestimates/mestimate/' + id + '?rtype=json&load_model_send_email=true';
+            var purl = admin_url + 'mestimates/send_email?rtype=json';
+            simpleCUDModalUpload(
+                '#send_email_mestimate',
+                '#id_to_view_form',
+                '#button_send_email',
+                gurl,
+                purl,
+                function (res) {
+                    alert_float('success', res.errorMessage);
+                },
+                function (res) {
+                    alert_float('danger', res.errorMessage);
+                },
+                function (res) {
+                    alert_float('danger', res.errorMessage);
+                }
+            );
+        }
     }
 
 </script>
