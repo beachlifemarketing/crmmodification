@@ -10,11 +10,11 @@ $aColumns = [
     'active',
 ];
 $sIndexColumn = 'surveyid';
-$sTable       = db_prefix() . 'surveys';
-$result       = data_tables_init($aColumns, $sIndexColumn, $sTable, [], [], [
+$sTable = db_prefix() . 'surveys';
+$result = data_tables_init($aColumns, $sIndexColumn, $sTable, [], [], [
     'hash',
 ]);
-$output  = $result['output'];
+$output = $result['output'];
 $rResult = $result['rResult'];
 foreach ($rResult as $aRow) {
     $row = [];

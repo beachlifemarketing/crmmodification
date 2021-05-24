@@ -31,7 +31,7 @@ class Theme_style extends AdminController
 
         update_option('theme_style', $this->input->post('data'));
 
-        foreach(['admin_area','clients_area','clients_and_admin'] as $css_area) {
+        foreach (['admin_area', 'clients_area', 'clients_and_admin'] as $css_area) {
             // Also created the variables
             $$css_area = $this->input->post($css_area);
             $$css_area = trim($$css_area);

@@ -74,7 +74,7 @@ class Menu_setup extends AdminController
 
     private function prepare_menu_options($group)
     {
-        $new     = [];
+        $new = [];
         $options = $this->input->post('options');
 
         foreach ($options as $key => $val) {

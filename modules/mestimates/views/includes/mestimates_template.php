@@ -54,11 +54,11 @@
                 <textarea rows="6" id="client_note" name="client_note"
                           class="form-control "><?php
                     if (isset($mestimate) && $mestimate->client_note != '') {
-echo $mestimate->client_note;
+                        echo $mestimate->client_note;
                     } elseif (get_option('predefined_clientnote_estimate') != null) {
-echo get_option('predefined_clientnote_estimate');
+                        echo get_option('predefined_clientnote_estimate');
                     }
-?></textarea>
+                    ?></textarea>
             </div>
         </div>
         <div class="col-md-12">
@@ -67,11 +67,11 @@ echo get_option('predefined_clientnote_estimate');
                 <textarea rows="6" id="term_and_condition" name="term_and_condition"
                           class="form-control "><?php
                     if (isset($mestimate) && $mestimate->term_and_condition != '') {
-echo $mestimate->term_and_condition;
+                        echo $mestimate->term_and_condition;
                     } elseif (get_option('predefined_terms_estimate') != null) {
-echo get_option('predefined_terms_estimate');
-}
-?>
+                        echo get_option('predefined_terms_estimate');
+                    }
+                    ?>
                 </textarea>
             </div>
         </div>
