@@ -37,7 +37,7 @@
             <?php if (!empty($mestimate->client_id)) { ?>
                 <a href="#" class="btn btn-default dropdown-toggle" onclick="sendEmailMestimate(); return false;" title="<?php echo $_tooltip; ?>"
                    data-placement="bottom">
-                    <span data-toggle="tooltip" data-title="<?php echo $_tooltip_already_send; ?>">
+                    <span data-toggle="tooltip" data-title="Send Email">
                         <i class="fa fa-envelope"></i></span></a>
             <?php } ?>
             <!--<div class="btn-group">
