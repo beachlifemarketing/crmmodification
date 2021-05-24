@@ -5,7 +5,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 /*
 Module Name: Mestimates
 Description: Beach Life Marketing
-Version: 1.0.0
+Version: 1.2.0
 Requires at least: 2.3.*
 */
 

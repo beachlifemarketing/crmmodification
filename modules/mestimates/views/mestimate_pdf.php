@@ -11,34 +11,59 @@
     <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/builds/vendor-admin.css?v=2.8.4'); ?>">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url('modules/mestimates/assets/blm.css'); ?>">
     <style>
-        table td{
+        table {
+            collapse: 0;
+            row-span: 0;
+        }
+
+        #tbl_info_company td {
+            border: 1px solid black;
+        }
+
+        #tbl_info_company tr td:first-child {
+            background-color: lightgoldenrodyellow;
+        }
+
+        #tbl_info_company_2 td {
+            border: 1px solid black;
+        }
+
+        #table_detail d {
+            border: 1px solid black;
+        }
+
+        #table_details_2 td {
+            border: 1px solid black;
+        }
+        .tr_parent td{
             border: 1px solid black;
         }
     </style>
 </head>
 
 <div class="clearfix"></div>
-<hr class="hr-panel-heading"/>
+<hr class="hr-panel-heading" style="clear: both"/>
 <br/>
-<table style="width: 100%">
+<table style="width: 100%" cellpadding="0" cellspacing="0">
     <tr>
-        <td>
+        <td style="text-align: left; vertical-align: top" style="clear: both">
             <?php
-            $path = 'uploads/company/'.get_option('company_logo');
+            $path = 'uploads/company/' . get_option('company_logo');
             $type = pathinfo($path, PATHINFO_EXTENSION);
             $data = file_get_contents($path);
             $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
             ?>
-            <img width="180" height="110" src="<?= $base64 ?>"/><br/>
-            <b><?= get_option('companyname'); ?></b>
+            <img width="150px" height="" src="<?= $base64 ?>" style="margin-top: 50px"/>
+            <br/>
+            <b><?= get_option('companyname'); ?></b><br/>
             <b><a href="<?= get_option('main_domain'); ?>"><?= get_option('main_domain'); ?></a></b>
         </td>
         <td>
 
         </td>
-        <td>
-           <h3>Customer Information</h3>
-            <table id="tbl_info_company" style="width: 100%;">
+        <td style="vertical-align: top">
+            <h3>Customer Information</h3>
+            <table id="tbl_info_company" style="width: 100%;" cellpadding="0" cellspacing="0">
                 <tr>
                     <td>Job #:</td>
                     <td><?= (isset($mestimate) ? $mestimate->job_number : '') ?></td>
@@ -73,12 +98,12 @@
     </tr>
 </table>
 <br/>
-<table style="width: 100%" id="tbl_info_company_2">
+<table style="width: 100%" id="tbl_info_company_2" cellpadding="0" cellspacing="0">
     <tr style="background-color: lightgoldenrodyellow">
-        <td>Representative</td>
-        <td>Date</td>
-        <td>Payment Options</td>
-        <td>Due Date</td>
+        <th>Representative</th>
+        <th>Date</th>
+        <th>Payment Options</th>
+        <th>Due Date</th>
     </tr>
     <tr>
         <td><?= (isset($mestimate) ? $mestimate->representative : '') ?></td>
@@ -100,7 +125,7 @@
 </table>
 <br/>
 <table style="width: 100%" class="table items items-preview estimate-items-preview"
-       data-type="estimate" border="1">
+       data-type="estimate" id="table_detail" cellpadding="0" cellspacing="0">
     <thead>
     <tr style="background-color: #0f1f2f; color: white">
         <th>AREA</th>
@@ -132,7 +157,7 @@
     </tbody>
 </table>
 <br/>
-<table style="width: 100%" class="table text-right" border="1">
+<table id="table_details_2" style="width: 100%" class="table text-right" cellpadding="0" cellspacing="0">
     <tbody>
     <tr id="subtotal">
         <td><span class="bold">REMEDIATION</span>
