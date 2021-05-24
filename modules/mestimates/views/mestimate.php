@@ -1,5 +1,6 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
 <?php init_head(); ?>
+<link rel="stylesheet" type="text/css" href="<?php echo base_url('modules/mestimates/assets/blm.css'); ?>">
 <div id="wrapper">
     <div class="content" id="id_content_mestimate">
         <?php $this->load->view('mestimates/includes/mestimate_data'); ?>
@@ -137,32 +138,39 @@
         var paid_by_customer_percent = $('#paid_by_customer_percent').val();
         $('input[name="detail[amount][]"]').each(function () {
             var qty_input = $(this).closest('tr').children('td:eq(3)').children('input').val();
-            var qty_array = qty_input.split(" ");
-            var qty = qty_array[0];
-            parseFloat(qty).toFixed(2);
+            var qty = parseFloat(qty_input.replace(/[^0-9.]/g, ""), 2);
 
             var unix_input = $(this).closest('tr').children('td:eq(4)').children('input').val();
-            var unix_input = unix_input.split(" ");
-            var unix = parseFloat(unix_input[0]).toFixed(2);
+            var unix = parseFloat(unix_input.replace(/[^0-9.]/g, ""), 2);
 
             var duration_input = $(this).closest('tr').children('td:eq(5)').children('input').val();
-            var duration_array = duration_input.split(" ");
-            var duration = duration_array[0];
+            var duration = parseFloat(duration_input.replace(/[^0-9.]/g, ""), 2);
 
             var amount = 1;
-            if (typeof qty == 'undefined' || qty == null || qty == '' || $.isNumeric(qty) == false) {
-                amount = unix * duration;
-            } else if (typeof unix == 'undefined' || unix == null || unix == '' || $.isNumeric(unix) == false) {
-                amount = qty * duration;
-            } else if (typeof duration == 'undefined' || duration == null || duration == '' || $.isNumeric(duration) == false) {
-                amount = qty * unix;
-            } else {
-                amount = qty * unix * duration;
+            var isValid = false;
+            if (typeof qty != 'undefined' && qty != null && qty != '' && $.isNumeric(qty) && qty != "NaN") {
+                amount = amount * qty;
+                isValid = true;
             }
+            if (typeof unix != 'undefined' && unix != null && unix != '' && $.isNumeric(unix) && unix != "NaN") {
+                amount = amount * unix;
+                isValid = true;
+            }
+            if (typeof duration != 'undefined' && duration != null && duration != '' && $.isNumeric(duration) && duration != "NaN") {
+                amount = amount * duration;
+                isValid = true;
+            }
+
+            if (isValid == false) {
+                amount = 0;
+            }
+            amount = parseFloat(amount, 2);
 
             $(this).val(amount);
             sub_total += amount;
         });
+
+
         $('#sub_total').val(parseFloat(sub_total).toFixed(2));
         var total_discount = (sub_total * discount) / 100;
         var total_affter_discount = sub_total - total_discount;

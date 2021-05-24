@@ -16,8 +16,11 @@ defined('BASEPATH') or exit('No direct script access allowed');
 * explicitly and never rely on auto-guessing, especially in production
 * environments.
 *
+ * STAGING
 */
+
 define('APP_BASE_URL', 'https://crmmod.beachlifemarketing.com/staging');
+
 
 /*
 * --------------------------------------------------------------------------

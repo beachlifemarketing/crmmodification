@@ -57,7 +57,7 @@ class Backup extends AdminController
         hooks()->do_action('before_update_backup_options');
 
         if ($this->input->post()) {
-            $_post     = $this->input->post();
+            $_post = $this->input->post();
             $updated_1 = update_option('auto_backup_enabled', $_post['settings']['auto_backup_enabled']);
             $updated_2 = update_option('auto_backup_every', $this->input->post('auto_backup_every'));
             $updated_3 = update_option('delete_backups_older_then', $this->input->post('delete_backups_older_then'));

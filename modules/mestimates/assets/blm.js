@@ -107,6 +107,26 @@ function simpleAjaxPost(url, data, successCallBack, fieldErrorCallBack, actionEr
     });
 }
 
+
+function simpleCUDModalUpload(dialogId, formId, actionBtnId, gUrl, pUrl, successCallBack, fieldErrorCallBack, actionErrorCallBack) {
+    $(actionBtnId).attr("disabled", "disabled").button('refresh');
+    $(actionBtnId).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>\n' +
+        '  Loading...');
+
+    simpleAjaxPostUpload(gUrl, formId,
+        function (res) {
+            $(dialogId).html(res.data_template);
+            $(dialogId).modal('toggle');
+            $(actionBtnId).click(function (e) {
+                e.preventDefault();
+                simpleAjaxPostUpload(pUrl, dialogId, successCallBack, fieldErrorCallBack, actionErrorCallBack);
+                $(actionBtnId).removeAttr("disabled").button('refresh');
+                $(actionBtnId).html('OK');
+            });
+        }
+    );
+}
+
 function getAppendIntact(url) {
     return (!/\?/.test(url) ? '?' : '&');
 }
