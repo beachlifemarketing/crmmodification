@@ -87,11 +87,11 @@ echo form_close();
         if (id == null || id == '') {
             alert_float('danger', "Ërror: Can't load info mestimate");
         } else {
-            var gurl = admin_url + 'mestimates/mestimate/' + id + '?rtype=json&load_model_send_email=true';
-            var purl = admin_url + 'mestimates/send_email?rtype=json';
+            var gurl = admin_url + 'mestimates/mestimate/' + id + '?rtype=json';
+            var purl = admin_url + 'mestimates/send_to_email?rtype=json&load_model_send_email=true';
             simpleCUDModalUpload(
                 '#send_email_mestimate',
-                '#id_to_view_form',
+                '#div_mestimate_detail_id',
                 '#button_send_email',
                 gurl,
                 purl,

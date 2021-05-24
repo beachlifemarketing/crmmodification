@@ -80,8 +80,8 @@ class Mestimates extends AdminController
             access_denied('mestimates');
         }
 
-        if (isset($_REQUEST['mestimate_id_view'])) {
-            $id = $_REQUEST['mestimate_id_view'];
+        if (isset($_REQUEST['mestimate_id']) && $_REQUEST['mestimate_id'] != null) {
+            $id = $_REQUEST['mestimate_id'];
         }
 
         if (($id != null && $id > 0)) {
@@ -144,15 +144,14 @@ class Mestimates extends AdminController
         $data['rtype'] = isset($_REQUEST['rtype']) ? $_REQUEST['rtype'] : '';
         if (isset($_REQUEST['rtype']) && $_REQUEST['rtype'] === 'json') {
             $data['errorCode'] = 'SUCCESS';
-            if ($_REQUEST['mestimate_id_view']) {
-                $data['data_template'] = $this->load->view('mestimates/mestimate_detail_data', $data, true);
-                $data['errorMessage'] = _l('load_template_success');
-            } elseif ($_REQUEST['load_model_send_email']) {
+            if (isset($_REQUEST['load_model_send_email'])) {
                 $template_name = 'mestimate-send-to-client';
                 $this->load->model('emails_model');
                 $template_name = $template_name;
-                $slug = $this->CI->app_mail_template->get_default_property_value('slug', $template_name);
-                $template = $this->emails_model->get(['slug' => $slug, 'language' => 'english'], 'row');
+                $template = $this->emails_model->get([
+                    'slug' => $template_name,
+                    'language' => 'english',
+                ], 'row');
 
                 $data['template'] = $template;
                 $data['template_name'] = $template_name;
@@ -161,18 +160,27 @@ class Mestimates extends AdminController
                 $data['template_system_name'] = $template->name;
                 $data['data_template'] = $this->load->view('mestimates/includes/send_email_modal_data', $data, true);
                 $data['errorMessage'] = _l('load_template_success');
+                echo json_encode($data);
+                die();
+            } elseif (isset($_REQUEST['mestimate_id_view'])) {
+                $data['data_template'] = $this->load->view('mestimates/mestimate_detail_data', $data, true);
+                $data['errorMessage'] = _l('load_template_success');
+                echo json_encode($data);
+                die();
             } else {
                 if (isset($_REQUEST['change']) && $_REQUEST['change'] == 'template') {
                     $data['data_template'] = $this->load->view('mestimates/includes/mestimate_data', $data, true);
                     $data['errorMessage'] = _l('load_template_success');
+                    echo json_encode($data);
+                    die();
                 } else {
                     $data['view_address'] = $this->load->view('mestimates/includes/info_company', $data, true);
                     $data['view_file'] = $this->load->view('mestimates/includes/mestimate_files', $data, true);
                     $data['errorMessage'] = _l('load_info_client_success');
+                    echo json_encode($data);
+                    die();
                 }
             }
-
-            echo json_encode($data);
         } else {
             $this->load->view('mestimate', $data);
         }
@@ -328,19 +336,42 @@ class Mestimates extends AdminController
     }
 
     /* Send estimate to email */
-    public function send_to_email($id)
+    public function send_to_email()
     {
-        $canView = user_can_view_estimate($id);
-        if (!$canView) {
-            access_denied('estimates');
-        } else {
-            if (!has_permission('estimates', '', 'view') && !has_permission('estimates', '', 'view_own') && $canView == false) {
-                access_denied('estimates');
-            }
+        $id = null;
+        if (isset($_REQUEST['mestimate_id_view']) && $_REQUEST['mestimate_id_view'] != null) {
+            $id = $_REQUEST['mestimate_id_view'];
         }
 
         try {
-            $success = $this->estimates_model->send_estimate_to_client($id, '', $this->input->post('attach_pdf'), $this->input->post('cc'));
+            $template_name = 'mestimate-send-to-client';
+            $this->load->model('emails_model');
+            $template_name = $template_name;
+            $template = $this->emails_model->get([
+                'slug' => $template_name,
+                'language' => 'english',
+            ], 'row');
+
+
+            $from_email = "email@example.com";
+            $to_email = $this->input->post('sent_to');
+            //Load email library
+            $this->load->library('email');
+            $this->email->from($from_email, 'Identification');
+            $this->email->to($to_email[0]);
+            $this->email->subject($template->subject);
+            $this->email->message($this->input->post('email_template_custom'));
+            //Send mail
+            if ($this->email->send()){
+                $this->session->set_flashdata("email_sent", "Congragulation Email Send Successfully.");
+            }
+            else{
+                $this->session->set_flashdata("email_sent", "You have encountered an error");
+            }
+            $data['errorCode'] = 'SUCCESS';
+            $data['errorMessage'] = 'SUCCESS SEND EMAIL';
+            echo json_encode($data);
+            die();
         } catch (Exception $e) {
             $message = $e->getMessage();
             echo $message;
@@ -350,18 +381,6 @@ class Mestimates extends AdminController
             die;
         }
 
-        // In case client use another language
-        load_admin_language();
-        if ($success) {
-            set_alert('success', _l('estimate_sent_to_client_success'));
-        } else {
-            set_alert('danger', _l('estimate_sent_to_client_fail'));
-        }
-        if ($this->set_estimate_pipeline_autoload($id)) {
-            redirect($_SERVER['HTTP_REFERER']);
-        } else {
-            redirect(admin_url('estimates/list_estimates/' . $id));
-        }
     }
 
     /* Delete announcement from database */

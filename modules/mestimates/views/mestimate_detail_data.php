@@ -15,6 +15,12 @@
                             class="fa fa-pencil-square-o"></i></a>
             <?php } ?>
             <div class="btn-group">
+                <?php
+                echo form_open('', array('id' => 'id_to_view_form'));
+                echo form_hidden('mestimate_id', $mestimate->id);
+                echo form_hidden('load_model_send_email', true);
+                echo form_close();
+                ?>
                 <a href="#" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
                    aria-expanded="false"><i class="fa fa-file-pdf-o"></i><?php if (is_mobile()) {
                         echo ' PDF';
@@ -45,7 +51,8 @@
             }
             ?>
             <?php if (!empty($mestimate->client_id)) { ?>
-                <a href="#" onclick="sendEmailMestimate(); return false;" title="<?php echo $_tooltip; ?>" data-placement="bottom">
+                <a href="#" onclick="sendEmailMestimate(); return false;" title="<?php echo $_tooltip; ?>"
+                   data-placement="bottom">
                     <span data-toggle="tooltip" data-title="<?php echo $_tooltip_already_send; ?>">
                         <i class="fa fa-envelope"></i></span></a>
             <?php } ?>
@@ -292,7 +299,7 @@
                             ?>
                             <tr>
                                 <td data-order="<?php echo $file['file_name']; ?>">
-                                    <a href="<?=mestimate_file_url($file, true)?>">
+                                    <a href="<?= mestimate_file_url($file, true) ?>">
                                         <?php if (is_image($path) || (!empty($file['external']) && !empty($file['thumbnail_link']))) {
                                             echo '<img class="mestimate-file-image img-table-loading" src="' . mestimate_file_url($file, true) . '" data-orig="' . mestimate_file_url($file, true) . '" width="100">';
                                         }
