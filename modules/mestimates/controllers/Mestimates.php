@@ -427,7 +427,7 @@ class Mestimates extends AdminController
             $output = $this->pdf->output();
             file_put_contents($pathPDF . $id . '.pdf', $output);
             if (file_exists($pathPDF . $id . '.pdf')) {
-                if ($_REQUEST['download']) {
+                if (isset($_REQUEST['download'])) {
                     $this->pdf->stream($pathPDF . $id . '.pdf', array('Attachment' => 1));
                 } else {
                     $this->pdf->stream($pathPDF . $id . '.pdf', array('Attachment' => false));
