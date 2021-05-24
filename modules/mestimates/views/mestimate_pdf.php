@@ -102,7 +102,7 @@
 <table style="width: 100%" class="table items items-preview estimate-items-preview"
        data-type="estimate" border="1">
     <thead>
-    <tr style="background-color: #0f1f2f">
+    <tr style="background-color: #0f1f2f; color: white">
         <th>AREA</th>
         <th>SIZE</th>
         <th>DESCRIPTION</th>

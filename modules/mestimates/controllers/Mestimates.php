@@ -421,6 +421,63 @@ class Mestimates extends AdminController
 
     }
 
+    public function viewPDF($id)
+    {
+        try {
+            $mestimate = $this->mestimates_model->get($id);
+            $client = $this->clients_model->get($mestimate->client_id);
+            $contacts = $this->clients_model->get_contacts($mestimate->client_id, ['active' => 1, 'is_primary' => 1, 'userid' => $client->userid]);
+            $contactObj = (object)$contacts[0];
+            $pathPDF = FCPATH . 'uploads/mestimates' . '/';
+
+            $this->load->model('emails_model');
+            $data = array();
+            $data_replace = array();
+            $data["contact"] = $contactObj;
+            $data["client"] = $client;
+            $data["mestimate"] = $mestimate;
+            $data_replace['mestimate_number'] = $id;
+            $data_replace['contact_firstname'] = $contactObj->firstname;
+            $data_replace['contact_lastname'] = $contactObj->lastname;
+
+            $data['files'] = $this->mestimates_model->get_files(get_staff_user_id(), $client->userid);
+
+            $data['details'] = $this->mestimates_detail_model->getByMestimate($id);
+            $fileMapResult = array();
+            $fileMap = $this->mestimates_model->get_file_map($id);
+            foreach ($fileMap as $file) {
+                $fileMapResult[$file['file_id']] = $file['mestimate_id'];
+            }
+            $data['fileMap'] = $fileMapResult;
+            $data['client_id'] = $client->userid;
+            $data['mestimate_id'] = $id;
+            $data['groups'] = $this->clients_model->get_groups();
+
+            $this->load->library('pdf');
+            $html = $this->load->view('mestimates/mestimate_pdf', $data, true);
+            $this->pdf->load_html($html);
+            $this->pdf->render();
+            $output = $this->pdf->output();
+            file_put_contents($pathPDF . $id . '.pdf', $output);
+            if (file_exists($pathPDF . $id . '.pdf')) {
+                if ($_REQUEST['download']) {
+                    $this->pdf->stream($pathPDF . $id . '.pdf', array('Attachment' => 1));
+                } else {
+                    $this->pdf->stream($pathPDF . $id . '.pdf', array('Attachment' => 0));
+                }
+            }
+
+        } catch (Exception $e) {
+            $message = $e->getMessage();
+            echo $message;
+            if (strpos($message, 'Unable to get the size of the image') !== false) {
+                show_pdf_unable_to_get_image_size_error();
+            }
+            die;
+        }
+
+    }
+
 
     private function replace_content($content = '', $datas)
     {

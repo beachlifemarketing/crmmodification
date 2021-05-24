@@ -26,20 +26,11 @@
                         echo ' PDF';
                     } ?> <span class="caret"></span></a>
                 <ul class="dropdown-menu dropdown-menu-right">
-                    <li class="hidden-xs"><a
-                                href="<?php echo admin_url('mestimates/pdf/' . $mestimate->id . '?output_type=I'); ?>"><?php echo _l('view_pdf'); ?></a>
-                    </li>
-                    <li class="hidden-xs"><a
-                                href="<?php echo admin_url('mestimates/pdf/' . $mestimate->id . '?output_type=I'); ?>"
-                                target="_blank"><?php echo _l('view_pdf_in_new_window'); ?></a></li>
                     <li>
-                        <a href="<?php echo admin_url('mestimates/pdf/' . $mestimate->id); ?>"><?php echo _l('download'); ?></a>
+                        <a href="<?php echo admin_url('mestimates/viewPDF/' . $mestimate->id); ?>"><?php echo _l('view_pdf'); ?></a>
                     </li>
                     <li>
-                        <a href="<?php echo admin_url('mestimates/pdf/' . $mestimate->id . '?print=true'); ?>"
-                           target="_blank">
-                            <?php echo _l('print'); ?>
-                        </a>
+                        <a href="<?php echo admin_url('mestimates/viewPDF/' . $mestimate->id . '?download=true'); ?>"><?php echo _l('download'); ?></a>
                     </li>
                 </ul>
             </div>
@@ -51,63 +42,63 @@
             }
             ?>
             <?php if (!empty($mestimate->client_id)) { ?>
-                <a href="#" onclick="sendEmailMestimate(); return false;" title="<?php echo $_tooltip; ?>"
+                <a href="#" class="btn btn-default dropdown-toggle" onclick="sendEmailMestimate(); return false;" title="<?php echo $_tooltip; ?>"
                    data-placement="bottom">
                     <span data-toggle="tooltip" data-title="<?php echo $_tooltip_already_send; ?>">
                         <i class="fa fa-envelope"></i></span></a>
             <?php } ?>
-            <div class="btn-group">
+            <!--<div class="btn-group">
                 <button type="button" class="btn btn-default pull-left dropdown-toggle" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
-                    <?php echo _l('more'); ?> <span class="caret"></span>
+                    <?php /*echo _l('more'); */?> <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-right">
                     <li>
-                        <a href="<?php echo site_url('mestimate/' . $mestimate->id) ?>"
+                        <a href="<?php /*echo site_url('mestimate/' . $mestimate->id) */?>"
                            target="_blank">
-                            <?php echo _l('view_mestimate_as_client'); ?>
+                            <?php /*echo _l('view_mestimate_as_client'); */?>
                         </a>
                     </li>
-                    <?php hooks()->do_action('after_mestimate_view_as_client_link', $mestimate); ?>
-                    <?php if ((!empty($mestimate->due_date) && date('Y-m-d') < $mestimate->due_date && ($mestimate->status == 2 || $mestimate->status == 5)) && is_mestimates_expiry_reminders_enabled()) { ?>
+                    <?php /*hooks()->do_action('after_mestimate_view_as_client_link', $mestimate); */?>
+                    <?php /*if ((!empty($mestimate->due_date) && date('Y-m-d') < $mestimate->due_date && ($mestimate->status == 2 || $mestimate->status == 5)) && is_mestimates_expiry_reminders_enabled()) { */?>
                         <li>
-                            <a href="<?php echo admin_url('mestimates/send_expiry_reminder/' . $mestimate->id); ?>">
-                                <?php echo _l('send_expiry_reminder'); ?>
+                            <a href="<?php /*echo admin_url('mestimates/send_expiry_reminder/' . $mestimate->id); */?>">
+                                <?php /*echo _l('send_expiry_reminder'); */?>
                             </a>
                         </li>
-                    <?php } ?>
+                    <?php /*} */?>
                     <li>
                         <a href="#" data-toggle="modal"
-                           data-target="#sales_attach_file"><?php echo _l('invoice_attach_file'); ?></a>
+                           data-target="#sales_attach_file"><?php /*echo _l('invoice_attach_file'); */?></a>
                     </li>
-                    <?php if (has_permission('mestimates', '', 'create')) { ?>
+                    <?php /*if (has_permission('mestimates', '', 'create')) { */?>
                         <li>
-                            <a href="<?php echo admin_url('mestimates/copy/' . $mestimate->id); ?>">
-                                <?php echo _l('copy_mestimate'); ?>
+                            <a href="<?php /*echo admin_url('mestimates/copy/' . $mestimate->id); */?>">
+                                <?php /*echo _l('copy_mestimate'); */?>
                             </a>
                         </li>
-                    <?php } ?>
-                    <?php if (!empty($mestimate->signature) && has_permission('mestimates', '', 'delete')) { ?>
+                    <?php /*} */?>
+                    <?php /*if (!empty($mestimate->signature) && has_permission('mestimates', '', 'delete')) { */?>
                         <li>
-                            <a href="<?php echo admin_url('mestimates/clear_signature/' . $mestimate->id); ?>"
+                            <a href="<?php /*echo admin_url('mestimates/clear_signature/' . $mestimate->id); */?>"
                                class="_delete">
-                                <?php echo _l('clear_signature'); ?>
+                                <?php /*echo _l('clear_signature'); */?>
                             </a>
                         </li>
-                    <?php } ?>
-                    <?php if (has_permission('mestimates', '', 'delete')) { ?>
+                    <?php /*} */?>
+                    <?php /*if (has_permission('mestimates', '', 'delete')) { */?>
                         <?php
-                        if ((get_option('delete_only_on_last_mestimate') == 1 && is_last_mestimate($mestimate->id)) || (get_option('delete_only_on_last_mestimate') == 0)) { ?>
+/*                        if ((get_option('delete_only_on_last_mestimate') == 1 && is_last_mestimate($mestimate->id)) || (get_option('delete_only_on_last_mestimate') == 0)) { */?>
                             <li>
-                                <a href="<?php echo admin_url('mestimates/delete/' . $mestimate->id); ?>"
-                                   class="text-danger delete-text _delete"><?php echo _l('delete_mestimate_tooltip'); ?></a>
+                                <a href="<?php /*echo admin_url('mestimates/delete/' . $mestimate->id); */?>"
+                                   class="text-danger delete-text _delete"><?php /*echo _l('delete_mestimate_tooltip'); */?></a>
                             </li>
                             <?php
-                        }
+/*                        }
                     }
-                    ?>
+                    */?>
                 </ul>
-            </div>
+            </div>-->
         </div>
     </div>
 </div>
