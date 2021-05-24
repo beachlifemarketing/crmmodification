@@ -469,7 +469,7 @@ class Mestimates extends AdminController
                 mkdir($pathPDF, 0777, true);
             }
             if (file_exists($pathPDF . $id . '.pdf')) {
-                if ($_REQUEST['download']) {
+                if (isset($_REQUEST['download'])) {
                     $this->pdf->stream($pathPDF . $id . '.pdf', array('Attachment' => 1));
                 } else {
                     $this->pdf->stream($pathPDF . $id . '.pdf', array('Attachment' => 0));
