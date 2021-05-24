@@ -1,5 +1,15 @@
 <?php
 
+use BackupManager\Compressors\CompressorProvider;
+use BackupManager\Compressors\GzipCompressor;
+use BackupManager\Compressors\NullCompressor;
+use BackupManager\Config\Config;
+use BackupManager\Databases\DatabaseProvider;
+use BackupManager\Databases\MysqlDatabase;
+use BackupManager\Filesystems\Destination;
+use BackupManager\Filesystems\FilesystemProvider;
+use BackupManager\Filesystems\LocalFilesystem;
+use BackupManager\Manager;
 use Carbon\Carbon;
 
 defined('BASEPATH') or exit('No direct script access allowed');
@@ -16,7 +26,7 @@ class Backup_module
     public function make_backup_db($manual = false)
     {
         $auto_backup_hour = intval(get_option('auto_backup_hour')) ? intval(get_option('auto_backup_hour')) : 6;
-        $current_time = Carbon::today()->hour($auto_backup_hour)->timestamp; 
+        $current_time = Carbon::today()->hour($auto_backup_hour)->timestamp;
         $last_backup_time = Carbon::createFromTimestamp(intval(get_option('last_auto_backup')) + intval(get_option('auto_backup_every')) * 24 * 60 * 60)->timestamp;
 
         if ((get_option('auto_backup_enabled') == '1' && $current_time > $last_backup_time) || $manual == true) {
@@ -25,12 +35,12 @@ class Backup_module
             $manager = $this->get_backup_manager_name();
 
             if ($manager == 'backup_manager') {
-                $configFileSystemProvider = new \BackupManager\Config\Config([
-                'local' => [
-                    'type' => 'Local',
-                    'root' => BACKUPS_FOLDER,
-                ],
-            ]);
+                $configFileSystemProvider = new Config([
+                    'local' => [
+                        'type' => 'Local',
+                        'root' => BACKUPS_FOLDER,
+                    ],
+                ]);
                 // Only mysql is supported, not sure if this do the job
                 if ($this->ci->db->dbdriver != 'mysqli') {
                     return $this->database_backup_codeigniter();
@@ -47,43 +57,43 @@ class Backup_module
                     }
                 }
 
-                $configDatabase = new \BackupManager\Config\Config([
-                'production' => [
-                    'type'     => 'mysql',
-                    'host'     => APP_DB_HOSTNAME,
-                    'port'     => $port,
-                    'user'     => APP_DB_USERNAME,
-                    'pass'     => APP_DB_PASSWORD,
-                    'database' => APP_DB_NAME,
-                ],
-            ]);
+                $configDatabase = new Config([
+                    'production' => [
+                        'type' => 'mysql',
+                        'host' => APP_DB_HOSTNAME,
+                        'port' => $port,
+                        'user' => APP_DB_USERNAME,
+                        'pass' => APP_DB_PASSWORD,
+                        'database' => APP_DB_NAME,
+                    ],
+                ]);
 
                 // build providers
-                $filesystems = new \BackupManager\Filesystems\FilesystemProvider($configFileSystemProvider);
-                $filesystems->add(new \BackupManager\Filesystems\LocalFilesystem);
-                $databases = new \BackupManager\Databases\DatabaseProvider($configDatabase);
-                $databases->add(new \BackupManager\Databases\MysqlDatabase);
-                $compressors = new \BackupManager\Compressors\CompressorProvider;
-                $compressors->add(new \BackupManager\Compressors\GzipCompressor);
-                $compressors->add(new \BackupManager\Compressors\NullCompressor);
+                $filesystems = new FilesystemProvider($configFileSystemProvider);
+                $filesystems->add(new LocalFilesystem);
+                $databases = new DatabaseProvider($configDatabase);
+                $databases->add(new MysqlDatabase);
+                $compressors = new CompressorProvider;
+                $compressors->add(new GzipCompressor);
+                $compressors->add(new NullCompressor);
 
                 // build manager
-                $manager = new \BackupManager\Manager($filesystems, $databases, $compressors);
+                $manager = new Manager($filesystems, $databases, $compressors);
 
                 $backup_name = date('Y-m-d-H-i-s') . '_backup-v' . wordwrap($this->ci->app->get_current_db_version(), 1, '-', true) . '.sql';
 
                 try {
 
-                  /*
-                      Restore example, not working
-                      $manager->makeRestore()->run('local', '2018-06-12-12-02-28_backup.sql.gz', 'production', 'gzip');
-                      die;
-                   */
+                    /*
+                        Restore example, not working
+                        $manager->makeRestore()->run('local', '2018-06-12-12-02-28_backup.sql.gz', 'production', 'gzip');
+                        die;
+                     */
 
                     $manager->makeBackup()
-                    ->run('production', [
-                        new \BackupManager\Filesystems\Destination('local', $backup_name),
-                    ], 'null');
+                        ->run('production', [
+                            new Destination('local', $backup_name),
+                        ], 'null');
 
                     log_activity('Database Backup [' . $backup_name . '.gz' . ']', null);
 
@@ -135,12 +145,12 @@ class Backup_module
         $this->ci->load->dbutil();
 
         $prefs = [
-                'format'   => 'zip',
-                'filename' => date('Y-m-d-H-i-s') . '_backup.sql',
-            ];
+            'format' => 'zip',
+            'filename' => date('Y-m-d-H-i-s') . '_backup.sql',
+        ];
 
-        $backup           = @$this->ci->dbutil->backup($prefs);
-        $backup_name      = unique_filename(BACKUPS_FOLDER, 'database_backup_' . date('Y-m-d-H-i-s') . '-v' . wordwrap($this->ci->app->get_current_db_version(), 1, '-', true) . '.zip');
+        $backup = @$this->ci->dbutil->backup($prefs);
+        $backup_name = unique_filename(BACKUPS_FOLDER, 'database_backup_' . date('Y-m-d-H-i-s') . '-v' . wordwrap($this->ci->app->get_current_db_version(), 1, '-', true) . '.zip');
         $save_backup_path = BACKUPS_FOLDER . $backup_name;
         $this->ci->load->helper('file');
 
@@ -164,7 +174,7 @@ class Backup_module
         $delete_backups = get_option('delete_backups_older_then');
         // After write backup check for delete
         if ($delete_backups != '0') {
-            $backups                 = list_files(BACKUPS_FOLDER);
+            $backups = list_files(BACKUPS_FOLDER);
             $backups_days_to_seconds = ($delete_backups * 24 * 60 * 60);
             foreach ($backups as $b) {
                 if ($b == 'index.html') {
