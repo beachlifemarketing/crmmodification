@@ -370,6 +370,9 @@ class Mestimates extends AdminController
             if (isset($_REQUEST['image_ids'])) {
                 foreach ($data['files'] as $file) {
                     $path = FCPATH . 'uploads/mestimates' . '/' . $file['contact_id'] . '/' . $file['file_name'];
+                    if (!file_exists(FCPATH . 'uploads/mestimates' . '/' . $file['contact_id'])) {
+                        mkdir(FCPATH . 'uploads/mestimates' . '/' . $file['contact_id'], 0777, true);
+                    }
                     foreach ($_REQUEST['image_ids'] as $image_id) {
                         if ($file["id"] == $image_id) {
                             if (file_exists($path)) {
@@ -397,6 +400,9 @@ class Mestimates extends AdminController
             $this->pdf->render();
             $output = $this->pdf->output();
             file_put_contents($pathPDF . $_REQUEST['mestimate_id'] . '.pdf', $output);
+            if (!file_exists($pathPDF)) {
+                mkdir($pathPDF, 0777, true);
+            }
             if (file_exists($pathPDF . $_REQUEST['mestimate_id'] . '.pdf')) {
                 $this->email->attach($pathPDF . $_REQUEST['mestimate_id'] . '.pdf');
             }
@@ -459,6 +465,9 @@ class Mestimates extends AdminController
             $this->pdf->render();
             $output = $this->pdf->output();
             file_put_contents($pathPDF . $id . '.pdf', $output);
+            if (!file_exists($pathPDF)) {
+                mkdir($pathPDF, 0777, true);
+            }
             if (file_exists($pathPDF . $id . '.pdf')) {
                 if ($_REQUEST['download']) {
                     $this->pdf->stream($pathPDF . $id . '.pdf', array('Attachment' => 1));
