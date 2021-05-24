@@ -38,7 +38,7 @@
             </div>
             <?php if (!empty($mestimate->clientid)) { ?>
                 <a href="#" class="mestimate-send-to-client btn btn-default btn-with-tooltip" data-toggle="tooltip"
-                   title="<?php echo $_tooltip; ?>" data-placement="bottom"><span data-toggle="tooltip"><i class="fa fa-envelope"></i></span></a>
+                  data-placement="bottom"><span data-toggle="tooltip"><i class="fa fa-envelope"></i></span></a>
             <?php } ?>
             <div class="btn-group">
                 <button type="button" class="btn btn-default pull-left dropdown-toggle" data-toggle="dropdown"
