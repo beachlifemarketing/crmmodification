@@ -1,22 +1,20 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
 
-<div class="table-responsive s_table">
-
-    <table id="mestimate_details" width="100%" class="table table-striped">
+<div class="col-md-12" style="overflow-x:auto;">
+    <table id="mestimate_details" class="table table-bordered table-striped mb-0">
         <thead>
         <tr>
-            <th width="12%"><?php echo _l('are'); ?></th>
-            <th width="10%"><?php echo _l('size'); ?></th>
-            <th><?php echo _l('description'); ?></th>
-            <th width="8%"><?php echo _l('qty'); ?></th>
-            <th width="10%"><?php echo _l('unix_px'); ?></th>
-            <th width="10%"><?php echo _l('duration'); ?></th>
-            <th width="12%"><?php echo _l('amount'); ?></th>
-            <th width="8%">&nbsp;</th>
+            <th style="min-width: 100px"><?php echo _l('are'); ?></th>
+            <th style="min-width: 100px"><?php echo _l('size'); ?></th>
+            <th style="min-width: 100px"><?php echo _l('description'); ?></th>
+            <th style="min-width: 100px"><?php echo _l('qty'); ?></th>
+            <th style="min-width: 100px"><?php echo _l('unix_px'); ?></th>
+            <th style="min-width: 100px"><?php echo _l('duration'); ?></th>
+            <th style="min-width: 100px"><?php echo _l('amount'); ?></th>
+            <th style="min-width: 100px">&nbsp;</th>
         </tr>
         </thead>
         <tbody id="mestimate_details_body">
-
         <?php
         $details = isset($details) ? $details : [];
         if (count($details) == 0) {
@@ -30,10 +28,10 @@
                 <td><textarea name="detail[description][]"
                               class="col-xs-12 col-sm-12 description ui-autocomplete-input"
                               autocomplete="off"></textarea></td>
-                <td><input name="detail[qty][]" type="number" placeholder="0" class="col-xs-12 col-sm-12 center"
+                <td><input name="detail[qty_unit][]" type="text" placeholder="0" class="col-xs-12 col-sm-12 center"
                            onkeyup="computeLineAmount()" onchange="computeLineAmount()"><br><span
                             class="quantity_uom_1"></span></td>
-                <td><input name="detail[unix][]" type="number" placeholder="0.00" class="col-xs-12 col-sm-12 right"
+                <td><input name="detail[px_unit][]" type="text" placeholder="0.00" class="col-xs-12 col-sm-12 right"
                            onkeyup="computeLineAmount()" onchange="computeLineAmount()"><br><span
                             class="quantity_uom_1"></span></td>
                 <td><input name="detail[duration][]" type="text" placeholder="<?php echo _l('duration'); ?>"
@@ -60,7 +58,7 @@
             for ($i = 0; $i < count($details); $i++) {
                 $detail = $details[$i];
                 ?>
-
+                <!--                update calculate-->
                 <tr class="tr_parent">
                     <td><input value="<?= $detail['area'] ?>" name="detail[are][]" type="text"
                                placeholder="<?php echo _l('are'); ?>"

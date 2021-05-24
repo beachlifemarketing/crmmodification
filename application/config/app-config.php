@@ -21,6 +21,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 define('APP_BASE_URL', 'https://crmmod.beachlifemarketing.com/dev');
 
+
 /*
 * --------------------------------------------------------------------------
 * Encryption Key
@@ -44,15 +45,17 @@ define('APP_DB_HOSTNAME', 'localhost');
 /**
  * The username used to connect to the database
  */
-define('APP_DB_USERNAME', 'crmmodbe_thanh');
+define('APP_DB_USERNAME', 'root');
 /**
  * The password used to connect to the database
  */
-define('APP_DB_PASSWORD', 'Vbrand@t2d');
+define('APP_DB_PASSWORD', '');
 /**
  * The name of the database you want to connect to
  */
+
 define('APP_DB_NAME', 'crmmodbe_dev');
+
 
 /**
  * @since  2.3.0
