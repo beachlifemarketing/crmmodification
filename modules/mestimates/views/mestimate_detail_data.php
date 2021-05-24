@@ -18,7 +18,6 @@
                 <?php
                 echo form_open('', array('id' => 'id_to_view_form'));
                 echo form_hidden('mestimate_id', $mestimate->id);
-                echo form_hidden('load_model_send_email', true);
                 echo form_close();
                 ?>
                 <a href="#" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"

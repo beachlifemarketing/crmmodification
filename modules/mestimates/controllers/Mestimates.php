@@ -144,7 +144,7 @@ class Mestimates extends AdminController
         $data['rtype'] = isset($_REQUEST['rtype']) ? $_REQUEST['rtype'] : '';
         if (isset($_REQUEST['rtype']) && $_REQUEST['rtype'] === 'json') {
             $data['errorCode'] = 'SUCCESS';
-            if (isset($_REQUEST['load_model_send_email'])) {
+            if (isset($_REQUEST['load_model_send_email']) && $_REQUEST['load_model_send_email'] == true) {
                 $template_name = 'mestimate-send-to-client';
                 $this->load->model('emails_model');
                 $template_name = $template_name;
@@ -162,7 +162,7 @@ class Mestimates extends AdminController
                 $data['errorMessage'] = _l('load_template_success');
                 echo json_encode($data);
                 die();
-            } elseif (isset($_REQUEST['mestimate_id_view'])) {
+            } elseif (isset($_REQUEST['view_detail']) && $_REQUEST['view_detail'] == true) {
                 $data['data_template'] = $this->load->view('mestimates/mestimate_detail_data', $data, true);
                 $data['errorMessage'] = _l('load_template_success');
                 echo json_encode($data);
@@ -273,38 +273,6 @@ class Mestimates extends AdminController
     }
 
 
-    public function show_detail($id = null)
-    {
-        if (!has_permission('mestimates', '', 'view') && !has_permission('mestimates', '', 'view_own') && get_option('allow_staff_view_mestimates_assigned') == '0') {
-            echo _l('access_denied');
-            die;
-        }
-
-        if ($_REQUEST['mestimate_id_view']) {
-            if (!$id) {
-                $id = $_REQUEST['mestimate_id_view'];
-            }
-        }
-
-        if (!$id) {
-            die('No mestimate found');
-        }
-
-        $mestimate = $this->mestimates_model->get($id);
-        $mestimate->date = _d($mestimate->date);
-        $mestimate->due_date = _d($mestimate->due_date);
-
-        //$data['activity'] = $this->mestimates_model->get_estimate_activity($id);
-        $data['mestimate'] = $mestimate;
-        $data['members'] = $this->staff_model->get('', ['active' => 1]);
-
-        $data['errorCode'] = 'SUCCESS';
-        $data['html_detail'] = $this->load->view('mestimates/mestimate_detail_data', $data, true);
-        $data['errorMessage'] = _l('load_template_success');
-        echo json_encode($data);
-    }
-
-
     public function send_expiry_reminder($id)
     {
         $canView = user_can_view_estimate($id);
@@ -333,10 +301,6 @@ class Mestimates extends AdminController
     public function send_to_email()
     {
         $id = null;
-        if (isset($_REQUEST['mestimate_id_view']) && $_REQUEST['mestimate_id_view'] != null) {
-            $id = $_REQUEST['mestimate_id_view'];
-        }
-
         try {
             $mestimate = $this->mestimates_model->get($_REQUEST['mestimate_id']);
             $client = $this->clients_model->get($mestimate->client_id);
@@ -396,6 +360,7 @@ class Mestimates extends AdminController
 
             $this->load->library('pdf');
             $html = $this->load->view('mestimates/mestimate_pdf', $data, true);
+
             $this->pdf->load_html($html);
             $this->pdf->render();
             $output = $this->pdf->output();
@@ -472,7 +437,7 @@ class Mestimates extends AdminController
                 if (isset($_REQUEST['download'])) {
                     $this->pdf->stream($pathPDF . $id . '.pdf', array('Attachment' => 1));
                 } else {
-                    $this->pdf->stream($pathPDF . $id . '.pdf', array('Attachment' => 0));
+                    $this->pdf->stream($pathPDF . $id . '.pdf', array('Attachment' => false));
                 }
             }
 

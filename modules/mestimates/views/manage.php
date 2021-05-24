@@ -61,7 +61,7 @@ echo form_close();
 
     function showDetailMestimate(id) {
         $("#mestimate_id_view").val(id);
-        var url = admin_url + 'mestimates/mestimate/' + id + '?rtype=json';
+        var url = admin_url + 'mestimates/mestimate/' + id + '?rtype=json&view_detail=true';
         simpleAjaxPostUpload(
             url,
             '#id_to_view_form',
@@ -87,7 +87,7 @@ echo form_close();
         if (id == null || id == '') {
             alert_float('danger', "Ërror: Can't load info mestimate");
         } else {
-            var gurl = admin_url + 'mestimates/mestimate/' + id + '?rtype=json';
+            var gurl = admin_url + 'mestimates/mestimate/' + id + '?rtype=json&load_model_send_email=true';
             var purl = admin_url + 'mestimates/send_to_email?rtype=json&load_model_send_email=true';
             simpleCUDModalUpload(
                 '#send_email_mestimate',

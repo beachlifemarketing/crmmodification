@@ -16,10 +16,11 @@ defined('BASEPATH') or exit('No direct script access allowed');
 * explicitly and never rely on auto-guessing, especially in production
 * environments.
 *
- * DEV
+ * STAGING
 */
 
-define('APP_BASE_URL', 'https://crmmod.beachlifemarketing.com/dev');
+define('APP_BASE_URL', 'https://crmmod.beachlifemarketing.com/staging');
+
 
 /*
 * --------------------------------------------------------------------------
@@ -52,7 +53,7 @@ define('APP_DB_PASSWORD', 'Vbrand@t2d');
 /**
  * The name of the database you want to connect to
  */
-define('APP_DB_NAME', 'crmmodbe_dev');
+define('APP_DB_NAME', 'crmmodbe_staging');
 
 /**
  * @since  2.3.0
