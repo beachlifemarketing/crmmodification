@@ -294,12 +294,6 @@ class Mestimates extends AdminController
         $mestimate->date = _d($mestimate->date);
         $mestimate->due_date = _d($mestimate->due_date);
 
-        if ($mestimate->sent == 0) {
-            $template_name = 'mestimate_send_to_customer';
-        } else {
-            $template_name = 'mestimate_send_to_customer_already_sent';
-        }
-
         //$data['activity'] = $this->mestimates_model->get_estimate_activity($id);
         $data['mestimate'] = $mestimate;
         $data['members'] = $this->staff_model->get('', ['active' => 1]);
@@ -344,28 +338,72 @@ class Mestimates extends AdminController
         }
 
         try {
-            $template_name = 'mestimate-send-to-client';
+            $mestimate = $this->mestimates_model->get($_REQUEST['mestimate_id']);
+            $client = $this->clients_model->get($mestimate->client_id);
+            $contacts = $this->clients_model->get_contacts($mestimate->client_id, ['active' => 1, 'is_primary' => 1, 'userid' => $client->userid]);
+            $contactObj = (object)$contacts[0];
+            $pathPDF = FCPATH . 'uploads/mestimates' . '/';
+
             $this->load->model('emails_model');
-            $template_name = $template_name;
-            $template = $this->emails_model->get([
-                'slug' => $template_name,
-                'language' => 'english',
-            ], 'row');
+            $data = array();
+            $data_replace = array();
+            $data["contact"] = $contactObj;
+            $data["client"] = $client;
+            $data["mestimate"] = $mestimate;
+            $data_replace['mestimate_number'] = $_REQUEST['mestimate_id'];
+            $data_replace['contact_firstname'] = $contactObj->firstname;
+            $data_replace['contact_lastname'] = $contactObj->lastname;
 
-
-            $from_email = "email@example.com";
+            $from_email = $this->input->post('from_email');
             $to_email = $this->input->post('sent_to');
+
+            $subject = $this->replace_content((isset($_REQUEST['subject']) ? $_REQUEST['subject'] : ''), $data_replace);
+            $content = $this->replace_content((isset($_REQUEST['content_email_template_custom']) ? $_REQUEST['content_email_template_custom'] : ''), $data_replace);
             //Load email library
             $this->load->library('email');
-            $this->email->from($from_email, 'Identification');
+            $this->email->from($from_email, (isset($_REQUEST['from_email']) ? $_REQUEST['from_email'] : 'CRM'));
             $this->email->to($to_email[0]);
-            $this->email->subject($template->subject);
-            $this->email->message($this->input->post('email_template_custom'));
-            //Send mail
-            if ($this->email->send()){
-                $this->session->set_flashdata("email_sent", "Congragulation Email Send Successfully.");
+            $this->email->subject($subject);
+            $this->email->message($content);
+            $data['files'] = $this->mestimates_model->get_files(get_staff_user_id(), $client->userid);
+
+            if (isset($_REQUEST['image_ids'])) {
+                foreach ($data['files'] as $file) {
+                    $path = FCPATH . 'uploads/mestimates' . '/' . $file['contact_id'] . '/' . $file['file_name'];
+                    foreach ($_REQUEST['image_ids'] as $image_id) {
+                        if ($file["id"] == $image_id) {
+                            if (file_exists($path)) {
+                                $this->email->attach($path);
+                            }
+                        }
+                    }
+                }
             }
-            else{
+
+            $data['details'] = $this->mestimates_detail_model->getByMestimate($_REQUEST['mestimate_id']);
+            $fileMapResult = array();
+            $fileMap = $this->mestimates_model->get_file_map($_REQUEST['mestimate_id']);
+            foreach ($fileMap as $file) {
+                $fileMapResult[$file['file_id']] = $file['mestimate_id'];
+            }
+            $data['fileMap'] = $fileMapResult;
+            $data['client_id'] = $client->userid;
+            $data['mestimate_id'] = $_REQUEST['mestimate_id'];
+            $data['groups'] = $this->clients_model->get_groups();
+
+            $this->load->library('pdf');
+            $html = $this->load->view('mestimates/mestimate_pdf', $data, true);
+            $this->pdf->load_html($html);
+            $this->pdf->render();
+            $output = $this->pdf->output();
+            file_put_contents($pathPDF . $_REQUEST['mestimate_id'] . '.pdf', $output);
+            if (file_exists($pathPDF . $_REQUEST['mestimate_id'] . '.pdf')) {
+                $this->email->attach($pathPDF . $_REQUEST['mestimate_id'] . '.pdf');
+            }
+            //Send mail
+            if ($this->email->send()) {
+                $this->session->set_flashdata("email_sent", "Congragulation Email Send Successfully.");
+            } else {
                 $this->session->set_flashdata("email_sent", "You have encountered an error");
             }
             $data['errorCode'] = 'SUCCESS';
@@ -381,6 +419,27 @@ class Mestimates extends AdminController
             die;
         }
 
+    }
+
+
+    private function replace_content($content = '', $datas)
+    {
+        if ($content == '') {
+            return '';
+        }
+        if (!is_array($datas)) {
+            return '';
+        }
+        $array_change = array();
+        $array_value = array();
+        foreach ($datas as $key => $data) {
+            if (str_contains($content, '{' . $key . '}')) {
+                array_push($array_change, '{' . $key . '}');
+                array_push($array_value, $data);
+            }
+        }
+        $newphrase = str_replace($array_change, $array_value, $content);
+        return $newphrase;
     }
 
     /* Delete announcement from database */
@@ -619,48 +678,17 @@ class Mestimates extends AdminController
     }
 
     /* Generates estimate PDF and senting to email  */
-    public function pdf($id)
+    public function pdf($filename_pdf, $html = '', $download = true, $orientation = 'portrait', $paper = 'A4')
     {
-        $canView = user_can_view_estimate($id);
-        if (!$canView) {
-            access_denied('Mestimates');
+        $this->load->library('mestimate');
+        $dompdf = new Dompdf\DOMPDF();
+        $dompdf->load_html($html);
+        $dompdf->set_paper($paper, $orientation);
+        $dompdf->render();
+        if ($download) {
+            $dompdf->stream($filename_pdf, array('Attachment' => 1));
         } else {
-            if (!has_permission('mestimates', '', 'view') && !has_permission('mestimates', '', 'view_own') && $canView == false) {
-                access_denied('Mestimates');
-            }
+            $dompdf->stream($filename_pdf . '.pdf', array('Attachment' => 0));
         }
-        if (!$id) {
-            redirect(admin_url('mestimates'));
-        }
-        $mestimate = $this->mestimates_model->get($id);
-
-        try {
-            $pdf = mestimate_pdf($mestimate);
-        } catch (Exception $e) {
-            $message = $e->getMessage();
-            echo $message;
-            if (strpos($message, 'Unable to get the size of the image') !== false) {
-                show_pdf_unable_to_get_image_size_error();
-            }
-            die;
-        }
-
-        $type = 'D';
-
-        if ($this->input->get('output_type')) {
-            $type = $this->input->get('output_type');
-        }
-
-        if ($this->input->get('print')) {
-            $type = 'I';
-        }
-
-        $fileNameHookData = hooks()->apply_filters('mestimate_file_name_admin_area', [
-            'file_name' => mb_strtoupper(slug_it($mestimate->id . '_' . date('Y-m-d H:i:s'))) . '.pdf',
-            'mestimate' => $mestimate,
-        ]);
-
-        $pdf->Output($fileNameHookData['file_name'], $type);
     }
-
 }

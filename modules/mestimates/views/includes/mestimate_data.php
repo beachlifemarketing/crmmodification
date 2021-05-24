@@ -17,7 +17,8 @@
     <div class="col-md-12 mtop15">
         <div class="panel-body bottom-transaction">
             <div class="btn-bottom-toolbar text-right btn-toolbar-container-out">
-                <div class="btn-bottom-toolbar btn-toolbar-container-out text-right" id="div_button_save" style="text-align: right; padding-right: 50px;">
+                <div class="btn-bottom-toolbar btn-toolbar-container-out text-right" id="div_button_save"
+                     style="text-align: right; padding-right: 50px;">
                     <?php $this->load->view('mestimates/includes/_save_button'); ?>
                 </div>
 

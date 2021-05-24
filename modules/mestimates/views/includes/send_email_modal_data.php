@@ -13,6 +13,7 @@
             ?>
             <div class="row">
                 <div class="col-md-12">
+                    <?php echo render_input('from_email', 'From'); ?>
                     <div class="form-group">
                         <?php
                         $selected = array();
@@ -20,7 +21,8 @@
                         echo render_select('sent_to[]', $contacts, array('email', 'email', 'firstname,lastname'), 'invoice_estimate_sent_to_email', $selected, array('multiple' => true), array(), '', '', false);
                         ?>
                     </div>
-                    <?php echo render_input('cc', 'CC'); ?>
+                    <?php echo render_input('subject', 'Subject'); ?>
+
                     <hr/>
                     <div class="checkbox checkbox-primary">
                         <input type="checkbox" name="attach_pdf" id="attach_pdf" checked>
@@ -29,7 +31,7 @@
                     <hr/>
                     <h5 class="bold"><?php echo _l('invoice_send_to_client_preview_template'); ?></h5>
                     <hr/>
-                    <?php echo render_textarea('email_template_custom', '', $template->message, [], [], '', 'tinymce'); ?>
+                    <?php echo render_textarea('content_email_template_custom', '', $template->message, ['id' => 'content_email_template_custom'], [], '', 'tinymce'); ?>
 
                     <?php echo form_hidden('template_name', $template_name); ?>
                     <div class="col-md-12">
@@ -42,7 +44,8 @@
                             <thead>
                             <tr>
                                 <th style="min-width: 100px" data-orderable="false"><span class="hide"> - </span>
-                                    <div class="checkbox mass_select_all_wrap"><input type="checkbox" id="mass_select_all"
+                                    <div class="checkbox mass_select_all_wrap"><input type="checkbox"
+                                                                                      id="mass_select_all"
                                                                                       data-to-table="mestimate-files"><label></label>
                                     </div>
                                 </th>
@@ -54,12 +57,15 @@
                             <tbody>
                             <?php foreach ($files as $file) {
                                 $path = FCPATH . 'uploads/mestimates' . '/' . $file['contact_id'] . '/' . $file['file_name'];
+                                if(!file_exists ($path)){
+                                    continue;
+                                }
                                 ?>
                                 <tr>
                                     <td>
                                         <div class="checkbox">
                                             <input type="checkbox" <?= ($mestimate_id != 0 && isset($fileMap[$file['id']]) && $fileMap[$file['id']] == $mestimate_id) ? 'checked' : '' ?>
-                                                    name="image_ids[]" value="<?php echo $file['id']; ?>"><label></label>
+                                                   name="image_ids[]" value="<?php echo $file['id']; ?>"><label></label>
                                         </div>
                                     </td>
                                     <td data-order="<?php echo $file['file_name']; ?>">
@@ -84,7 +90,11 @@
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" id="id_button_exampleModal" data-dismiss="modal">Cancel
             </button>
-            <button type="button" id="button_send_email" class="btn btn-primary">OK</button>
+
+            <button type="button" id="button_send_email" class="btn btn-primary">
+                <!--<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>-->
+                OK
+            </button>
         </div>
     </div>
 </div>
@@ -92,6 +102,7 @@
 if (isset($rtype) && $rtype === 'json') {
     ?>
     <script type="text/javascript">
+        init_editor('#content_email_template_custom');
         init_selectpicker();
     </script>
     <?php

@@ -12,7 +12,8 @@ if (isset($client_id) && $client_id != '') {
         <input type="hidden" name="client_id" id="hid_client_id" value="<?php echo $client_id ?>"/>
         <?php echo form_close(); ?>
         <div class="clearfix"></div>
-        <table class="table table-bordered table-striped mb-0 table-mestimate-files" data-order-col="7" data-order-type="desc">
+        <table class="table table-bordered table-striped mb-0 table-mestimate-files" data-order-col="7"
+               data-order-type="desc">
             <thead>
             <tr>
                 <th style="min-width: 100px" data-orderable="false"><span class="hide"> - </span>
@@ -20,11 +21,11 @@ if (isset($client_id) && $client_id != '') {
                                                                       data-to-table="mestimate-files"><label></label>
                     </div>
                 </th>
-                <th style="min-width: 100px" ><?php echo _l('mestimate_file_filename'); ?></th>
-                <th style="min-width: 100px" ><?php echo _l('mestimate_file__filetype'); ?></th>
-                <th style="min-width: 100px" ><?php echo _l('mestimate_file_uploaded_by'); ?></th>
-                <th style="min-width: 100px" ><?php echo _l('mestimate_file_dateadded'); ?></th>
-                <th style="min-width: 100px" ><?php echo _l('options'); ?></th>
+                <th style="min-width: 100px"><?php echo _l('mestimate_file_filename'); ?></th>
+                <th style="min-width: 100px"><?php echo _l('mestimate_file__filetype'); ?></th>
+                <th style="min-width: 100px"><?php echo _l('mestimate_file_uploaded_by'); ?></th>
+                <th style="min-width: 100px"><?php echo _l('mestimate_file_dateadded'); ?></th>
+                <th style="min-width: 100px"><?php echo _l('options'); ?></th>
             </tr>
             </thead>
             <tbody>

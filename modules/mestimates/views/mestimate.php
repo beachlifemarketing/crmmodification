@@ -138,13 +138,13 @@
         var paid_by_customer_percent = $('#paid_by_customer_percent').val();
         $('input[name="detail[amount][]"]').each(function () {
             var qty_input = $(this).closest('tr').children('td:eq(3)').children('input').val();
-            var qty = parseFloat(qty_input.replace(/[^0-9.]/g, ""),2);
+            var qty = parseFloat(qty_input.replace(/[^0-9.]/g, ""), 2);
 
             var unix_input = $(this).closest('tr').children('td:eq(4)').children('input').val();
-            var unix = parseFloat(unix_input.replace(/[^0-9.]/g, ""),2);
+            var unix = parseFloat(unix_input.replace(/[^0-9.]/g, ""), 2);
 
             var duration_input = $(this).closest('tr').children('td:eq(5)').children('input').val();
-            var duration = parseFloat(duration_input.replace(/[^0-9.]/g, ""),2);
+            var duration = parseFloat(duration_input.replace(/[^0-9.]/g, ""), 2);
 
             var amount = 1;
             var isValid = false;
@@ -161,10 +161,10 @@
                 isValid = true;
             }
 
-            if(isValid == false){
+            if (isValid == false) {
                 amount = 0;
             }
-            amount = parseFloat(amount,2);
+            amount = parseFloat(amount, 2);
 
             $(this).val(amount);
             sub_total += amount;
