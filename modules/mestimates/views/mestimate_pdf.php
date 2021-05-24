@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/builds/vendor-admin.css?v=2.8.4'); ?>">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url('modules/mestimates/assets/blm.css'); ?>">
     <style>
-        table td{
+        table td {
             border: 1px solid black;
         }
     </style>
@@ -24,12 +24,17 @@
     <tr>
         <td>
             <?php
-            $path = 'uploads/company/'.get_option('company_logo');
-            $type = pathinfo($path, PATHINFO_EXTENSION);
-            $data = file_get_contents($path);
-            $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+            $path = 'uploads/company/' . get_option('company_logo');
+            if (file_exists($path)) {
+                $type = pathinfo($path, PATHINFO_EXTENSION);
+                $data = file_get_contents($path);
+                $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+                ?>
+                <img width="180" height="110" src="<?= $base64 ?>"/><br/>
+                <?php
+            }
             ?>
-            <img width="180" height="110" src="<?= $base64 ?>"/><br/>
+
             <b><?= get_option('companyname'); ?></b>
             <b><a href="<?= get_option('main_domain'); ?>"><?= get_option('main_domain'); ?></a></b>
         </td>
@@ -37,7 +42,7 @@
 
         </td>
         <td>
-           <h3>Customer Information</h3>
+            <h3>Customer Information</h3>
             <table id="tbl_info_company" style="width: 100%;">
                 <tr>
                     <td>Job #:</td>
