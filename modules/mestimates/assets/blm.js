@@ -1,4 +1,15 @@
+function startLoading(){
+    $('body').append('<div style="" id="loadingDiv"><div class="loader">Please wait...</div></div>');
+}
+
+function removeLoader() {
+    $("#loadingDiv").fadeOut(function () {
+        $("#loadingDiv").remove(); //makes page more lightweight
+    });
+}
+
 function simpleAjaxPostUpload(url, formId, successCallBack, fieldErrorCallBack, actionErrorCallBack) {
+    startLoading();
     var data = new FormData();
     var inputs = $(formId + ' input, ' + formId + ' select,' + formId + ' textarea');
     $.each(inputs, function (obj, v) {
@@ -49,9 +60,11 @@ function simpleAjaxPostUpload(url, formId, successCallBack, fieldErrorCallBack, 
                     alert(res.errorMessage);
                 }
             }
+            removeLoader();
         }
     }).fail(function (jqXHR, textStatus, error) {
         alert("System error.");
+        removeLoader();
     });
 }
 
@@ -109,10 +122,6 @@ function simpleAjaxPost(url, data, successCallBack, fieldErrorCallBack, actionEr
 
 
 function simpleCUDModalUpload(dialogId, formId, actionBtnId, gUrl, pUrl, successCallBack, fieldErrorCallBack, actionErrorCallBack) {
-    $(actionBtnId).attr("disabled", "disabled").button('refresh');
-    $(actionBtnId).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>\n' +
-        '  Loading...');
-
     simpleAjaxPostUpload(gUrl, formId,
         function (res) {
             $(dialogId).html(res.data_template);
@@ -120,8 +129,6 @@ function simpleCUDModalUpload(dialogId, formId, actionBtnId, gUrl, pUrl, success
             $(actionBtnId).click(function (e) {
                 e.preventDefault();
                 simpleAjaxPostUpload(pUrl, dialogId, successCallBack, fieldErrorCallBack, actionErrorCallBack);
-                $(actionBtnId).removeAttr("disabled").button('refresh');
-                $(actionBtnId).html('OK');
             });
         }
     );
@@ -138,3 +145,5 @@ function guid() {
 
     return s4() + s4() + s4() + s4() + s4() + s4() + s4() + s4();
 }
+
+

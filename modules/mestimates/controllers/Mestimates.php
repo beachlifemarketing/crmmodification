@@ -355,15 +355,17 @@ class Mestimates extends AdminController
             $data['mestimate_id'] = $_REQUEST['mestimate_id'];
             $data['groups'] = $this->clients_model->get_groups();
 
-            $this->load->library('pdf');
-            $html = $this->load->view('mestimates/mestimate_pdf', $data, true);
+            if(isset($_REQUEST['attach_pdf'])){
+                $this->load->library('pdf');
+                $html = $this->load->view('mestimates/mestimate_pdf', $data, true);
 
-            $this->pdf->load_html($html);
-            $this->pdf->render();
-            $output = $this->pdf->output();
-            file_put_contents($pathPDF . $_REQUEST['mestimate_id'] . '.pdf', $output);
-            if (file_exists($pathPDF . $_REQUEST['mestimate_id'] . '.pdf')) {
-                $this->email->attach($pathPDF . $_REQUEST['mestimate_id'] . '.pdf');
+                $this->pdf->load_html($html);
+                $this->pdf->render();
+                $output = $this->pdf->output();
+                file_put_contents($pathPDF . $_REQUEST['mestimate_id'] . '.pdf', $output);
+                if (file_exists($pathPDF . $_REQUEST['mestimate_id'] . '.pdf')) {
+                    $this->email->attach($pathPDF . $_REQUEST['mestimate_id'] . '.pdf');
+                }
             }
             //Send mail
             if ($this->email->send()) {

@@ -3,13 +3,25 @@
 <?php
 if (isset($mestimate_id_old) && $mestimate_id_old != 0 && $mestimate_id_old != '') {
     ?>
-    <button class="btn btn-info only-save customer-form-submiter" onclick="saveMestimate()">
-        Update M-Estimate
-    </button>
-    <button type="button" class="btn btn-warning save-and-add-contact customer-form-submiter"
-            data-toggle="modal" data-target="#create_new_confirm">
-        Create New
-    </button>
+    <?php
+    if ((has_permission('mestimates', '', 'edit'))) {
+        ?>
+        <button class="btn btn-info only-save customer-form-submiter" onclick="saveMestimate()">
+            Update M-Estimate
+        </button>
+        <?php
+    }
+    ?>
+    <?php
+    if ((has_permission('mestimates', '', 'create'))) {
+        ?>
+        <button type="button" class="btn btn-warning save-and-add-contact customer-form-submiter"
+                data-toggle="modal" data-target="#create_new_confirm">
+            Create New
+        </button>
+        <?php
+    }
+    ?>
     <?php
 } else {
     ?>
@@ -23,12 +35,13 @@ if (isset($mestimate_id_old) && $mestimate_id_old != 0 && $mestimate_id_old != '
 
 <?php
 if (!isset($mestimate_id_old) || $mestimate_id_old == 0 || $mestimate_id_old == '') {
-    if (isset($mestimate_id) && $mestimate_id != 0 && $mestimate_id != '') {
+    if (isset($mestimate_id) && $mestimate_id != 0 && $mestimate_id != '' && (has_permission('mestimates', '', 'delete'))) {
         ?>
+
         <button class="btn btn-danger only-save customer-form-submiter" onclick="delTemplate()">
             <?php echo _l('delete_this_template'); ?></button>
         <?php
-    } else {
+    } elseif((has_permission('mestimates', '', 'edit'))) {
         ?>
         <button type="button" class="btn btn-info save-and-add-contact customer-form-submiter"
                 data-toggle="modal" data-target="#exampleModal">
@@ -37,12 +50,12 @@ if (!isset($mestimate_id_old) || $mestimate_id_old == 0 || $mestimate_id_old == 
     }
 } else {
     if (isset($mestimate_id) && $mestimate_id != 0 && $mestimate_id != '') {
-        if ($mestimate_id != $mestimate_id_old) {
+        if ($mestimate_id != $mestimate_id_old && (has_permission('mestimates', '', 'delete'))) {
             ?>
             <button class="btn btn-danger only-save customer-form-submiter" onclick="delTemplate()">
                 <?php echo _l('delete_this_template'); ?></button>
             <?php
-        } else {
+        } elseif((has_permission('mestimates', '', 'edit'))) {
             ?>
             <button type="button" class="btn btn-info save-and-add-contact customer-form-submiter"
                     data-toggle="modal" data-target="#exampleModal">
