@@ -4,7 +4,7 @@ $client_id = (isset($mestimate->client_id) ? $mestimate->client_id : (isset($cli
 if (isset($client_id) && $client_id != '') {
 
     ?>
-    <div id="mestimate-files-upload">
+    <div id="mestimate-files-upload" style="overflow-x:auto;">
         <input type="file" name="file" id="file_estimate" multiple/>
         <button class="btn btn-info only-save customer-form-submiter" type="button" onclick="saveFile();return false;">
             Save File
@@ -12,19 +12,20 @@ if (isset($client_id) && $client_id != '') {
         <input type="hidden" name="client_id" id="hid_client_id" value="<?php echo $client_id ?>"/>
         <?php echo form_close(); ?>
         <div class="clearfix"></div>
-        <table class="table scroll-responsive table-mestimate-files" data-order-col="7" data-order-type="desc">
+        <table class="table table-bordered table-striped mb-0 table-mestimate-files" data-order-col="7"
+               data-order-type="desc">
             <thead>
             <tr>
-                <th data-orderable="false"><span class="hide"> - </span>
+                <th style="min-width: 100px" data-orderable="false"><span class="hide"> - </span>
                     <div class="checkbox mass_select_all_wrap"><input type="checkbox" id="mass_select_all"
                                                                       data-to-table="mestimate-files"><label></label>
                     </div>
                 </th>
-                <th><?php echo _l('mestimate_file_filename'); ?></th>
-                <th><?php echo _l('mestimate_file__filetype'); ?></th>
-                <th><?php echo _l('mestimate_file_uploaded_by'); ?></th>
-                <th><?php echo _l('mestimate_file_dateadded'); ?></th>
-                <th><?php echo _l('options'); ?></th>
+                <th style="min-width: 100px"><?php echo _l('mestimate_file_filename'); ?></th>
+                <th style="min-width: 100px"><?php echo _l('mestimate_file__filetype'); ?></th>
+                <th style="min-width: 100px"><?php echo _l('mestimate_file_uploaded_by'); ?></th>
+                <th style="min-width: 100px"><?php echo _l('mestimate_file_dateadded'); ?></th>
+                <th style="min-width: 100px"><?php echo _l('options'); ?></th>
             </tr>
             </thead>
             <tbody>

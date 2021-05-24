@@ -48,4 +48,7 @@
         </div>
     </div>
 </div>
-<?php
+
+<div id="send_email_mestimate" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+
+</div>

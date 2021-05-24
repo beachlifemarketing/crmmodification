@@ -37,6 +37,8 @@ if (!$CI->db->table_exists(db_prefix() . 'mestimates')) {
   `project_id` int NULL DEFAULT NULL,
   `client_note` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   `term_and_condition` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
+  `sent` tinyint NULL DEFAULT NULL,
+  `datesend` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
       )  ENGINE=InnoDB DEFAULT CHARSET=' . $CI->db->char_set . ';'
     );
@@ -51,10 +53,10 @@ if (!$CI->db->table_exists(db_prefix() . 'mestimates_detail')) {
   `size` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `description` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `qty` int NULL DEFAULT NULL,
-  `qty_unit` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `qty_unit` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `px` int NULL DEFAULT NULL,
-  `px_unit` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `duration` int NULL DEFAULT NULL,
+  `px_unit` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `duration` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `duration_unit` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `amount` decimal(20, 2) NULL DEFAULT NULL,
   `status` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
@@ -93,3 +95,8 @@ if (!$CI->db->table_exists(db_prefix() . 'mestimate_file')) {
       )  ENGINE=InnoDB DEFAULT CHARSET=' . $CI->db->char_set . ';'
     );
 }
+
+$CI->db->query('INSERT INTO `' . db_prefix() . 'emailtemplates` (
+   `type`, `slug`, `language`, `name`, `subject`, `message`, `fromname`, `fromemail`, `plaintext`, `active`, `order`)  
+   VALUES (\'mestimate\', \'mestimate-send-to-client\', \'english\', \'Send Mestimate to Customer\', \'Mestimate # {mestimate_number} created\', \'<span style=\"font-size: 12pt;\">Dear {contact_firstname} {contact_lastname}</span><br /><br /><span style=\"font-size: 12pt;\">Please find the attached mestimate <strong># {mestimate_number}</strong></span><br /><br /><span style=\"font-size: 12pt;\"><strong>Mestimate status:</strong> {mestimate_status}</span><br /><br /><span style=\"font-size: 12pt;\">You can view the mestimate on the following link: <a href=\"{mestimate_link}\">{mestimate_number}</a></span><br /><br /><span style=\"font-size: 12pt;\">We look forward to your communication.</span><br /><br /><span style=\"font-size: 12pt;\">Kind Regards,</span><br /><span style=\"font-size: 12pt;\">{email_signature}<br /></span>\', \'{companyname} | CRM\', \'\', 0, 1, 0);'
+);

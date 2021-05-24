@@ -45,7 +45,7 @@ hooks()->add_filter('module_theme_style_action_links', 'module_theme_style_actio
 hooks()->add_action('admin_init', 'theme_style_init_menu_items');
 /**
  * Add additional settings for this module in the module list area
- * @param  array $actions current actions
+ * @param array $actions current actions
  * @return array
  */
 function module_theme_style_action_links($actions)
@@ -54,6 +54,7 @@ function module_theme_style_action_links($actions)
 
     return $actions;
 }
+
 /**
  * Admin area applied styles
  * @return null
@@ -76,12 +77,12 @@ function theme_style_clients_area_head()
 
 /**
  * Custom CSS
- * @param  string $main_area clients or admin area options
+ * @param string $main_area clients or admin area options
  * @return null
  */
 function theme_style_custom_css($main_area)
 {
-    $clients_or_admin_area             = get_option($main_area);
+    $clients_or_admin_area = get_option($main_area);
     $custom_css_admin_and_clients_area = get_option('theme_style_custom_clients_and_admin_area');
     if (!empty($clients_or_admin_area) || !empty($custom_css_admin_and_clients_area)) {
         echo '<style id="theme_style_custom_css">' . PHP_EOL;
@@ -96,6 +97,7 @@ function theme_style_custom_css($main_area)
         echo '</style>' . PHP_EOL;
     }
 }
+
 /**
  * General and buttons styles
  * @return null
@@ -117,8 +119,8 @@ function theme_style_init_menu_items()
          * If the logged in user is administrator, add custom menu in Setup
          */
         $CI->app_menu->add_setup_menu_item('theme-style', [
-            'href'     => admin_url('theme_style'),
-            'name'     => _l('theme_style'),
+            'href' => admin_url('theme_style'),
+            'name' => _l('theme_style'),
             'position' => 65,
         ]);
     }
