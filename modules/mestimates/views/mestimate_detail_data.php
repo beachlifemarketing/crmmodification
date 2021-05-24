@@ -34,13 +34,6 @@
                     </li>
                 </ul>
             </div>
-            <?php
-            $_tooltip = _l('mestimate_sent_to_email_tooltip');
-            $_tooltip_already_send = '';
-            if ($mestimate->sent == 1) {
-                $_tooltip_already_send = _l('mestimate_already_send_to_client_tooltip', time_ago($mestimate->datesend));
-            }
-            ?>
             <?php if (!empty($mestimate->client_id)) { ?>
                 <a href="#" class="btn btn-default dropdown-toggle" onclick="sendEmailMestimate(); return false;" title="<?php echo $_tooltip; ?>"
                    data-placement="bottom">
