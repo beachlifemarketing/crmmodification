@@ -53,9 +53,9 @@
             $data = file_get_contents($path);
             $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
             ?>
-            <img width="150px" height="" src="<?= $base64 ?>" style="margin-top: 50px"/>
+            <img width="150px" height="" src="<?= $base64 ?>" style="margin-top: 30px; margin-bottom: 30px"/>
             <br/>
-            <b><?= get_option('companyname'); ?></b><br/>
+            <b style="margin-top: 40px"><?= get_option('companyname'); ?></b><br/>
             <b><a href="<?= get_option('main_domain'); ?>"><?= get_option('main_domain'); ?></a></b>
         </td>
         <td>

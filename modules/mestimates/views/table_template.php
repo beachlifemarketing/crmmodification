@@ -16,8 +16,7 @@ $aColumns = [
 $sIndexColumn = 'id';
 $sTable = db_prefix() . 'mestimates';
 
-$join[] = 'INNER JOIN ' . db_prefix() . 'staff ON ' . db_prefix() . 'staff.staffid = ' . db_prefix() . 'mestimates.staff_id';
-$join[] = 'INNER JOIN ' . db_prefix() . 'clients ON  ' . db_prefix() . 'clients.userid = ' . db_prefix() . 'mestimates.client_id';
+$join[] = 'LEFT JOIN ' . db_prefix() . 'staff ON ' . db_prefix() . 'staff.staffid = ' . db_prefix() . 'mestimates.staff_id';
 
 $where[] = 'AND status = "template"';
 $result = data_tables_init($aColumns, $sIndexColumn, $sTable, $join, $where, ['id']);

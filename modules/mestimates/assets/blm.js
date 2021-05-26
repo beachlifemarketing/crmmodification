@@ -51,7 +51,7 @@ function simpleAjaxPostUpload(url, formId, successCallBack, fieldErrorCallBack, 
                 if (typeof fieldErrorCallBack != 'undefined' && fieldErrorCallBack != null) {
                     fieldErrorCallBack(res);
                 } else {
-                    $(formId).replaceWith(res.content);
+                    $(formId).replaceWith(res.template_data);
                 }
             } else {
                 if (typeof actionErrorCallBack != 'undefined' && actionErrorCallBack != null) {

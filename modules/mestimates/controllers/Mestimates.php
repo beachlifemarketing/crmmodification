@@ -79,6 +79,7 @@ class Mestimates extends AdminController
         if (!has_permission('mestimates', '', 'view')) {
             access_denied('mestimates');
         }
+        $this->mestimate_id_old = $id;
 
         if (isset($_REQUEST['mestimate_id']) && $_REQUEST['mestimate_id'] != null) {
             $id = $_REQUEST['mestimate_id'];
@@ -86,7 +87,6 @@ class Mestimates extends AdminController
 
         if (($id != null && $id > 0)) {
             $this->mestimate_id = $id;
-            $this->mestimate_id_old = $id;
             $title = _l('edit', _l('mestimate_lowercase'));
             $data['is_edit'] = true;
         } else {
@@ -197,9 +197,9 @@ class Mestimates extends AdminController
             } else {
                 $sat = $_REQUEST['sat'];
             }
-            if ($this->client_id == null) {
-                $data['errorCode'] = "ACTION_ERROR";
-                $data['errorMessage'] = _l('select_client', _l('mestimate'));
+            if (($this->client_id == null || !isset($this->client_id) || $this->client_id == '' || $this->client_id == 0 || !is_numeric($this->client_id)) && $sat !== 'template') {
+                $data['errorCode'] = "FIELD_ERROR";
+                $data['errorMessage'] = array("client_id" => 'Please select client');
                 echo json_encode($data);
                 die();
             } else {
@@ -355,7 +355,7 @@ class Mestimates extends AdminController
             $data['mestimate_id'] = $_REQUEST['mestimate_id'];
             $data['groups'] = $this->clients_model->get_groups();
 
-            if(isset($_REQUEST['attach_pdf'])){
+            if (isset($_REQUEST['attach_pdf'])) {
                 $this->load->library('pdf');
                 $html = $this->load->view('mestimates/mestimate_pdf', $data, true);
 

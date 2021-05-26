@@ -102,10 +102,12 @@
                 if (typeof res.url_redirect != 'undefined' && res.url_redirect != null) {
                     window.location.href = res.url_redirect;
                 }
+                $("#lable_client_id").attr('style', 'color:black');
                 alert_float('success', res.errorMessage);
             },
             function (res) {
-                alert_float('danger', res.errorMessage);
+                $("#lable_client_id").attr('style', 'color:red');
+                alert_float('danger', res.errorMessage.client_id);
             },
             function (res) {
                 alert_float('danger', res.errorMessage);
@@ -119,12 +121,12 @@
         simpleAjaxPostUpload(
             url, '#id_content_mestimate',
             function (res) {
-                $('#template_list').html(res.html_template);
-                $('#div_button_save').html(res.html_button);
+                $("#lable_client_id").attr('style', 'color:black');
                 alert_float('success', res.errorMessage);
             },
             function (res) {
-                alert_float('danger', res.errorMessage);
+               $("#lable_client_id").attr('style', 'color:red');
+                alert_float('danger', res.errorMessage.client_id);
             },
             function (res) {
                 alert_float('danger', res.errorMessage);

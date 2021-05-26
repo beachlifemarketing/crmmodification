@@ -15,14 +15,14 @@
                 <div class="f_client_id">
                     <div class="form-group select-placeholder">
                         <label for="client_id"
-                               class="control-label"><?php echo _l('client_select_template'); ?></label>
+                               class="control-label" id="lable_client_id"><?php echo _l('client_select_template'); ?></label>
                         <select id="client_id" name="client_id" class="selectpicker" data-live-search="true"
                                 onchange="selectClient()"
                                 data-width="100%">
 
                             <?php
                             if (isset($clients)) {
-                                echo ' <option value="0"></option>';
+                                echo ' <option selected disabled value=""></option>';
                                 for ($i = 0; $i < count($clients); $i++) {
                                     $selected = ($client_id == $clients[$i]['userid']) ? 'selected' : '';
                                     ?>
@@ -78,3 +78,26 @@
     </div>
 
 </div>
+<script>
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function () {
+        'use strict'
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.querySelectorAll('.needs-validation')
+
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })()
+
+</script>
