@@ -105,7 +105,16 @@ register_language_files(MESTIMATES_MODULE_NAME, [MESTIMATES_MODULE_NAME]);
  */
 function mestimates_module_init_menu_items()
 {
-    if (is_admin()) {
+    $CI = &get_instance();
+    $CI->app->add_quick_actions_link([
+        'name' => _l('mestimates'),
+        'url' => 'mestimates/mestimate',
+        'permission' => 'mestimates',
+        'position' => 56,
+    ]);
+
+
+    if (has_permission('mestimates', '', 'view')) {
         $CI = &get_instance();
         $CI->app_menu->add_sidebar_menu_item('api-options', [
             'collapse' => true,
@@ -114,13 +123,13 @@ function mestimates_module_init_menu_items()
             'icon' => 'fa fa-cogs',
         ]);
         $CI->app_menu->add_sidebar_children_item('api-options', [
-            'slug' => 'api-register-options',
+            'slug' => 'mestimates',
             'name' => 'M-Estimate - Manage',
             'href' => admin_url('mestimates'),
             'position' => 5,
         ]);
         $CI->app_menu->add_sidebar_children_item('api-options', [
-            'slug' => 'api-register-options',
+            'slug' => 'mestimates-template',
             'name' => 'Templates - Manage',
             'href' => admin_url('mestimates/template'),
             'position' => 6,
