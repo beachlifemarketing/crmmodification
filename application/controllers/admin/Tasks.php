@@ -923,7 +923,7 @@ class Tasks extends AdminController
             $post_data = $this->input->post();
             foreach ($post_data as $key => $val) {
                 $data = hooks()->apply_filters('before_update_task', [
-                    $key => to_sql_date($val),
+                    $key => to_sql_date($val, true),
                 ], $task_id);
 
                 $this->db->where('id', $task_id);
