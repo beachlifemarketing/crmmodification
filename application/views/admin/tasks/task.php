@@ -188,7 +188,8 @@
                                 ?>
                                 <?php echo render_date_input('startdate', 'task_add_edit_start_date', $value, $date_attrs); ?>
                             </div>
-                            <div class="col-md-4">
+
+                            <div class="col-md-6">
 
                                 <?php
                                 if (isset($task)) {
@@ -214,7 +215,7 @@
                                 $value = explode(" ", $value)[0]; ?>
                                 <?php echo render_date_input('duedate', 'task_add_edit_due_date', $value, $project_end_date_attrs); ?>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <?php
                                 $value = (isset($task) ? _dt($task->duedate) : '');
                                 $time_array = explode(" ", $value);
@@ -467,6 +468,7 @@
                         <?php $rel_id_custom_field = (isset($task) ? $task->id : false); ?>
                         <?php echo render_custom_fields('tasks', $rel_id_custom_field); ?>
                         <hr/>
+
                         <p class="bold"><?php echo _l('task_add_edit_description'); ?></p>
                         <?php
                         // onclick and onfocus used for convert ticket to task too
@@ -481,9 +483,6 @@
         </div>
     </div>
     <?php echo form_close(); ?>
-
-    <link rel="stylesheet" href="<?php echo base_url("assets/plugins/timepick/css/timepicki.css") ?>"/>
-    <script src="<?php echo base_url('assets/plugins/timepick/js/timepicki.js'); ?>"></script>
     <script>
         var _rel_id = $('#rel_id'),
             _rel_type = $('#rel_type'),

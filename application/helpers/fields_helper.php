@@ -126,6 +126,63 @@ function render_color_picker($name, $label = '', $value = '', $input_attrs = [])
     return $picker;
 }
 
+
+function render_timepicker_input($name, $label = '', $value = '', $input_attrs = [], $form_group_attr = [], $form_group_class = '', $input_class = '')
+{
+    $startime = null;
+    if ($value != '') {
+
+        $value_format = date("g:i a", strtotime($value));
+        $value_array_1 = explode(":", $value_format);
+        $value_array_2 = explode(" ", $value_array_1[1]);
+        $startime = [$value_array_1[0], $value_array_2[0], strtoupper($value_array_2[1])];
+    }
+
+
+    $input = '';
+    $_form_group_attr = '';
+    $_input_attrs = '';
+    foreach ($input_attrs as $key => $val) {
+        // tooltips
+        if ($key == 'title') {
+            $val = _l($val);
+        }
+        $_input_attrs .= $key . '=' . '"' . $val . '" ';
+    }
+
+    $_input_attrs = rtrim($_input_attrs);
+
+    $form_group_attr['app-field-wrapper'] = $name;
+
+    foreach ($form_group_attr as $key => $val) {
+        // tooltips
+        if ($key == 'title') {
+            $val = _l($val);
+        }
+        $_form_group_attr .= $key . '=' . '"' . $val . '" ';
+    }
+
+    $_form_group_attr = rtrim($_form_group_attr);
+
+    if (!empty($form_group_class)) {
+        $form_group_class = ' ' . $form_group_class;
+    }
+    if (!empty($input_class)) {
+        $input_class = ' ' . $input_class;
+    }
+
+    $input .= '<div class="form-group md-form md-outline' . $form_group_class . '" ' . $_form_group_attr . '>';
+    if ($label != '') {
+        $input .= '<label for="' . $name . '" class="control-label">' . _l($label, '', false) . '</label>';
+    }
+    $input .= '<div class="input-group col-md-12">';
+    $input .= '<input type="time" id="' . $name . '" name="' . $name . '" class=" form-control ' . $input_class . '"  value="' . set_value($name, $value) . '"placeholder="Select time" />';
+    $input .= '</div>';
+    $input .= '</div>';
+    return $input;
+}
+
+
 /**
  * Render date picker input for admin area
  * @param  [type] $name             input name
@@ -184,100 +241,6 @@ function render_date_input($name, $label = '', $value = '', $input_attrs = [], $
 
     return $input;
 }
-
-
-/*
-<div class="container">
-   <div class="row">
-      <div class='col-sm-6'>
-         <div class="form-group">
-            <div class='input-group date' id='datetimepicker3'>
-               <input type='text' class="form-control" />
-               <span class="input-group-addon">
-               <span class="glyphicon glyphicon-time"></span>
-               </span>
-            </div>
-         </div>
-      </div>
-      <script type="text/javascript">
-         $(function () {
-             $("#datetimepicker3").datetimepicker({
-                 format: "LT"
-             });
-         });
-      </script>
-   </div>
-</div>*/
-
-
-function render_timepicker_input($name, $label = '', $value = '', $input_attrs = [], $form_group_attr = [], $form_group_class = '', $input_class = '')
-{
-    $startime = null;
-    if ($value != '') {
-
-        $value_format = date("g:i a", strtotime($value));
-        $value_array_1 = explode(":", $value_format);
-        $value_array_2 = explode(" ", $value_array_1[1]);
-        $startime = [$value_array_1[0], $value_array_2[0], strtoupper($value_array_2[1])];
-    }
-
-
-    $input = '';
-    $_form_group_attr = '';
-    $_input_attrs = '';
-    foreach ($input_attrs as $key => $val) {
-        // tooltips
-        if ($key == 'title') {
-            $val = _l($val);
-        }
-        $_input_attrs .= $key . '=' . '"' . $val . '" ';
-    }
-
-    $_input_attrs = rtrim($_input_attrs);
-
-    $form_group_attr['app-field-wrapper'] = $name;
-
-    foreach ($form_group_attr as $key => $val) {
-        // tooltips
-        if ($key == 'title') {
-            $val = _l($val);
-        }
-        $_form_group_attr .= $key . '=' . '"' . $val . '" ';
-    }
-
-    $_form_group_attr = rtrim($_form_group_attr);
-
-    if (!empty($form_group_class)) {
-        $form_group_class = ' ' . $form_group_class;
-    }
-    if (!empty($input_class)) {
-        $input_class = ' ' . $input_class;
-    }
-
-    $input .= '<div class="form-group' . $form_group_class . '" ' . $_form_group_attr . '>';
-    if ($label != '') {
-        $input .= '<label for="' . $name . '" class="control-label">' . _l($label, '', false) . '</label>';
-    }
-    $input .= '<div class="input-group date">';
-    $input .= '<input type="text" id="' . $name . '" name="' . $name . '" class="form-control time_element' . $input_class . '" ' . $_input_attrs . ' value="' . set_value($name, $value) . '">';
-    $input .= '<span class="input-group-addon">
-               <span class="glyphicon glyphicon-time"></span>
-               </span>';
-    $input .= '</div>';
-    $input .= '</div>';
-    $input .= '<script type="text/javascript">
-         $(function () {
-             
-             var options = {
-                 start_time: ' . json_encode($startime) . ',
-             };
-             
-             $("#' . $name . '").timepicki(options);
-         });
-      </script>';
-    return $input;
-}
-
 
 /**
  * Render date time picker input for admin area

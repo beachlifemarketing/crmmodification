@@ -305,21 +305,22 @@ class Tasks extends AdminController
         }
         if ($this->input->post()) {
             $data = $this->input->post();
+            $data['description'] = html_purify($this->input->post('description', false));
+
 
             if (isset($data['starttime']) && isset($data['startdate'])) {
                 $startDate = explode(' ', $data['startdate'])[0];
-                if (strpos(strtoupper($data['starttime']), 'AM') !== false || strpos(strtoupper($data['starttime']), 'PM')) {
+                if ($startDate) {
                     $data['startdate'] = $startDate . ' ' . date("H:i", strtotime($data['starttime'])) . ":00";
                 }
             }
 
             if (isset($data['duetime']) && isset($data['duedate'])) {
                 $startDate = explode(' ', $data['duedate'])[0];
-                if (strpos(strtoupper($data['duetime']), 'AM') !== false || strpos(strtoupper($data['duetime']), 'PM')) {
+                if ($startDate) {
                     $data['duedate'] = $startDate . ' ' . date("H:i", strtotime($data['duetime'])) . ":00";
                 }
             }
-
 
 
             if (isset($data['starttime'])) {
@@ -330,7 +331,7 @@ class Tasks extends AdminController
                 unset($data['duetime']);
             }
 
-            $data['description'] = html_purify($this->input->post('description', false));
+
             if ($id == '') {
                 if (!has_permission('tasks', '', 'create')) {
                     header('HTTP/1.0 400 Bad error');
@@ -393,6 +394,7 @@ class Tasks extends AdminController
                 $data['milestones'] = $this->projects_model->get_milestones($data['task']->rel_id);
             }
             $title = _l('edit', _l('task_lowercase')) . ' ' . $data['task']->name;
+
         }
 
         $data['project_end_date_attrs'] = [];
@@ -954,6 +956,60 @@ class Tasks extends AdminController
 
                 hooks()->do_action('after_update_task', $task_id);
             }
+        }
+    }
+
+    public function task_single_new_update()
+    {
+        if (has_permission('tasks', '', 'edit') && isset($_REQUEST['rtype']) && $_REQUEST['rtype'] = 'json') {
+            $startdate_full = '';
+            $duedate_full = '';
+            if (isset($_REQUEST['startdate'])) {
+                $startdate_full .= $_REQUEST['startdate'];
+                if (isset($_REQUEST['starttime'])) {
+                    $startdate_full .= ' ' . $_REQUEST['starttime'];
+                }
+            }
+
+
+            if (isset($_REQUEST['duedate'])) {
+                $duedate_full .= $_REQUEST['duedate'];
+                if (isset($_REQUEST['duetime'])) {
+                    $duedate_full .= ' ' . $_REQUEST['duetime'];
+                }
+            }
+
+            if (isset($_REQUEST['id'])) {
+                if ($startdate_full != '') {
+                    $data = hooks()->apply_filters('before_update_task', [
+                        'startdate' => to_sql_date($startdate_full, true),
+                    ], $_REQUEST['id']);
+
+                    $this->db->where('id', $_REQUEST['id']);
+                    $this->db->update(db_prefix() . 'tasks', $data);
+
+                    hooks()->do_action('after_update_task', $_REQUEST['id']);
+                }
+
+                if ($duedate_full != '') {
+                    $data = hooks()->apply_filters('before_update_task', [
+                        'duedate' => to_sql_date($duedate_full, true),
+                    ], $_REQUEST['id']);
+
+                    $this->db->where('id', $_REQUEST['id']);
+                    $this->db->update(db_prefix() . 'tasks', $data);
+
+                    hooks()->do_action('after_update_task', $_REQUEST['id']);
+                }
+
+
+            }
+
+
+            $data['errorCode'] = 'SUCCESS';
+            $data['data'] = $_REQUEST;
+            $data['errorMessage'] = _l('Update Success');
+            echo json_encode($data);
         }
     }
 
