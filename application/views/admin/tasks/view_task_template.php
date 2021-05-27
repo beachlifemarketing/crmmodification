@@ -621,7 +621,7 @@
             <h5><i class="fa task-info-icon fa-fw fa-lg fa-calendar-plus-o pull-left fa-margin"></i>
                <?php echo _l('task_single_start_date'); ?>:
                <?php if(has_permission('tasks','','edit') && $task->status !=5) { ?>
-               <input name="startdate" tabindex="-1" value="<?php echo _d($task->startdate); ?>" id="task-single-startdate" class="task-info-inline-input-edit datepicker pointer task-single-inline-field">
+               <input name="startdate" tabindex="-1" value="<?php echo _d($task->startdate); ?>" id="task-single-startdate" class="task-info-inline-input-edit datetimepicker pointer task-single-inline-field">
                <?php } else { ?>
                <?php echo _d($task->startdate); ?>
                <?php } ?>
@@ -637,7 +637,7 @@
                tabindex="-1"
                value="<?php echo _d($task->duedate); ?>"
                id="task-single-duedate"
-               class="task-info-inline-input-edit datepicker pointer task-single-inline-field"
+               class="task-info-inline-input-edit datetimepicker pointer task-single-inline-field"
                autocomplete="off"
                <?php if($project_deadline){echo ' data-date-end-date="'.$project_deadline.'"';} ?>>
                <?php } else { ?>
