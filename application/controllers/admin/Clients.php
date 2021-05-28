@@ -98,7 +98,7 @@ class Clients extends AdminController
                     'lastname' => $this->input->post('lastname'),
                     'title' => "",
                     'email' => $this->input->post('email'),
-                    'phonenumber' => "",
+                    'phonenumber' => isset($data['phonenumber']) ? $data['phonenumber'] : '',
                     'direction' => "",
                     'invoice_emails' => isset($data['invoice_emails']) ? 1 : 0,
                     'credit_note_emails' => isset($data['credit_note_emails']) ? 1 : 0,
@@ -137,7 +137,7 @@ class Clients extends AdminController
                         } else {
                             if ($contactId != '') {
                                 redirect(admin_url('clients/client/' . $id . '?group=contacts'));
-                            }else{
+                            } else {
                                 redirect(admin_url('clients/client/' . $id . '?group=contacts&new_contact=true'));
                             }
                         }
@@ -149,25 +149,27 @@ class Clients extends AdminController
                         access_denied('customers');
                     }
                 }
+                $phone = ($this->input->post("contact_id") != '' && $this->input->post("phonenumber") != null) ? $this->input->post("phonenumber") : '';
 
                 if ($this->input->post("contact_id") != '') {
                     $contact_data = [
                         'firstname' => $this->input->post('firstname'),
                         'lastname' => $this->input->post('lastname'),
-                        'email' => $this->input->post('email')
+                        'email' => $this->input->post('email'),
+                        'phonenumber' => $phone
                     ];
                     if ($this->input->post('password') != '') {
                         $contact_data['password'] = $this->input->post('password');
                     }
                     $success_contact = $this->clients_model->update_contact($contact_data, $this->input->post("contact_id"), false, true);
-                }else{
+                }else {
                     $contact_data = [
                         'is_primary' => 1,
                         'firstname' => $this->input->post('firstname'),
                         'lastname' => $this->input->post('lastname'),
                         'title' => "",
                         'email' => $this->input->post('email'),
-                        'phonenumber' => "",
+                        'phonenumber' => $phone,
                         'direction' => "",
                         'invoice_emails' => isset($data['invoice_emails']) ? 1 : 0,
                         'credit_note_emails' => isset($data['credit_note_emails']) ? 1 : 0,
@@ -197,7 +199,7 @@ class Clients extends AdminController
                         } else {
                             if ($contactId != '') {
                                 redirect(admin_url('clients/client/' . $id . '?group=contacts'));
-                            }else{
+                            } else {
                                 redirect(admin_url('clients/client/' . $id . '?group=contacts&new_contact=true'));
                             }
                         }
