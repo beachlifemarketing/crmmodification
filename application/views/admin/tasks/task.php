@@ -207,6 +207,10 @@
                                 if (isset($task) && $task->recurring > 0 && $task->last_recurring_date != null) {
                                     $date_attrs['disabled'] = true;
                                 }
+                                if($time[0] != '0'){
+                                    $time = '0'.$time;
+                                }
+
                                 ?>
                                 <?php echo render_timepicker_input('starttime', 'Start time', $time, $date_attrs); ?>
                             </div>
@@ -224,7 +228,9 @@
                                 } else {
                                     $time = date('H:m');
                                 }
-
+                                if($time[0] != '0'){
+                                    $time = '0'.$time;
+                                }
                                 echo render_timepicker_input('duetime', 'Due time', $time);
                                 ?>
                             </div>

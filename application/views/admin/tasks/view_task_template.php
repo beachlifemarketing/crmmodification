@@ -731,9 +731,11 @@
             if (count($start_date_array) > 1) {
                 $start_time = $start_date_array[1];
             } else {
-                $start_time = _dt(date('H:m:s'));
+                $start_time = _dt(date('H:m'));
             }
-
+            if($start_time[0] != '0'){
+                $start_time = '0'.$start_time;
+            }
             ?>
             <div id="div_timer">
                 <div class="task-info task-single-inline-wrap task-info-start-date">
@@ -784,9 +786,11 @@
                 if (count($due_date_array) > 1) {
                     $due_time = $due_date_array[1];
                 } else {
-                    $due_time = _dt(date('H:m:s'));
+                    $due_time = _dt(date('H:m'));
                 }
-
+                if($due_time[0] != '0'){
+                    $due_time = '0'.$due_time;
+                }
                 ?>
 
 
