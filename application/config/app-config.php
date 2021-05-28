@@ -17,9 +17,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 * environments.
 *
 */
-
-define('APP_BASE_URL', 'https://localhost/blm');
-
+define('APP_BASE_URL', 'https://crmmod.beachlifemarketing.com/staging');
 
 /*
 * --------------------------------------------------------------------------
@@ -44,17 +42,15 @@ define('APP_DB_HOSTNAME', 'localhost');
 /**
  * The username used to connect to the database
  */
-define('APP_DB_USERNAME', 'root');
+define('APP_DB_USERNAME', 'crmmodbe_thanh');
 /**
  * The password used to connect to the database
  */
-define('APP_DB_PASSWORD', '');
+define('APP_DB_PASSWORD', 'Vbrand@t2d');
 /**
  * The name of the database you want to connect to
  */
-
-define('APP_DB_NAME', 'blm');
-
+define('APP_DB_NAME', 'crmmodbe_staging');
 
 /**
  * @since  2.3.0
