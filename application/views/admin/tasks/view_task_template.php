@@ -733,9 +733,11 @@
             } else {
                 $start_time = _dt(date('H:m'));
             }
-            if($start_time[0] != '0'){
+
+            if(strlen(explode(':', $start_time)[0])  === 1){
                 $start_time = '0'.$start_time;
             }
+
             ?>
             <div id="div_timer">
                 <div class="task-info task-single-inline-wrap task-info-start-date">
@@ -788,9 +790,11 @@
                 } else {
                     $due_time = _dt(date('H:m'));
                 }
-                if($due_time[0] != '0'){
+
+                if(strlen(explode(':', $due_time)[0])  === 1){
                     $due_time = '0'.$due_time;
                 }
+
                 ?>
 
 
