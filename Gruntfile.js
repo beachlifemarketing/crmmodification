@@ -110,7 +110,6 @@ module.exports = function(grunt) {
                 src: [
                     'assets/plugins/jquery/jquery.min.js',
                     'assets/plugins/jquery-ui/jquery-ui.min.js',
-                    'assets/plugins/mdb4pro/js/mdb.min.js',
                     'assets/plugins/metisMenu/metisMenu.min.js',
                     'assets/plugins/readmore/readmore.min.js',
                     'assets/plugins/bootstrap/js/bootstrap.min.js',

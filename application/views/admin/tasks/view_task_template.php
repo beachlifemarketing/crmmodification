@@ -1134,7 +1134,7 @@
         </div>
     </div>
 </div>
-
+<script src="' . <?php echo base_url(); ?> . 'assets/plugins/mdb4pro/js/mdb.min.js"></script>';
 <script>
     if (typeof (commonTaskPopoverMenuOptions) == 'undefined') {
         var commonTaskPopoverMenuOptions = {

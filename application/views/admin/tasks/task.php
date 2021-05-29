@@ -492,6 +492,7 @@
         </div>
     </div>
     <?php echo form_close(); ?>
+    <script src="' . <?php echo base_url(); ?> . 'assets/plugins/mdb4pro/js/mdb.min.js"></script>';
     <script>
         var _rel_id = $('#rel_id'),
             _rel_type = $('#rel_type'),
