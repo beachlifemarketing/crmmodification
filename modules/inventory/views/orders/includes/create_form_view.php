@@ -17,7 +17,7 @@
 						<div class="input-group-prepend">
 							<label class="input-group-text" for="order_client_id">Customer</label>
 						</div>
-						<select class="form-control selectpicker col-md-12" id="order_client_id" name="order_client_id" data-width="100%" data-live-search="true">
+						<select <?= (isset($order) ? 'disabled' : ''); ?> class="form-control selectpicker col-md-12" id="order_client_id" name="order_client_id" data-width="100%" data-live-search="true">
 							<option value="">Choose Customer...</option>
 							<?php
 							if (isset($clients)) {
@@ -41,7 +41,7 @@
 						<div class="input-group-prepend">
 							<label class="input-group-text" for="order_product_id">Products</label>
 						</div>
-						<select class="form-control col-md-12 selectpicker" id="order_product_id" name="order_product_id" data-width="100%" data-live-search="true" multiple>
+						<select <?= (isset($order) ? 'disabled' : ''); ?> class="form-control col-md-12 selectpicker" id="order_product_id" name="order_product_id" data-width="100%" data-live-search="true" multiple>
 							<option>Choose Product...</option>
 							<?php
 							if (isset($products)) {
@@ -52,7 +52,7 @@
 										$selected = 'selected';
 									}
 									?>
-									<option <?= $selected ?> value="<?= $item['product_id'] ?>">Name: <?=  $item['product_name'] ?> - Code: <?=  $item['product_code'] ?> - Quantity: <?= $item['quantity'] ?></option>
+									<option <?= $selected ?> value="<?= $item['product_id'] ?>">Name: <?= $item['product_name'] ?> - Quantity: <?= $item['quantity'] ?></option>
 									<?php
 								}
 							}
@@ -62,15 +62,15 @@
 				</div>
 				<div class="col-md-12">
 					<div class="form-group" app-field-wrapper="order_number">
-						<label for="order_number" class="control-label"><?php echo _l('Code'); ?></label>
-						<input type="text" id="order_number" name="order_number" class="form-control"
+						<label for="order_number" class="control-label"><?php echo _l('Order number'); ?></label>
+						<input type="text" <?= (isset($order) ? 'readonly' : ''); ?> id="order_number" name="order_number" class="form-control"
 						       value="<?= (isset($order) ? $order->order_number : ''); ?>">
 					</div>
 				</div>
 				<div class="col-md-12">
 					<div class="form-group" app-field-wrapper="order_quantity">
 						<label for="order_quantity" class="control-label"><?php echo _l('Quantity'); ?></label>
-						<input type="number" id="quantity" name="order_quantity" class="form-control"
+						<input type="number" id="quantity" <?= (isset($order) ? 'readonly' : ''); ?> name="order_quantity" class="form-control"
 						       value="<?= (isset($order) ? $order->order_quantity : ''); ?>">
 					</div>
 				</div>
@@ -83,7 +83,7 @@
 						<div class="input-group-prepend">
 							<label class="input-group-text" for="order_status">Status</label>
 						</div>
-						<select class="form-control col-md-12" id="order_status" name="order_status" data-width="100%">
+						<select class="form-control col-md-12" <?= isset($order) && $order->order_status !== 'inprocessing' ? 'disabled' : '' ?> id="order_status" name="order_status" data-width="100%">
 							<?php
 							if (isset($status)) {
 								foreach ($status as $key => $value) {
