@@ -28,8 +28,8 @@
 			</div>
 			<div class="form-check">
 				<div class="form-group" app-field-wrapper="status">
-					<label for="status" class="control-label"><?php echo _l('Status'); ?></label>
-					<input type="checkbox" id="status" name="status" class="form-control" <?= (isset($manufacture) && $manufacture->status == 'active' ? 'checked' : ''); ?>
+					<label for="status" class="control-label"><?php echo _l('Status (Active / Inactive)'); ?></label>
+					<input style="width: 50px" type="checkbox" id="status" name="status" class="form-check-input form-control" <?= (isset($manufacture) && $manufacture->status == 'active' ? 'checked' : ''); ?>
 					       value="active">
 				</div>
 			</div>

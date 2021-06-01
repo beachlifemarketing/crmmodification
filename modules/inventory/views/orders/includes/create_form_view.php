@@ -13,11 +13,14 @@
 			<input type="hidden" name="order_id" id="order_id" value="<?= (isset($order) && $order->order_id) ? $order->order_id : '' ?>">
 			<div class="col-md-12">
 				<div class="col-md-12">
-					<div class="input-group col-md-12">
+					<div class="input-group col-md-12" id="div_order_client_id">
 						<div class="input-group-prepend">
 							<label class="input-group-text" for="order_client_id">Customer</label>
 						</div>
-						<select <?= (isset($order) ? 'disabled' : ''); ?> class="form-control selectpicker col-md-12" id="order_client_id" name="order_client_id" data-width="100%" data-live-search="true">
+						<select <?= (isset($order) ? 'disabled' : ''); ?>
+								class="form-control selectpicker col-md-12" id="order_client_id"
+								onchange="selectClients()"
+								name="order_client_id" data-width="100%" data-live-search="true">
 							<option value="">Choose Customer...</option>
 							<?php
 							if (isset($clients)) {
@@ -36,6 +39,12 @@
 					</div>
 				</div>
 				<div class="clearfix"></div>
+				<div class="col-md-12" id="div_project">
+					<?php $this->load->view('orders/includes/project_list'); ?>
+				</div>
+				<div class="clearfix"></div>
+
+
 				<div class="col-md-12">
 					<div class="input-group col-md-12">
 						<div class="input-group-prepend">
@@ -60,13 +69,7 @@
 						</select>
 					</div>
 				</div>
-				<div class="col-md-12">
-					<div class="form-group" app-field-wrapper="order_number">
-						<label for="order_number" class="control-label"><?php echo _l('Order number'); ?></label>
-						<input type="text" <?= (isset($order) ? 'readonly' : ''); ?> id="order_number" name="order_number" class="form-control"
-						       value="<?= (isset($order) ? $order->order_number : ''); ?>">
-					</div>
-				</div>
+
 				<div class="col-md-12">
 					<div class="form-group" app-field-wrapper="order_quantity">
 						<label for="order_quantity" class="control-label"><?php echo _l('Quantity'); ?></label>

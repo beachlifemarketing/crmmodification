@@ -18,7 +18,7 @@ class Manufactures extends AdminController{
 			$this->app->get_table_data(module_views_path('inventory', 'manufactures/table'));
 		}
 		$this->app_scripts->add('circle-progress-js', 'assets/plugins/jquery-circle-progress/circle-progress.min.js');
-		$data['title'] = _l('manufactures_tracking');
+		$data['title'] = _l('Manage - Manufacture');
 		$this->load->view('manufactures/manage', $data);
 	}
 

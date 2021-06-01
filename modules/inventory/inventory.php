@@ -66,20 +66,20 @@ function inventory_module_init_menu_items(){
 		]);
 		$CI->app_menu->add_sidebar_children_item('inventory', [
 			'slug' => 'manufactures',
-			'name' => 'Manufacture - Manage',
+			'name' => 'Manage - Manufacture',
 			'href' => admin_url('inventory/manufactures'),
 			'position' => 5,
 		]);
 		$CI->app_menu->add_sidebar_children_item('inventory', [
 			'slug' => 'products',
-			'name' => 'Product - Manage',
+			'name' => 'Manage - Product',
 			'href' => admin_url('inventory/products'),
 			'position' => 6,
 		]);
 
 		$CI->app_menu->add_sidebar_children_item('inventory', [
 			'slug' => 'orders',
-			'name' => 'Orders - Manage',
+			'name' => 'Manage - Orders',
 			'href' => admin_url('inventory/orders'),
 			'position' => 7,
 		]);

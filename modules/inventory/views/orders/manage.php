@@ -17,7 +17,6 @@
 						<?php } ?>
 						<?php render_datatable(array(
 							_l('ID'),
-							_l('Code'),
 							_l('Customer'),
 							_l('Quantity'),
 							_l('Create Date'),
@@ -48,13 +47,30 @@ $CI = &get_instance();
 <script src="<?php echo base_url('modules/inventory/assets/orders.js'); ?>"></script>
 <script>
     $(function () {
-        initDataTable('.table-orders', window.location.href, [6], [6]);
+        initDataTable('.table-orders', window.location.href, [5], [5]);
         $('.table-orders').DataTable().on('draw', function () {
 
         });
         $('#div_order_detail_id').hide();
     });
 
+    function selectClients() {
+        var token_name = '<?=$CI->security->get_csrf_token_name();?>';
+        var token_value = '<?=$CI->security->get_csrf_hash();?>';
+        simpleAjaxPostUpload(
+            admin_url + 'inventory/orders/list_project?rtype=json&' + token_name + '=' + token_value,
+            '#div_order_client_id',
+            function (res) {
+                $('#div_project').html(res.data_template);
+            },
+            function (res) {
+                alert_float('danger', res.errorMessage);
+            },
+            function (res) {
+                alert_float('danger', res.errorMessage);
+            }
+        );
+    }
 
     function createView() {
         $('#div_modal_create').html("");
