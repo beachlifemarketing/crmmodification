@@ -15,7 +15,7 @@ $aColumns = [
 $sIndexColumn = 'product_id';
 $sTable = db_prefix() . 'products';
 
-$join[] = 'INNER JOIN ' . db_prefix() . 'manufactures ON ' . db_prefix() . 'manufactures.id = ' . db_prefix() . 'products.manufacturer_id';
+$join[] = 'LEFT JOIN ' . db_prefix() . 'manufactures ON ' . db_prefix() . 'manufactures.id = ' . db_prefix() . 'products.manufacturer_id';
 
 $result = data_tables_init($aColumns, $sIndexColumn, $sTable, $join, []);
 $output = $result['output'];

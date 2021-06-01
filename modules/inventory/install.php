@@ -21,7 +21,6 @@ if (!$CI->db->table_exists(db_prefix() . 'products')) {
   `product_id` int NOT NULL AUTO_INCREMENT,
   `product_code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `product_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `order_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `product_description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
   `manufacturer_id` int NULL DEFAULT NULL,
   `quantity` int NULL DEFAULT NULL,

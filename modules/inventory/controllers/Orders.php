@@ -99,6 +99,7 @@ class Orders extends AdminController{
 			$insert_id = $this->orders_model->addOrder($detail);
 			if (isset($insert_id) && $insert_id != '') {
 				foreach ($product_ids as $product_id) {
+					$product = $this->products_model->get($product_id);
 					$quantityUpdate = (int)$product_id;
 					if ($data['order_status'] === 'inprocessing') {
 						$quantityUpdate = (int)$product->quantity - (int)$data['order_quantity'];
@@ -151,14 +152,38 @@ class Orders extends AdminController{
 		}
 		if (isset($_REQUEST['rtype']) && $_REQUEST['rtype'] == 'json') {
 			$data = $this->input->post();
-			$detail['order_client_id'] = $data['order_client_id'];
-			$detail['order_quantity'] = $data['order_quantity'];
+			$order = $this->orders_model->get($this->input->post('order_id'));
 			$detail['order_note'] = $data['order_note'];
-			$detail['order_number'] = $data['order_number'];
 			$detail['order_status'] = isset($data['order_status']) ? $data['order_status'] : 'inprocessing';
 			$detail['due_order_date'] = isset($data['due_order_date']) ? _d($data['due_order_date']) : _d(date('Y-m-d'));
 			$detail['order_product_id'] = $data['order_product_id'];
-			$this->orders_model->updateProduct($detail, $this->input->post('order_id'));
+
+			$product_ids = explode(",", $order->order_product_id);
+			$this->orders_model->updateOrder($detail, $this->input->post('order_id'));
+			foreach ($product_ids as $product_id) {
+				$product = $this->products_model->get($product_id);
+				if (isset($product) && $product->quantity < $order->order_quantity) {
+					$data['errorCode'] = 'ACTION_ERROR';
+					$data['errorMessage'] = _l('Quantity order can not > quantity of inventory');
+					echo json_encode($data);
+					die();
+				}
+			}
+			foreach ($product_ids as $product_id) {
+				$product = $this->products_model->get($product_id);
+				$quantityUpdate = (int)$product_id;
+				if ($data['order_status'] === 'inprocessing' && isset($product)) {
+					$quantityUpdate = (int)$product->quantity - (int)$data['order_quantity'];
+					if ($quantityUpdate < 0) {
+						$quantityUpdate = 0;
+					}
+				}
+				if ($data['order_status'] !== 'inprocessing' && isset($product)) {
+					$quantityUpdate = (int)$product->quantity + (int)$data['order_quantity'];
+				}
+				$productUpdate['quantity'] = $quantityUpdate;
+				$this->products_model->updateProduct($productUpdate, $product_id);
+			}
 			$data['errorCode'] = 'SUCCESS';
 			$data['errorMessage'] = _l('Update Product Susccess');
 		} else {
@@ -195,10 +220,26 @@ class Orders extends AdminController{
 			if (isset($id) && $id != '') {
 				$this->id = $id;
 				$order = $this->orders_model->get($this->id);
+				$product_ids = explode(",", $order->order_product_id);
 				if ($order) {
+					foreach ($product_ids as $product_id) {
+						$product = $this->products_model->get($product_id);
+						$quantityUpdate = (int)$product_id;
+						if ($order->order_status === 'inprocessing') {
+							$quantityUpdate = (int)$product->quantity - (int)$order->order_quantity;
+							if ($quantityUpdate < 0) {
+								$quantityUpdate = 0;
+							}
+						}
+						if ($order->order_status !== 'inprocessing') {
+							$quantityUpdate = (int)$product->quantity + (int)$order->order_quantity;
+						}
+						$productUpdate['quantity'] = $quantityUpdate;
+						$this->products_model->updateProduct($productUpdate, $order->order_product_id);
+					}
 					$this->orders_model->delete($this->id);
 					$data['errorCode'] = 'SUCCESS';
-					$data['errorMessage'] = _l('Delete Susccess');
+					$data['errorMessage'] = _l('Delete order Susccess, total product recalculated');
 				} else {
 					$data['errorCode'] = 'ACTION_ERROR';
 					$data['errorMessage'] = _l('Error Create Product, please contact admin');
