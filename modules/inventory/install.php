@@ -34,7 +34,7 @@ if (!$CI->db->table_exists(db_prefix() . 'products')) {
 
 
 if (!$CI->db->table_exists(db_prefix() . 'products_files')) {
-	$CI->db->query('CREATE TABLE `' . db_prefix() . 'products_files` (
+	$CI->db->query('CREATE TABLE `' . db_prefix() . 'product_files` (
   `id` int NOT NULL AUTO_INCREMENT,
   `file_name` varchar(191) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `subject` varchar(191) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
