@@ -26,7 +26,7 @@ class Products extends AdminController{
 			$this->app->get_table_data(module_views_path('inventory', 'products/table'));
 		}
 		$this->app_scripts->add('circle-progress-js', 'assets/plugins/jquery-circle-progress/circle-progress.min.js');
-		$data['title'] = _l('Product - Manage');
+		$data['title'] = _l('Manage - Product');
 		$this->load->view('products/manage', $data);
 	}
 
