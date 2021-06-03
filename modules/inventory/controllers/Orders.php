@@ -9,12 +9,14 @@ class Orders extends AdminController{
 	public $products;
 	public $client_id;
 	public $status;
+	public $projects;
 
 	public function __construct(){
 		parent::__construct();
 		$this->load->model('orders_model');
 		$this->load->model('products_model');
 		$this->load->model('clients_model');
+		$this->load->model('projects_model');
 		$this->CI =& get_instance();
 	}
 
@@ -26,7 +28,7 @@ class Orders extends AdminController{
 			$this->app->get_table_data(module_views_path('inventory', 'orders/table'));
 		}
 		$this->app_scripts->add('circle-progress-js', 'assets/plugins/jquery-circle-progress/circle-progress.min.js');
-		$data['title'] = _l('orders_tracking');
+		$data['title'] = _l('Manage - In the field');
 		$this->load->view('orders/manage', $data);
 	}
 
@@ -38,6 +40,25 @@ class Orders extends AdminController{
 		$status['cancel'] = "Cancel";
 		$status['completed'] = "Completed";
 		$this->status = $status;
+
+		if (isset($_REQUEST['order_client_id'])) {
+			$data['projects'] = $this->projects_model->get_projects_for_ticket($_REQUEST['order_client_id']);
+		}
+	}
+
+	public function list_project(){
+		if (!isset($_REQUEST['order_client_id'])) {
+			$data['projects'] = [];
+			$data['errorCode'] = 'ACTION_ERROR';
+			$data['data_template'] = $this->load->view('orders/includes/project_list', $data, true);
+			$data['errorMessage'] = _l('Please select customer');
+		} else {
+			$data['projects'] = $this->projects_model->get_projects_for_ticket($_REQUEST['order_client_id']);
+			$data['errorCode'] = 'SUCCESS';
+			$data['data_template'] = $this->load->view('orders/includes/project_list', $data, true);
+			$data['errorMessage'] = _l('Load List Project Susccess');
+		}
+		echo json_encode($data);
 	}
 
 	public function create_view($id = null){
@@ -81,7 +102,7 @@ class Orders extends AdminController{
 			$detail['order_client_id'] = $data['order_client_id'];
 			$detail['order_quantity'] = $data['order_quantity'];
 			$detail['order_note'] = $data['order_note'];
-			$detail['order_number'] = $data['order_number'];
+			$detail['order_project_id'] = $data['order_project_id'];
 			$detail['order_status'] = isset($data['order_status']) ? $data['order_status'] : 'inprocessing';
 			$detail['create_order_date'] = _d(date('Y-m-d'));
 			$detail['due_order_date'] = isset($data['due_order_date']) ? _d($data['due_order_date']) : _d(date('Y-m-d'));
@@ -131,9 +152,10 @@ class Orders extends AdminController{
 		}
 		if ($this->input->post('id') != null) {
 			$this->id = $this->input->post('id');
-			$data['order'] = $this->orders_model->get($this->id);
 		}
+		$data['order'] = $this->orders_model->get($this->id);
 		$this->prepareData();
+		$data['projects'] = $this->projects_model->get_projects_for_ticket($data['order']->order_client_id);
 		$data['products'] = $this->products;
 		$data['clients'] = $this->clients;
 		$data['status'] = $this->status;

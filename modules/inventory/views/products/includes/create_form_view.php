@@ -17,11 +17,11 @@
 					?>
 					<h6>Affter create product success, you can add image to product <span class="badge badge-info">INFO</span></h6>
 					<?php
-				}else{
-					if(isset($tab) && $tab === 'product_images'){
-				?>
+				} else {
+					if (isset($tab) && $tab === 'product_images') {
+						?>
 						<h6>Create Product Success, you can add image to product <span class="badge badge-info">INFO</span></h6>
-				<?php
+						<?php
 					}
 				}
 				?>
@@ -129,8 +129,8 @@
 							<div class="col-md-12">
 								<div class="form-check">
 									<div class="form-group" app-field-wrapper="product_status">
-										<label for="product_status" class="control-label"><?php echo _l('Status'); ?></label>
-										<input type="checkbox" id="product_status" name="product_status" class="form-control" <?= (isset($product) && $product->product_status == 'active' ? 'checked' : ''); ?>
+										<label for="product_status" class="control-label"><?php echo _l('Status (Active / Inactive)'); ?></label>
+										<input type="checkbox" id="product_status" style="width: 50px" name="product_status" class="form-control" <?= (isset($product) && $product->product_status == 'active' ? 'checked' : ''); ?>
 										       value="active">
 									</div>
 								</div>

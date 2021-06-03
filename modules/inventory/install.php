@@ -56,11 +56,11 @@ if (!$CI->db->table_exists(db_prefix() . 'products_files')) {
 if (!$CI->db->table_exists(db_prefix() . 'orders')) {
 	$CI->db->query('CREATE TABLE `' . db_prefix() . 'orders` (
     `order_id` int NOT NULL AUTO_INCREMENT,
-  `order_number` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `order_project_id` int NULL DEFAULT NULL,
   `order_client_id` int NOT NULL,
   `order_quantity` int NOT NULL DEFAULT 0,
   `order_note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `order_product_id` int NOT NULL,
+  `order_product_id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `create_order_date` date NULL DEFAULT NULL,
   `due_order_date` date NULL DEFAULT NULL,
   `order_status` enum(\'inprocessing\',\'cancel\',\'completed\') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT \'inprocessing\',

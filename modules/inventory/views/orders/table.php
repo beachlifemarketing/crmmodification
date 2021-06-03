@@ -3,7 +3,6 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 $aColumns = [
 	'order_id',
-	'order_number',
 	'company',
 	'order_quantity',
 	'create_order_date',
