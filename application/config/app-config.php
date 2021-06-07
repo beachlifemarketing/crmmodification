@@ -33,13 +33,8 @@ if ($conn->connect_error) {
 }
 
 
-if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
-	$url = "https://";
-} else {
-	$url = "http://";
-}
 // Append the host(domain name, ip) to the URL.
-$url .= $_SERVER['HTTP_HOST'];
+$url = $_SERVER['HTTP_HOST'];
 
 // Append the requested resource location to the URL
 // $url.= $_SERVER['REQUEST_URI'];
@@ -48,11 +43,24 @@ $domain_map = array();
 
 $sql = "SELECT * FROM service";
 $result = $conn->query($sql);
-
+$nameDbApi = '';
+$userDb = '';
+$userPass = '';
 if ($result->num_rows > 0) {
 	// output data of each row
 	while ($row = $result->fetch_assoc()) {
-		$domain_map[$row['domain']] = $row;
+		$nameApi = '';
+		if ($row['domain'] != '') {
+			$nameApi = str_replace('.', '_', $row['domain']);
+		} else {
+			$nameApi = "crm-" . $row['id'];
+		}
+		if (strpos($url, $nameApi) !== false) {
+			$nameDbApi = $nameApi;
+			$userDb = $row['databaseName'];
+			$userPass = $row['databasePassword'];
+			break;
+		}
 	}
 } else {
 	echo "0 results";
@@ -60,13 +68,13 @@ if ($result->num_rows > 0) {
 
 $conn->close();
 
-if (!isset($domain_map[$url])) {
+if ($nameDbApi == '') {
 	print_r("Please registry Service before using");
 	die();
 }
 
 
-define('APP_BASE_URL', $domain_map[$url]['domain']);
+define('APP_BASE_URL', $url);
 
 /*
 * --------------------------------------------------------------------------
@@ -81,7 +89,7 @@ define('APP_BASE_URL', $domain_map[$url]['domain']);
 *
 * Auto added on install
 */
-define('APP_ENC_KEY', base64_encode($domain_map[$url]['domain']));
+define('APP_ENC_KEY', base64_encode($nameDbApi));
 
 /**
  * Database Credentials
@@ -91,16 +99,16 @@ define('APP_DB_HOSTNAME', 'localhost');
 /**
  * The username used to connect to the database
  */
-define('APP_DB_USERNAME', 'root');
+define('APP_DB_USERNAME', $userDb);
 /**
  * The password used to connect to the database
  */
-define('APP_DB_PASSWORD', '');
+define('APP_DB_PASSWORD', $userPass);
 /**
  * The name of the database you want to connect to
  */
 
-define('APP_DB_NAME', APP_ENC_KEY);
+define('APP_DB_NAME', $userDb);
 
 
 /**
