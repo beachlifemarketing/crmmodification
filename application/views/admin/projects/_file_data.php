@@ -45,7 +45,7 @@
             $path = PROJECT_ATTACHMENTS_FOLDER . $file->project_id . '/' . $file->file_name;
             if (is_image($path)) {
                 ?>
-                <img src="<?php echo base_url('uploads/projects/' . $file->project_id . '/' . $file->file_name); ?>"
+                <img src="<?php echo base_url('uploads/'.APP_ENC_KEY.'/projects/' . $file->project_id . '/' . $file->file_name); ?>"
                      class="img img-responsive">
                 <?php
             } elseif (!empty($file->external) && !empty($file->thumbnail_link) && $file->external == 'dropbox') {
@@ -55,7 +55,7 @@
                 <?php
             } elseif (strpos($file->filetype, 'pdf') !== false && empty($file->external)) {
                 ?>
-                <iframe src="<?php echo base_url('uploads/projects/' . $file->project_id . '/' . $file->file_name); ?>"
+                <iframe src="<?php echo base_url('uploads/'.APP_ENC_KEY.'/projects/' . $file->project_id . '/' . $file->file_name); ?>"
                         height="100%" width="100%" frameborder="0"></iframe>
                 <?php
             } elseif (is_html5_video($path)) {
@@ -70,7 +70,7 @@
                 echo $previewMarkdown;
             } else {
                 if (empty($file->external)) {
-                    echo '<a href="' . site_url('uploads/projects/' . $file->project_id . '/' . $file->file_name) . '" download>' . $file->file_name . '</a>';
+                    echo '<a href="' . site_url('uploads/'.APP_ENC_KEY.'/projects/' . $file->project_id . '/' . $file->file_name) . '" download>' . $file->file_name . '</a>';
                 } else {
                     echo '<a href="' . $file->external_link . '" target="_blank">' . $file->file_name . '</a>';
                 }

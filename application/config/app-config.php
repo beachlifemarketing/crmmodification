@@ -17,7 +17,56 @@ defined('BASEPATH') or exit('No direct script access allowed');
 * environments.
 *
 */
-define('APP_BASE_URL', 'https://crmmod.beachlifemarketing.com/staging');
+
+
+$servername = "localhost";
+$username = "servicec_thanh";
+$password = "Vbrand@t2d";
+$dbname = "servicec_crm";
+
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+// Check connection
+if ($conn->connect_error) {
+	die("Connection failed: " . $conn->connect_error);
+}
+
+
+if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
+	$url = "https://";
+} else {
+	$url = "http://";
+}
+// Append the host(domain name, ip) to the URL.
+$url .= $_SERVER['HTTP_HOST'];
+
+// Append the requested resource location to the URL
+// $url.= $_SERVER['REQUEST_URI'];
+
+$domain_map = array();
+
+$sql = "SELECT * FROM service";
+$result = $conn->query($sql);
+
+if ($result->num_rows > 0) {
+	// output data of each row
+	while ($row = $result->fetch_assoc()) {
+		$domain_map[$row['domain']] = $row;
+	}
+} else {
+	echo "0 results";
+}
+
+$conn->close();
+
+if (!isset($domain_map[$url])) {
+	print_r("Please registry Service before using");
+	die();
+}
+
+
+define('APP_BASE_URL', $domain_map[$url]['domain']);
 
 /*
 * --------------------------------------------------------------------------
@@ -32,7 +81,7 @@ define('APP_BASE_URL', 'https://crmmod.beachlifemarketing.com/staging');
 *
 * Auto added on install
 */
-define('APP_ENC_KEY', '75e2d882aea98da2e79c55dcb95e35fe');
+define('APP_ENC_KEY', base64_encode($domain_map[$url]['domain']));
 
 /**
  * Database Credentials
@@ -42,15 +91,17 @@ define('APP_DB_HOSTNAME', 'localhost');
 /**
  * The username used to connect to the database
  */
-define('APP_DB_USERNAME', 'crmmodbe_thanh');
+define('APP_DB_USERNAME', 'root');
 /**
  * The password used to connect to the database
  */
-define('APP_DB_PASSWORD', 'Vbrand@t2d');
+define('APP_DB_PASSWORD', '');
 /**
  * The name of the database you want to connect to
  */
-define('APP_DB_NAME', 'crmmodbe_staging');
+
+define('APP_DB_NAME', APP_ENC_KEY);
+
 
 /**
  * @since  2.3.0

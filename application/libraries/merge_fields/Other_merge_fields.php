@@ -92,15 +92,15 @@ class Other_merge_fields extends App_merge_fields
     public function format()
     {
         $fields               = [];
-        $fields['{logo_url}'] = base_url('uploads/company/' . get_option('company_logo'));
+        $fields['{logo_url}'] = base_url('uploads/' . APP_ENC_KEY . '/company/' . get_option('company_logo'));
 
         $logo_width = hooks()->apply_filters('merge_field_logo_img_width', '');
 
-        $fields['{logo_image_with_url}'] = '<a href="' . site_url() . '" target="_blank"><img src="' . base_url('uploads/company/' . get_option('company_logo')) . '"' . ($logo_width != '' ? ' width="' . $logo_width . '"' : '') . '></a>';
+        $fields['{logo_image_with_url}'] = '<a href="' . site_url() . '" target="_blank"><img src="' . base_url('uploads/' . APP_ENC_KEY . '/company/' . get_option('company_logo')) . '"' . ($logo_width != '' ? ' width="' . $logo_width . '"' : '') . '></a>';
 
         $fields['{dark_logo_image_with_url}'] = '';
         if (get_option('company_logo_dark') != '') {
-            $fields['{dark_logo_image_with_url}'] = '<a href="' . site_url() . '" target="_blank"><img src="' . base_url('uploads/company/' . get_option('company_logo_dark')) . '"' . ($logo_width != '' ? ' width="' . $logo_width . '"' : '') . '></a>';
+            $fields['{dark_logo_image_with_url}'] = '<a href="' . site_url() . '" target="_blank"><img src="' . base_url('uploads/' . APP_ENC_KEY . '/company/' . get_option('company_logo_dark')) . '"' . ($logo_width != '' ? ' width="' . $logo_width . '"' : '') . '></a>';
         }
 
         $fields['{crm_url}']     = rtrim(site_url(), '/');
