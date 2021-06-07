@@ -2,6 +2,59 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
+
+
+$servername = "localhost";
+$username = "servicec_thanh";
+$password = "Vbrand@t2d";
+$dbname = "servicec_crm";
+
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+// Check connection
+if ($conn->connect_error) {
+	die("Connection failed: " . $conn->connect_error);
+}
+
+
+// Append the host(domain name, ip) to the URL.
+$url = $_SERVER['HTTP_HOST'];
+
+// Append the requested resource location to the URL
+// $url.= $_SERVER['REQUEST_URI'];
+
+$domain_map = array();
+
+$sql = "SELECT * FROM service";
+$result = $conn->query($sql);
+$key = '';
+if ($result->num_rows > 0) {
+	// output data of each row
+	while ($row = $result->fetch_assoc()) {
+		$nameApi = '';
+		if ($row['domain'] != '') {
+			$nameApi = str_replace('.', '_', $row['domain']);
+		} else {
+			$nameApi = "crm-" . $row['id'];
+		}
+		if (strpos($url, $nameApi) !== false) {
+			$key = $row['key'];
+			break;
+		}
+	}
+} else {
+	echo "0 results";
+}
+
+$conn->close();
+
+if ($key == '') {
+	print_r("Please registry Service before using");
+	die();
+}
+
+
 /*
 |--------------------------------------------------------------------------
 | Display Debug backtrace
@@ -127,76 +180,76 @@ if (!defined('CUSTOM_FIELD_TRANSFER_SIMILARITY')) {
 /**
  * CRM temporary path
  */
-define('TEMP_FOLDER', FCPATH . 'temp' . '/' . APP_ENC_KEY . '/');
+define('TEMP_FOLDER', FCPATH . 'temp' . '/' . $key . '/');
 
 /**
  * Customer attachments folder from profile
  */
-define('CLIENT_ATTACHMENTS_FOLDER', FCPATH . 'uploads/' . APP_ENC_KEY . '/clients' . '/');
+define('CLIENT_ATTACHMENTS_FOLDER', FCPATH . 'uploads/' . $key . '/clients' . '/');
 /**
  * All tickets attachments
  */
-define('TICKET_ATTACHMENTS_FOLDER', FCPATH . 'uploads/' . APP_ENC_KEY . '/ticket_attachments' . '/');
+define('TICKET_ATTACHMENTS_FOLDER', FCPATH . 'uploads/' . $key . '/ticket_attachments' . '/');
 /**
  * Company attachments, favicon, logo etc..
  */
-define('COMPANY_FILES_FOLDER', FCPATH . 'uploads/' . APP_ENC_KEY . '/company' . '/');
+define('COMPANY_FILES_FOLDER', FCPATH . 'uploads/' . $key . '/company' . '/');
 /**
  * Staff profile images
  */
-define('STAFF_PROFILE_IMAGES_FOLDER', FCPATH . 'uploads/' . APP_ENC_KEY . '/staff_profile_images' . '/');
+define('STAFF_PROFILE_IMAGES_FOLDER', FCPATH . 'uploads/' . $key . '/staff_profile_images' . '/');
 /**
  * Contact profile images
  */
-define('CONTACT_PROFILE_IMAGES_FOLDER', FCPATH . 'uploads/' . APP_ENC_KEY . '/client_profile_images' . '/');
+define('CONTACT_PROFILE_IMAGES_FOLDER', FCPATH . 'uploads/' . $key . '/client_profile_images' . '/');
 /**
  * Newsfeed attachments
  */
-define('NEWSFEED_FOLDER', FCPATH . 'uploads/' . APP_ENC_KEY . '/newsfeed' . '/');
+define('NEWSFEED_FOLDER', FCPATH . 'uploads/' . $key . '/newsfeed' . '/');
 /**
  * Contracts attachments
  */
-define('CONTRACTS_UPLOADS_FOLDER', FCPATH . 'uploads/' . APP_ENC_KEY . '/contracts' . '/');
+define('CONTRACTS_UPLOADS_FOLDER', FCPATH . 'uploads/' . $key . '/contracts' . '/');
 /**
  * Tasks attachments
  */
-define('TASKS_ATTACHMENTS_FOLDER', FCPATH . 'uploads/' . APP_ENC_KEY . '/tasks' . '/');
+define('TASKS_ATTACHMENTS_FOLDER', FCPATH . 'uploads/' . $key . '/tasks' . '/');
 /**
  * Invoice attachments
  */
-define('INVOICE_ATTACHMENTS_FOLDER', FCPATH . 'uploads/' . APP_ENC_KEY . '/invoices' . '/');
+define('INVOICE_ATTACHMENTS_FOLDER', FCPATH . 'uploads/' . $key . '/invoices' . '/');
 /**
  * Estimate attachments
  */
-define('ESTIMATE_ATTACHMENTS_FOLDER', FCPATH . 'uploads/' . APP_ENC_KEY . '/estimates' . '/');
+define('ESTIMATE_ATTACHMENTS_FOLDER', FCPATH . 'uploads/' . $key . '/estimates' . '/');
 /**
  * Proposal attachments
  */
-define('PROPOSAL_ATTACHMENTS_FOLDER', FCPATH . 'uploads/' . APP_ENC_KEY . '/proposals' . '/');
+define('PROPOSAL_ATTACHMENTS_FOLDER', FCPATH . 'uploads/' . $key . '/proposals' . '/');
 /**
  * Expenses receipts
  */
-define('EXPENSE_ATTACHMENTS_FOLDER', FCPATH . 'uploads/' . APP_ENC_KEY . '/expenses' . '/');
+define('EXPENSE_ATTACHMENTS_FOLDER', FCPATH . 'uploads/' . $key . '/expenses' . '/');
 /**
  * Lead attachments
  */
-define('LEAD_ATTACHMENTS_FOLDER', FCPATH . 'uploads/' . APP_ENC_KEY . '/leads' . '/');
+define('LEAD_ATTACHMENTS_FOLDER', FCPATH . 'uploads/' . $key . '/leads' . '/');
 /**
  * Project files attachments
  */
-define('PROJECT_ATTACHMENTS_FOLDER', FCPATH . 'uploads/' . APP_ENC_KEY . '/projects' . '/');
+define('PROJECT_ATTACHMENTS_FOLDER', FCPATH . 'uploads/' . $key . '/projects' . '/');
 /**
  * Project discussions attachments
  */
-define('PROJECT_DISCUSSION_ATTACHMENT_FOLDER', FCPATH . 'uploads/' . APP_ENC_KEY . '/discussions' . '/');
+define('PROJECT_DISCUSSION_ATTACHMENT_FOLDER', FCPATH . 'uploads/' . $key . '/discussions' . '/');
 /**
  * Credit notes attachment folder
  */
-define('CREDIT_NOTES_ATTACHMENTS_FOLDER', FCPATH . 'uploads/' . APP_ENC_KEY . '/credit_notes' . '/');
+define('CREDIT_NOTES_ATTACHMENTS_FOLDER', FCPATH . 'uploads/' . $key . '/credit_notes' . '/');
 /**
  * Modules Path
  */
-define('APP_MODULES_PATH', FCPATH . 'modules/' . APP_ENC_KEY . '/');
+define('APP_MODULES_PATH', FCPATH . 'modules/' . $key . '/');
 /**
  * Helper libraries path
  */
