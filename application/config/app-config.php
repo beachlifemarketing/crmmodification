@@ -70,9 +70,6 @@ if ($result->num_rows > 0) {
 
 $conn->close();
 
-
-var_dump($userDb);die();
-
 if ($nameDbApi == '') {
 	print_r("Please registry Service before using");
 	die();
@@ -94,7 +91,7 @@ define('APP_BASE_URL', $url);
 *
 * Auto added on install
 */
-define('APP_ENC_KEY', base64_encode($nameDbApi));
+define('APP_ENC_KEY', $key);
 
 /**
  * Database Credentials
