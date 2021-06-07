@@ -45,6 +45,7 @@ $sql = "SELECT * FROM service";
 $result = $conn->query($sql);
 $nameDbApi = '';
 $userDb = '';
+$key = '';
 $userPass = '';
 if ($result->num_rows > 0) {
 	// output data of each row
@@ -59,6 +60,7 @@ if ($result->num_rows > 0) {
 			$nameDbApi = $nameApi;
 			$userDb = $row['databaseName'];
 			$userPass = $row['databasePassword'];
+			$key = $row['key'];
 			break;
 		}
 	}
@@ -67,6 +69,9 @@ if ($result->num_rows > 0) {
 }
 
 $conn->close();
+
+
+var_dump($userDb);die();
 
 if ($nameDbApi == '') {
 	print_r("Please registry Service before using");
