@@ -19,7 +19,6 @@ if ($conn->connect_error) {
 
 // Append the host(domain name, ip) to the URL.
 $url = $_SERVER['HTTP_HOST'];
-var_dump($url);
 // Append the requested resource location to the URL
 // $url.= $_SERVER['REQUEST_URI'];
 
@@ -54,7 +53,7 @@ if ($result->num_rows > 0) {
 }
 
 $conn->close();
-
+var_dump($key);
 if ($key == '') {
 	print_r("Please registry Service before using");
 	die();

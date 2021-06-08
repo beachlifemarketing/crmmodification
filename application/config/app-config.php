@@ -51,12 +51,16 @@ if ($result->num_rows > 0) {
 	// output data of each row
 	while ($row = $result->fetch_assoc()) {
 		$nameApi = '';
+		$name_compare = '';
 		if ($row['domain'] != '') {
 			$nameApi = str_replace('.', '_', $row['domain']);
+			$name_compare = $row['domain'];
 		} else {
 			$nameApi = "crm-" . $row['id'];
+			$name_compare = $nameApi;
 		}
-		if (strpos($url, $nameApi) !== false) {
+
+		if (strpos($url, $name_compare) !== false) {
 			$nameDbApi = $nameApi;
 			$userDb = $row['databaseName'];
 			$userPass = $row['databasePassword'];
