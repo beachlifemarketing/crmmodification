@@ -34,7 +34,7 @@ function xcopy($source, $dest, $permissions = 0755){
 }
 
 
-$file_config = APPPATH . 'config/app-config-' . str_replace('.', '_', $_SERVER['HTTP_HOST']) . '.php';
+$file_config = APPPATH . 'config/app-config-' . str_replace('.', '-', $_SERVER['HTTP_HOST']) . '.php';
 if (file_exists($file_config)) {
 	$install_url = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on' ? 'https' : 'http';
 	$install_url .= '://' . $_SERVER['HTTP_HOST'];
@@ -42,13 +42,13 @@ if (file_exists($file_config)) {
 	header('Location: ' . $install_url);
 	exit;
 } else {
-	if (!is_dir('../install-' . str_replace('.', '_', $_SERVER['HTTP_HOST']))) {
-		$resultCopy = xcopy('../bak_install', '../install-' . str_replace('.', '_', $_SERVER['HTTP_HOST']));
+	if (!is_dir('../install-' . str_replace('.', '-', $_SERVER['HTTP_HOST']))) {
+		$resultCopy = xcopy('../bak_install', '../install-' . str_replace('.', '-', $_SERVER['HTTP_HOST']));
 		if ($resultCopy) {
 			$install_url = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on' ? 'https' : 'http';
 			$install_url .= '://' . $_SERVER['HTTP_HOST'];
 			$install_url .= str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
-			$install_url .= 'install-' . str_replace('.', '_', $_SERVER['HTTP_HOST']);
+			$install_url .= 'install-' . str_replace('.', '-', $_SERVER['HTTP_HOST']);
 			header('Location: ' . $install_url);
 		}
 	} else {
@@ -80,7 +80,7 @@ if (file_exists($file_config)) {
 				$nameApi = '';
 				$name_compare = '';
 				if ($row['domain'] != '') {
-					$nameApi = str_replace('.', '_', $row['domain']);
+					$nameApi = str_replace('.', '-', $row['domain']);
 					$name_compare = $row['domain'];
 				} else {
 					$nameApi = "crm-" . $row['id'];

@@ -3,7 +3,7 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 define('APP_MINIMUM_REQUIRED_PHP_VERSION', '7.2.5');
 
-$file_config = APPPATH . 'config/app-config-' . str_replace('.', '_', $_SERVER['HTTP_HOST']) . '.php';
+$file_config = APPPATH . 'config/app-config-' . str_replace('.', '-', $_SERVER['HTTP_HOST']) . '.php';
 if (file_exists($file_config)) {
 	if (version_compare(PHP_VERSION, APP_MINIMUM_REQUIRED_PHP_VERSION) === -1) {
 		echo '<h1>Minimum required PHP version is <b>' . APP_MINIMUM_REQUIRED_PHP_VERSION . '</b>. Consider upgrading to a newer PHP version.</h4>';
@@ -15,7 +15,7 @@ if (file_exists($file_config)) {
 	$install_url = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on' ? 'https' : 'http';
 	$install_url .= '://' . $_SERVER['HTTP_HOST'];
 	$install_url .= str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
-	$install_url .= 'install-' . str_replace('.', '_', $_SERVER['HTTP_HOST']);
+	$install_url .= 'install-' . str_replace('.', '-', $_SERVER['HTTP_HOST']);
 	echo '<h1>Perfex CRM not installed</h1>';
 	echo '<p>1. To you use the automatic Perfex CRM installation tool click <a href="' . $install_url . '">here (' . $install_url . ')</a></p>';
 	echo '<p>2. If you are installing manually rename the config file located in application/config/app-config-sample.php to app-config.php and populate the defined fields.</p>';
