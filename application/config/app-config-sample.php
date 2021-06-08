@@ -18,7 +18,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
 *
 */
 define('APP_BASE_URL', '[base_url]');
-
 /*
 * --------------------------------------------------------------------------
 * Encryption Key

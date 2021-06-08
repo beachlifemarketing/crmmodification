@@ -3,48 +3,14 @@
 namespace Omnipay\Mollie;
 
 use Omnipay\Common\AbstractGateway;
-use Omnipay\Common\Message\RequestInterface;
-use Omnipay\Mollie\Message\Request\CancelOrderRequest;
-use Omnipay\Mollie\Message\Request\CompleteOrderRequest;
-use Omnipay\Mollie\Message\Request\CompletePurchaseRequest;
-use Omnipay\Mollie\Message\Request\CreateCustomerMandateRequest;
-use Omnipay\Mollie\Message\Request\CreateCustomerRequest;
-use Omnipay\Mollie\Message\Request\CreateOrderRequest;
-use Omnipay\Mollie\Message\Request\CreateShipmentRequest;
-use Omnipay\Mollie\Message\Request\FetchCustomerMandatesRequest;
-use Omnipay\Mollie\Message\Request\FetchCustomerRequest;
-use Omnipay\Mollie\Message\Request\FetchIssuersRequest;
-use Omnipay\Mollie\Message\Request\FetchOrderRequest;
-use Omnipay\Mollie\Message\Request\FetchPaymentMethodsRequest;
-use Omnipay\Mollie\Message\Request\FetchTransactionRequest;
-use Omnipay\Mollie\Message\Request\PurchaseRequest;
-use Omnipay\Mollie\Message\Request\RefundRequest;
-use Omnipay\Mollie\Message\Request\RevokeCustomerMandateRequest;
-use Omnipay\Mollie\Message\Request\UpdateCustomerRequest;
 
 /**
- * Mollie Gateway provides a wrapper for Mollie API.
- * Please have a look at links below to have a high-level overview and see the API specification
+ * Mollie (iDeal) Gateway
  *
- * @see https://www.mollie.com/en/developers
- * @see https://docs.mollie.com/index
- *
- * @method RequestInterface authorize(array $options = array())
- * @method RequestInterface completeAuthorize(array $options = array())
- * @method RequestInterface capture(array $options = array())
- * @method RequestInterface createCard(array $options = array())
- * @method RequestInterface updateCard(array $options = array())
- * @method RequestInterface deleteCard(array $options = array())
- *
- * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ * @link https://www.mollie.nl/files/documentatie/payments-api.html
  */
 class Gateway extends AbstractGateway
 {
-    /**
-     * Version of our gateway.
-     */
-    const GATEWAY_VERSION = "5.2";
-
     /**
      * @return string
      */
@@ -59,7 +25,7 @@ class Gateway extends AbstractGateway
     public function getDefaultParameters()
     {
         return array(
-            'apiKey' => '',
+            'apiKey' => ''
         );
     }
 
@@ -81,225 +47,83 @@ class Gateway extends AbstractGateway
     }
 
     /**
-     * @return array|null
+     * @param  array $parameters
+     * @return \Omnipay\Mollie\Message\FetchIssuersRequest
      */
-    public function getVersionStrings()
+    public function fetchIssuers(array $parameters = array())
     {
-        return $this->getParameter('versionStrings');
-    }
-
-    /**
-     * @param  string $value
-     * @return $this
-     */
-    public function setVersionStrings(array $values)
-    {
-        return $this->setParameter('versionStrings', $values);
-    }
-
-    /**
-     * @param  string $value
-     * @return $this
-     */
-    public function addVersionString($value)
-    {
-        $versionStrings =  $this->getVersionStrings() ?: [];
-        $versionStrings[] = str_replace([" ", "\t", "\n", "\r"], '-', $value);
-
-        return $this->setVersionStrings($versionStrings);
+        return $this->createRequest('\Omnipay\Mollie\Message\FetchIssuersRequest', $parameters);
     }
 
     /**
      * @param  array $parameters
-     * @return FetchIssuersRequest
+     * @return \Omnipay\Mollie\Message\FetchPaymentMethodsRequest
      */
-    public function fetchIssuers(array $parameters = [])
+    public function fetchPaymentMethods(array $parameters = array())
     {
-        /** @var FetchIssuersRequest $request */
-        $request = $this->createRequest(FetchIssuersRequest::class, $parameters);
-
-        return $request;
+        return $this->createRequest('\Omnipay\Mollie\Message\FetchPaymentMethodsRequest', $parameters);
     }
 
     /**
      * @param  array $parameters
-     * @return FetchPaymentMethodsRequest
+     * @return \Omnipay\Mollie\Message\FetchTransactionRequest
      */
-    public function fetchPaymentMethods(array $parameters = [])
+    public function fetchTransaction(array $parameters = array())
     {
-        /** @var FetchPaymentMethodsRequest $request */
-        $request = $this->createRequest(FetchPaymentMethodsRequest::class, $parameters);
-
-        return $request;
+        return $this->createRequest('\Omnipay\Mollie\Message\FetchTransactionRequest', $parameters);
     }
 
     /**
      * @param  array $parameters
-     * @return FetchTransactionRequest
+     * @return \Omnipay\Mollie\Message\PurchaseRequest
      */
-    public function fetchTransaction(array $parameters = [])
+    public function purchase(array $parameters = array())
     {
-        /** @var FetchTransactionRequest $request */
-        $request = $this->createRequest(FetchTransactionRequest::class, $parameters);
-
-        return $request;
+        return $this->createRequest('\Omnipay\Mollie\Message\PurchaseRequest', $parameters);
     }
 
     /**
      * @param  array $parameters
-     * @return PurchaseRequest
+     * @return \Omnipay\Mollie\Message\CompletePurchaseRequest
      */
-    public function purchase(array $parameters = [])
+    public function completePurchase(array $parameters = array())
     {
-        /** @var PurchaseRequest $request */
-        $request = $this->createRequest(PurchaseRequest::class, $parameters);
-
-        return $request;
+        return $this->createRequest('\Omnipay\Mollie\Message\CompletePurchaseRequest', $parameters);
     }
 
     /**
      * @param  array $parameters
-     * @return CompletePurchaseRequest
+     * @return \Omnipay\Mollie\Message\RefundRequest
      */
-    public function completePurchase(array $parameters = [])
+    public function refund(array $parameters = array())
     {
-        /** @var CompletePurchaseRequest $request */
-        $request = $this->createRequest(CompletePurchaseRequest::class, $parameters);
-
-        return $request;
+        return $this->createRequest('\Omnipay\Mollie\Message\RefundRequest', $parameters);
     }
 
     /**
      * @param  array $parameters
-     * @return RefundRequest
+     * @return \Omnipay\Mollie\Message\CreateCustomerRequest
      */
-    public function refund(array $parameters = [])
+    public function createCustomer(array $parameters = array())
     {
-        /** @var RefundRequest $request */
-        $request = $this->createRequest(RefundRequest::class, $parameters);
-
-        return $request;
+        return $this->createRequest('\Omnipay\Mollie\Message\CreateCustomerRequest', $parameters);
     }
 
     /**
      * @param  array $parameters
-     * @return CreateOrderRequest
+     * @return \Omnipay\Mollie\Message\UpdateCustomerRequest
      */
-    public function createOrder(array $parameters = [])
+    public function updateCustomer(array $parameters = array())
     {
-        /** @var CreateOrderRequest $request */
-        $request = $this->createRequest(CreateOrderRequest::class, $parameters);
-
-        return $request;
-    }
-
-
-    /**
-     * @param  array $parameters
-     * @return FetchOrderRequest
-     */
-    public function fetchOrder(array $parameters = [])
-    {
-        /** @var FetchOrderRequest $request */
-        $request = $this->createRequest(FetchOrderRequest::class, $parameters);
-
-        return $request;
-    }
-
-
-    /**
-     * @param  array $parameters
-     * @return CompleteOrderRequest
-     */
-    public function completeOrder(array $parameters = [])
-    {
-        /** @var CompleteOrderRequest $request */
-        $request = $this->createRequest(CompleteOrderRequest::class, $parameters);
-
-        return $request;
+        return $this->createRequest('\Omnipay\Mollie\Message\UpdateCustomerRequest', $parameters);
     }
 
     /**
      * @param  array $parameters
-     * @return CreateShipmentRequest
+     * @return \Omnipay\Mollie\Message\FetchCustomerRequest
      */
-    public function createShipment(array $parameters = [])
+    public function fetchCustomer(array $parameters = array())
     {
-        /** @var CreateShipmentRequest $request */
-        $request = $this->createRequest(CreateShipmentRequest::class, $parameters);
-
-        return $request;
-    }
-
-    /**
-     * @param  array $parameters
-     * @return CreateCustomerRequest
-     */
-    public function createCustomer(array $parameters = [])
-    {
-        /** @var CreateCustomerRequest $request */
-        $request = $this->createRequest(CreateCustomerRequest::class, $parameters);
-
-        return $request;
-    }
-
-    /**
-     * @param  array $parameters
-     * @return UpdateCustomerRequest
-     */
-    public function updateCustomer(array $parameters = [])
-    {
-        /** @var UpdateCustomerRequest $request */
-        $request = $this->createRequest(UpdateCustomerRequest::class, $parameters);
-
-        return $request;
-    }
-
-    /**
-     * @param  array $parameters
-     * @return FetchCustomerRequest
-     */
-    public function fetchCustomer(array $parameters = [])
-    {
-        /** @var FetchCustomerRequest $request */
-        $request = $this->createRequest(FetchCustomerRequest::class, $parameters);
-
-        return $request;
-    }
-
-    /**
-     * @param array $parameters
-     * @return FetchCustomerMandatesRequest
-     */
-    public function fetchCustomerMandates(array $parameters = [])
-    {
-        return $this->createRequest(FetchCustomerMandatesRequest::class, $parameters);
-    }
-
-    /**
-     * @param array $parameters
-     * @return CreateCustomerMandateRequest
-     */
-    public function createCustomerMandate(array $parameters = [])
-    {
-        return $this->createRequest(CreateCustomerMandateRequest::class, $parameters);
-    }
-
-    /**
-     * @param array $parameters
-     * @return RevokeCustomerMandateRequest
-     */
-    public function revokeCustomerMandate(array $parameters = [])
-    {
-        return $this->createRequest(RevokeCustomerMandateRequest::class, $parameters);
-    }
-
-    /**
-     * @param  array $parameters
-     * @return CancelOrderRequest
-     */
-    public function void(array $parameters = [])
-    {
-        return $this->createRequest(CancelOrderRequest::class, $parameters);
+        return $this->createRequest('\Omnipay\Mollie\Message\FetchCustomerRequest', $parameters);
     }
 }

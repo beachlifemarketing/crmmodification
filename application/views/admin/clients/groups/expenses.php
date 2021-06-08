@@ -7,8 +7,5 @@
 </a>
 <?php } ?>
 <div id="expenses_total" class="mbot25"></div>
-<?php $this->load->view('admin/expenses/table_html', [
-	'class'=>'expenses-single-client',
-	'withBulkActions'=>false
-]); ?>
+<?php $this->load->view('admin/expenses/table_html', array('class'=>'expenses-single-client')); ?>
 <?php } ?>

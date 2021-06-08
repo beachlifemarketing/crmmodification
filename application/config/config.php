@@ -3,18 +3,19 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 define('APP_MINIMUM_REQUIRED_PHP_VERSION', '7.2.5');
 
-if (file_exists(APPPATH . 'config/app-config.php')) {
+$file_config = APPPATH . 'config/app-config-' . str_replace('.', '_', $_SERVER['HTTP_HOST']) . '.php';
+if (file_exists($file_config)) {
 	if (version_compare(PHP_VERSION, APP_MINIMUM_REQUIRED_PHP_VERSION) === -1) {
 		echo '<h1>Minimum required PHP version is <b>' . APP_MINIMUM_REQUIRED_PHP_VERSION . '</b>. Consider upgrading to a newer PHP version.</h4>';
 		echo '<h3>You are using ' . PHP_VERSION . ', you should consult with your hosting provider to help you to change your PHP version to ' . APP_MINIMUM_REQUIRED_PHP_VERSION . ' or higher, after you upgrade the PHP version this message will disappear.</h3>';
 		exit;
 	}
-	include_once(APPPATH . 'config/app-config.php');
+	include_once($file_config);
 } else {
 	$install_url = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on' ? 'https' : 'http';
 	$install_url .= '://' . $_SERVER['HTTP_HOST'];
 	$install_url .= str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
-	$install_url .= 'install';
+	$install_url .= 'install-' . str_replace('.', '_', $_SERVER['HTTP_HOST']);
 	echo '<h1>Perfex CRM not installed</h1>';
 	echo '<p>1. To you use the automatic Perfex CRM installation tool click <a href="' . $install_url . '">here (' . $install_url . ')</a></p>';
 	echo '<p>2. If you are installing manually rename the config file located in application/config/app-config-sample.php to app-config.php and populate the defined fields.</p>';
@@ -485,7 +486,7 @@ $config['csrf_token_name'] = defined('APP_CSRF_TOKEN_NAME') ? APP_CSRF_TOKEN_NAM
 $config['csrf_cookie_name'] = defined('APP_CSRF_COOKIE_NAME') ? APP_CSRF_COOKIE_NAME : 'csrf_cookie_name';
 $config['csrf_expire'] = defined('APP_CSRF_EXPIRE') ? APP_CSRF_EXPIRE : 3660;
 $config['csrf_regenerate'] = false;
-$config['csrf_exclude_uris'] = ['admin/custom_email_and_sms_notifications/email_sms/sendEmailSms', 'forms/wtl/[0-9a-z]+', 'forms/ticket', 'forms/quote/[0-9a-z]+', 'admin/tasks/timer_tracking', 'api\/.+'];
+$config['csrf_exclude_uris'] = ['forms/wtl/[0-9a-z]+', 'forms/ticket', 'admin/tasks/timer_tracking', 'api\/.+'];
 
 if (isset($app_csrf_exclude_uris)) {
 	$config['csrf_exclude_uris'] = array_merge($config['csrf_exclude_uris'], $app_csrf_exclude_uris);

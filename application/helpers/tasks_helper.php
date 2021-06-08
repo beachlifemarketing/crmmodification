@@ -242,9 +242,8 @@ function get_task_array_gantt_data($task, $dep_id = null, $defaultEnd = null)
 {
     $data = [];
 
-    $data['id']     = $task['id'];
-    $data['desc']   = $task['name'];
-    $data['status'] = $task['status'];
+    $data['id']   = $task['id'];
+    $data['desc'] = $task['name'];
 
     $data['start'] = strftime('%Y-%m-%d', strtotime($task['startdate']));
 
@@ -648,6 +647,5 @@ function is_task_created_by_staff($taskId, $staffId = null)
         ->where('is_added_from_contact', 0)
         ->where('addedfrom', $staffId)
         ->where('id', $taskId);
-
     return $CI->db->count_all_results(db_prefix() . 'tasks') > 0 ? true : false;
 }

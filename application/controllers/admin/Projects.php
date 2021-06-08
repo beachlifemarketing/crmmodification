@@ -16,7 +16,7 @@ class Projects extends AdminController
     {
         close_setup_menu();
         $data['statuses'] = $this->projects_model->get_project_statuses();
-        $data['title'] = _l('projects');
+        $data['title']    = _l('projects');
         $this->load->view('admin/projects/manage', $data);
     }
 
@@ -48,7 +48,7 @@ class Projects extends AdminController
             if ($id) {
                 set_alert('success', _l('added_successfully', _l('expense')));
                 echo json_encode([
-                    'url' => admin_url('projects/view/' . $this->input->post('project_id') . '/?group=project_expenses'),
+                    'url'       => admin_url('projects/view/' . $this->input->post('project_id') . '/?group=project_expenses'),
                     'expenseid' => $id,
                 ]);
                 die;
@@ -67,7 +67,7 @@ class Projects extends AdminController
         }
 
         if ($this->input->post()) {
-            $data = $this->input->post();
+            $data                = $this->input->post();
             $data['description'] = html_purify($this->input->post('description', false));
             if ($id == '') {
                 if (!has_permission('projects', '', 'create')) {
@@ -90,14 +90,14 @@ class Projects extends AdminController
             }
         }
         if ($id == '') {
-            $title = _l('add_new', _l('project_lowercase'));
+            $title                            = _l('add_new', _l('project_lowercase'));
             $data['auto_select_billing_type'] = $this->projects_model->get_most_used_billing_type();
         } else {
-            $data['project'] = $this->projects_model->get($id);
+            $data['project']                               = $this->projects_model->get($id);
             $data['project']->settings->available_features = unserialize($data['project']->settings->available_features);
 
             $data['project_members'] = $this->projects_model->get_project_members($id);
-            $title = _l('edit', _l('project_lowercase'));
+            $title                   = _l('edit', _l('project_lowercase'));
         }
 
         if ($this->input->get('customer_id')) {
@@ -107,13 +107,13 @@ class Projects extends AdminController
         $data['last_project_settings'] = $this->projects_model->get_last_project_settings();
 
         if (count($data['last_project_settings'])) {
-            $key = array_search('available_features', array_column($data['last_project_settings'], 'name'));
+            $key                                          = array_search('available_features', array_column($data['last_project_settings'], 'name'));
             $data['last_project_settings'][$key]['value'] = unserialize($data['last_project_settings'][$key]['value']);
         }
 
         $data['settings'] = $this->projects_model->get_settings();
         $data['statuses'] = $this->projects_model->get_project_statuses();
-        $data['staff'] = $this->staff_model->get('', ['active' => 1]);
+        $data['staff']    = $this->staff_model->get('', ['active' => 1]);
 
         $data['title'] = $title;
         $this->load->view('admin/projects/project', $data);
@@ -124,11 +124,11 @@ class Projects extends AdminController
         $data['title'] = _l('project_gant');
 
         $selected_statuses = [];
-        $selectedMember = null;
-        $data['statuses'] = $this->projects_model->get_project_statuses();
+        $selectedMember    = null;
+        $data['statuses']  = $this->projects_model->get_project_statuses();
 
         $appliedStatuses = $this->input->get('status');
-        $appliedMember = $this->input->get('member');
+        $appliedMember   = $this->input->get('member');
 
         $allStatusesIds = [];
         foreach ($data['statuses'] as $status) {
@@ -156,8 +156,8 @@ class Projects extends AdminController
         $data['selected_statuses'] = $selected_statuses;
 
         if (has_permission('projects', '', 'view')) {
-            $selectedMember = $appliedMember;
-            $data['selectedMember'] = $selectedMember;
+            $selectedMember          = $appliedMember;
+            $data['selectedMember']  = $selectedMember;
             $data['project_members'] = $this->projects_model->get_distinct_projects_members();
         }
 
@@ -180,7 +180,7 @@ class Projects extends AdminController
             }
 
             $project->settings->available_features = unserialize($project->settings->available_features);
-            $data['statuses'] = $this->projects_model->get_project_statuses();
+            $data['statuses']                      = $this->projects_model->get_project_statuses();
 
             $group = !$this->input->get('group') ? 'project_overview' : $this->input->get('group');
 
@@ -190,7 +190,7 @@ class Projects extends AdminController
             }
 
             $data['tabs'] = get_project_tabs_admin();
-            $data['tab'] = $this->app_tabs->filter_tab($data['tabs'], $group);
+            $data['tab']  = $this->app_tabs->filter_tab($data['tabs'], $group);
 
             if (!$data['tab']) {
                 show_404();
@@ -199,13 +199,13 @@ class Projects extends AdminController
             $this->load->model('payment_modes_model');
             $data['payment_modes'] = $this->payment_modes_model->get('', [], true);
 
-            $data['project'] = $project;
+            $data['project']  = $project;
             $data['currency'] = $this->projects_model->get_currency($id);
 
             $data['project_total_logged_time'] = $this->projects_model->total_logged_time($id);
 
-            $data['staff'] = $this->staff_model->get('', ['active' => 1]);
-            $percent = $this->projects_model->calc_progress($id);
+            $data['staff']     = $this->staff_model->get('', ['active' => 1]);
+            $percent           = $this->projects_model->calc_progress($id);
             $data['bodyclass'] = '';
 
             $this->app_scripts->add(
@@ -219,24 +219,24 @@ class Projects extends AdminController
                 $data['members'] = $this->projects_model->get_project_members($id);
                 foreach ($data['members'] as $key => $member) {
                     $data['members'][$key]['total_logged_time'] = 0;
-                    $member_timesheets = $this->tasks_model->get_unique_member_logged_task_ids($member['staff_id'], ' AND task_id IN (SELECT id FROM ' . db_prefix() . 'tasks WHERE rel_type="project" AND rel_id="' . $this->db->escape_str($id) . '")');
+                    $member_timesheets                          = $this->tasks_model->get_unique_member_logged_task_ids($member['staff_id'], ' AND task_id IN (SELECT id FROM ' . db_prefix() . 'tasks WHERE rel_type="project" AND rel_id="' . $this->db->escape_str($id) . '")');
 
                     foreach ($member_timesheets as $member_task) {
                         $data['members'][$key]['total_logged_time'] += $this->tasks_model->calc_task_total_time($member_task->task_id, ' AND staff_id=' . $member['staff_id']);
                     }
                 }
 
-                $data['project_total_days'] = round((human_to_unix($data['project']->deadline . ' 00:00') - human_to_unix($data['project']->start_date . ' 00:00')) / 3600 / 24);
-                $data['project_days_left'] = $data['project_total_days'];
+                $data['project_total_days']        = round((human_to_unix($data['project']->deadline . ' 00:00') - human_to_unix($data['project']->start_date . ' 00:00')) / 3600 / 24);
+                $data['project_days_left']         = $data['project_total_days'];
                 $data['project_time_left_percent'] = 100;
                 if ($data['project']->deadline) {
                     if (human_to_unix($data['project']->start_date . ' 00:00') < time() && human_to_unix($data['project']->deadline . ' 00:00') > time()) {
-                        $data['project_days_left'] = round((human_to_unix($data['project']->deadline . ' 00:00') - time()) / 3600 / 24);
+                        $data['project_days_left']         = round((human_to_unix($data['project']->deadline . ' 00:00') - time()) / 3600 / 24);
                         $data['project_time_left_percent'] = $data['project_days_left'] / $data['project_total_days'] * 100;
                         $data['project_time_left_percent'] = round($data['project_time_left_percent'], 2);
                     }
                     if (human_to_unix($data['project']->deadline . ' 00:00') < time()) {
-                        $data['project_days_left'] = 0;
+                        $data['project_days_left']         = 0;
                         $data['project_time_left_percent'] = 0;
                     }
                 }
@@ -255,8 +255,8 @@ class Projects extends AdminController
                 $where = ($__total_where_tasks == '' ? '' : $__total_where_tasks . ' AND ') . 'status != ' . Tasks_model::STATUS_COMPLETE;
 
                 $data['tasks_not_completed'] = total_rows(db_prefix() . 'tasks', $where);
-                $total_tasks = total_rows(db_prefix() . 'tasks', $__total_where_tasks);
-                $data['total_tasks'] = $total_tasks;
+                $total_tasks                 = total_rows(db_prefix() . 'tasks', $__total_where_tasks);
+                $data['total_tasks']         = $total_tasks;
 
                 $where = ($__total_where_tasks == '' ? '' : $__total_where_tasks . ' AND ') . 'status = ' . Tasks_model::STATUS_COMPLETE . ' AND rel_type="project" AND rel_id="' . $id . '"';
 
@@ -265,7 +265,7 @@ class Projects extends AdminController
                 $data['tasks_not_completed_progress'] = ($total_tasks > 0 ? number_format(($data['tasks_completed'] * 100) / $total_tasks, 2) : 0);
                 $data['tasks_not_completed_progress'] = round($data['tasks_not_completed_progress'], 2);
 
-                @$percent_circle = $percent / 100;
+                @$percent_circle        = $percent / 100;
                 $data['percent_circle'] = $percent_circle;
 
 
@@ -273,16 +273,16 @@ class Projects extends AdminController
             } elseif ($group == 'project_invoices') {
                 $this->load->model('invoices_model');
 
-                $data['invoiceid'] = '';
-                $data['status'] = '';
+                $data['invoiceid']   = '';
+                $data['status']      = '';
                 $data['custom_view'] = '';
 
-                $data['invoices_years'] = $this->invoices_model->get_invoices_years();
+                $data['invoices_years']       = $this->invoices_model->get_invoices_years();
                 $data['invoices_sale_agents'] = $this->invoices_model->get_sale_agents();
-                $data['invoices_statuses'] = $this->invoices_model->get_statuses();
+                $data['invoices_statuses']    = $this->invoices_model->get_statuses();
             } elseif ($group == 'project_gantt') {
-                $gantt_type = (!$this->input->get('gantt_type') ? 'milestones' : $this->input->get('gantt_type'));
-                $taskStatus = (!$this->input->get('gantt_task_status') ? null : $this->input->get('gantt_task_status'));
+                $gantt_type         = (!$this->input->get('gantt_type') ? 'milestones' : $this->input->get('gantt_type'));
+                $taskStatus         = (!$this->input->get('gantt_task_status') ? null : $this->input->get('gantt_task_status'));
                 $data['gantt_data'] = $this->projects_model->get_gantt_data($id, $gantt_type, $taskStatus);
             } elseif ($group == 'project_milestones') {
                 $data['bodyclass'] .= 'project-milestones ';
@@ -295,9 +295,9 @@ class Projects extends AdminController
             } elseif ($group == 'project_expenses') {
                 $this->load->model('taxes_model');
                 $this->load->model('expenses_model');
-                $data['taxes'] = $this->taxes_model->get();
+                $data['taxes']              = $this->taxes_model->get();
                 $data['expense_categories'] = $this->expenses_model->get_category();
-                $data['currencies'] = $this->currencies_model->get();
+                $data['currencies']         = $this->currencies_model->get();
             } elseif ($group == 'project_activity') {
                 $data['activity'] = $this->projects_model->get_activity($id);
             } elseif ($group == 'project_notes') {
@@ -305,41 +305,41 @@ class Projects extends AdminController
             } elseif ($group == 'project_contracts') {
                 $this->load->model('contracts_model');
                 $data['contract_types'] = $this->contracts_model->get_contract_types();
-                $data['years'] = $this->contracts_model->get_contracts_years();
+                $data['years']          = $this->contracts_model->get_contracts_years();
             } elseif ($group == 'project_estimates') {
                 $this->load->model('estimates_model');
-                $data['estimates_years'] = $this->estimates_model->get_estimates_years();
+                $data['estimates_years']       = $this->estimates_model->get_estimates_years();
                 $data['estimates_sale_agents'] = $this->estimates_model->get_sale_agents();
-                $data['estimate_statuses'] = $this->estimates_model->get_statuses();
-                $data['estimateid'] = '';
-                $data['switch_pipeline'] = '';
+                $data['estimate_statuses']     = $this->estimates_model->get_statuses();
+                $data['estimateid']            = '';
+                $data['switch_pipeline']       = '';
             } elseif ($group == 'project_tickets') {
                 $data['chosen_ticket_status'] = '';
                 $this->load->model('tickets_model');
                 $data['ticket_assignees'] = $this->tickets_model->get_tickets_assignes_disctinct();
 
                 $this->load->model('departments_model');
-                $data['staff_deparments_ids'] = $this->departments_model->get_staff_departments(get_staff_user_id(), true);
+                $data['staff_deparments_ids']          = $this->departments_model->get_staff_departments(get_staff_user_id(), true);
                 $data['default_tickets_list_statuses'] = hooks()->apply_filters('default_tickets_list_statuses', [1, 2, 4]);
             } elseif ($group == 'project_timesheets') {
                 // Tasks are used in the timesheet dropdown
                 // Completed tasks are excluded from this list because you can't add timesheet on completed task.
-                $data['tasks'] = $this->projects_model->get_tasks($id, 'status != ' . Tasks_model::STATUS_COMPLETE . ' AND billed=0');
+                $data['tasks']                = $this->projects_model->get_tasks($id, 'status != ' . Tasks_model::STATUS_COMPLETE . ' AND billed=0');
                 $data['timesheets_staff_ids'] = $this->projects_model->get_distinct_tasks_timesheets_staff($id);
             }
 
             // Discussions
             if ($this->input->get('discussion_id')) {
                 $data['discussion_user_profile_image_url'] = staff_profile_image_url(get_staff_user_id());
-                $data['discussion'] = $this->projects_model->get_discussion($this->input->get('discussion_id'), $id);
-                $data['current_user_is_admin'] = is_admin();
+                $data['discussion']                        = $this->projects_model->get_discussion($this->input->get('discussion_id'), $id);
+                $data['current_user_is_admin']             = is_admin();
             }
 
             $data['percent'] = $percent;
 
             $this->app_scripts->add('circle-progress-js', 'assets/plugins/jquery-circle-progress/circle-progress.min.js');
 
-            $other_projects = [];
+            $other_projects       = [];
             $other_projects_where = 'id != ' . $id;
 
             $statuses = $this->projects_model->get_project_statuses();
@@ -360,7 +360,7 @@ class Projects extends AdminController
             }
 
             $data['other_projects'] = $this->projects_model->get('', $other_projects_where);
-            $data['title'] = $data['project']->name;
+            $data['title']          = $data['project']->name;
             $data['bodyclass'] .= 'project invoices-total-manual estimates-total-manual';
             $data['project_status'] = get_project_status_by_id($project->status);
 
@@ -392,22 +392,18 @@ class Projects extends AdminController
         ]);
     }
 
-
     public function file($id, $project_id)
     {
         $data['discussion_user_profile_image_url'] = staff_profile_image_url(get_staff_user_id());
-        $data['current_user_is_admin'] = is_admin();
+        $data['current_user_is_admin']             = is_admin();
 
         $data['file'] = $this->projects_model->get_file($id, $project_id);
-        if (isset($data['file'])) {
-            $data['file_next'] = $this->projects_model->get_next_file($id);
-            $data['file_previous'] = $this->projects_model->get_previous_file($id);
-        }
 
         if (!$data['file']) {
             header('HTTP/1.0 404 Not Found');
             die;
         }
+
         $this->load->view('admin/projects/_file', $data);
     }
 
@@ -421,12 +417,12 @@ class Projects extends AdminController
     public function add_external_file()
     {
         if ($this->input->post()) {
-            $data = [];
-            $data['project_id'] = $this->input->post('project_id');
-            $data['files'] = $this->input->post('files');
-            $data['external'] = $this->input->post('external');
+            $data                        = [];
+            $data['project_id']          = $this->input->post('project_id');
+            $data['files']               = $this->input->post('files');
+            $data['external']            = $this->input->post('external');
             $data['visible_to_customer'] = ($this->input->post('visible_to_customer') == 'true' ? 1 : 0);
-            $data['staffid'] = get_staff_user_id();
+            $data['staffid']             = get_staff_user_id();
             $this->projects_model->add_external_file($data);
         }
     }
@@ -512,7 +508,7 @@ class Projects extends AdminController
                 ]);
             } else {
                 $data = $this->input->post();
-                $id = $data['id'];
+                $id   = $data['id'];
                 unset($data['id']);
                 $success = $this->projects_model->edit_discussion($data, $id);
                 if ($success) {
@@ -558,14 +554,14 @@ class Projects extends AdminController
             $success = $this->projects_model->delete_discussion($id);
         }
         $alert_type = 'warning';
-        $message = _l('project_discussion_failed_to_delete');
+        $message    = _l('project_discussion_failed_to_delete');
         if ($success) {
             $alert_type = 'success';
-            $message = _l('project_discussion_deleted');
+            $message    = _l('project_discussion_deleted');
         }
         echo json_encode([
             'alert_type' => $alert_type,
-            'message' => $message,
+            'message'    => $message,
         ]);
     }
 
@@ -611,10 +607,10 @@ class Projects extends AdminController
         $data['milestones'] = [];
 
         $data['milestones'][] = [
-            'name' => _l('milestones_uncategorized'),
-            'id' => 0,
+            'name'              => _l('milestones_uncategorized'),
+            'id'                => 0,
             'total_logged_time' => $this->projects_model->calc_milestone_logged_time($data['project_id'], 0),
-            'color' => null,
+            'color'             => null,
         ];
 
         $_milestones = $this->projects_model->get_milestones($data['project_id']);
@@ -630,10 +626,10 @@ class Projects extends AdminController
     {
         $milestones_exclude_completed_tasks = $this->input->get('exclude_completed_tasks') && $this->input->get('exclude_completed_tasks') == 'yes';
 
-        $status = $this->input->get('status');
-        $page = $this->input->get('page');
+        $status     = $this->input->get('status');
+        $page       = $this->input->get('page');
         $project_id = $this->input->get('project_id');
-        $where = [];
+        $where      = [];
         if ($milestones_exclude_completed_tasks) {
             $where['status !='] = Tasks_model::STATUS_COMPLETE;
         }
@@ -666,7 +662,7 @@ class Projects extends AdminController
                 }
             } else {
                 $data = $this->input->post();
-                $id = $data['id'];
+                $id   = $data['id'];
                 unset($data['id']);
                 $success = $this->projects_model->update_milestone($data, $id);
                 if ($success) {
@@ -691,12 +687,12 @@ class Projects extends AdminController
     public function bulk_action_files()
     {
         hooks()->do_action('before_do_bulk_action_for_project_files');
-        $total_deleted = 0;
+        $total_deleted       = 0;
         $hasPermissionDelete = has_permission('projects', '', 'delete');
         // bulk action for projects currently only have delete button
         if ($this->input->post()) {
             $fVisibility = $this->input->post('visible_to_customer') == 'true' ? 1 : 0;
-            $ids = $this->input->post('ids');
+            $ids         = $this->input->post('ids');
             if (is_array($ids)) {
                 foreach ($ids as $id) {
                     if ($hasPermissionDelete && $this->input->post('mass_delete') && $this->projects_model->remove_file($id)) {
@@ -746,13 +742,13 @@ class Projects extends AdminController
 
     public function timesheet_task_assignees($task_id, $project_id, $staff_id = 'undefined')
     {
-        $assignees = $this->tasks_model->get_task_assignees($task_id);
-        $data = '';
-        $has_permission_edit = has_permission('projects', '', 'edit');
+        $assignees             = $this->tasks_model->get_task_assignees($task_id);
+        $data                  = '';
+        $has_permission_edit   = has_permission('projects', '', 'edit');
         $has_permission_create = has_permission('projects', '', 'edit');
         // The second condition if staff member edit their own timesheet
         if ($staff_id == 'undefined' || $staff_id != 'undefined' && (!$has_permission_edit || !$has_permission_create)) {
-            $staff_id = get_staff_user_id();
+            $staff_id     = get_staff_user_id();
             $current_user = true;
         }
         foreach ($assignees as $staff) {
@@ -830,13 +826,13 @@ class Projects extends AdminController
     {
         if (has_permission('invoices', '', 'create')) {
             $where = [
-                'billed' => 0,
+                'billed'       => 0,
                 'startdate <=' => date('Y-m-d'),
             ];
             if ($billable == 'true') {
                 $where['billable'] = true;
             }
-            $tasks = $this->projects_model->get_tasks($project_id, $where);
+            $tasks                = $this->projects_model->get_tasks($project_id, $where);
             $total_timers_stopped = 0;
             foreach ($tasks as $task) {
                 $this->db->where('task_id', $task['id']);
@@ -847,12 +843,12 @@ class Projects extends AdminController
                 $total_timers_stopped += $this->db->affected_rows();
             }
             $message = _l('project_tasks_total_timers_stopped', $total_timers_stopped);
-            $type = 'success';
+            $type    = 'success';
             if ($total_timers_stopped == 0) {
                 $type = 'warning';
             }
             echo json_encode([
-                'type' => $type,
+                'type'    => $type,
                 'message' => $message,
             ]);
         }
@@ -862,25 +858,25 @@ class Projects extends AdminController
     {
         if (has_permission('invoices', '', 'create')) {
             $data['billable_tasks'] = $this->projects_model->get_tasks($project_id, [
-                'billable' => 1,
-                'billed' => 0,
+                'billable'     => 1,
+                'billed'       => 0,
                 'startdate <=' => date('Y-m-d'),
             ]);
 
             $data['not_billable_tasks'] = $this->projects_model->get_tasks($project_id, [
-                'billable' => 1,
-                'billed' => 0,
+                'billable'    => 1,
+                'billed'      => 0,
                 'startdate >' => date('Y-m-d'),
             ]);
 
-            $data['project_id'] = $project_id;
+            $data['project_id']   = $project_id;
             $data['billing_type'] = get_project_billing_type($project_id);
 
             $this->load->model('expenses_model');
             $this->db->where('invoiceid IS NULL');
             $data['expenses'] = $this->expenses_model->get('', [
                 'project_id' => $project_id,
-                'billable' => 1,
+                'billable'   => 1,
             ]);
 
             $this->load->view('admin/projects/project_pre_invoice_settings', $data);
@@ -890,7 +886,7 @@ class Projects extends AdminController
     public function get_invoice_project_data()
     {
         if (has_permission('invoices', '', 'create')) {
-            $type = $this->input->post('type');
+            $type       = $this->input->post('type');
             $project_id = $this->input->post('project_id');
             // Check for all cases
             if ($type == '') {
@@ -901,8 +897,8 @@ class Projects extends AdminController
                 'expenses_only !=' => 1,
             ]);
             $this->load->model('taxes_model');
-            $data['taxes'] = $this->taxes_model->get();
-            $data['currencies'] = $this->currencies_model->get();
+            $data['taxes']         = $this->taxes_model->get();
+            $data['currencies']    = $this->currencies_model->get();
             $data['base_currency'] = $this->currencies_model->get_base_currency();
             $this->load->model('invoice_items_model');
 
@@ -910,32 +906,32 @@ class Projects extends AdminController
             if (total_rows(db_prefix() . 'items') <= ajax_on_total_items()) {
                 $data['items'] = $this->invoice_items_model->get_grouped();
             } else {
-                $data['items'] = [];
+                $data['items']     = [];
                 $data['ajaxItems'] = true;
             }
 
             $data['items_groups'] = $this->invoice_items_model->get_groups();
-            $data['staff'] = $this->staff_model->get('', ['active' => 1]);
-            $project = $this->projects_model->get($project_id);
-            $data['project'] = $project;
-            $items = [];
+            $data['staff']        = $this->staff_model->get('', ['active' => 1]);
+            $project              = $this->projects_model->get($project_id);
+            $data['project']      = $project;
+            $items                = [];
 
-            $project = $this->projects_model->get($project_id);
+            $project    = $this->projects_model->get($project_id);
             $item['id'] = 0;
 
-            $default_tax = unserialize(get_option('default_tax'));
+            $default_tax     = unserialize(get_option('default_tax'));
             $item['taxname'] = $default_tax;
 
             $tasks = $this->input->post('tasks');
             if ($tasks) {
                 $item['long_description'] = '';
-                $item['qty'] = 0;
-                $item['task_id'] = [];
+                $item['qty']              = 0;
+                $item['task_id']          = [];
                 if ($type == 'single_line') {
                     $item['description'] = $project->name;
                     foreach ($tasks as $task_id) {
                         $task = $this->tasks_model->get($task_id);
-                        $sec = $this->tasks_model->calc_task_total_time($task_id);
+                        $sec  = $this->tasks_model->calc_task_total_time($task_id);
                         $item['long_description'] .= $task->name . ' - ' . seconds_to_time_format(task_timer_round($sec)) . ' ' . _l('hours') . "\r\n";
                         $item['task_id'][] = $task_id;
                         if ($project->billing_type == 2) {
@@ -946,19 +942,19 @@ class Projects extends AdminController
                         }
                     }
                     if ($project->billing_type == 1) {
-                        $item['qty'] = 1;
+                        $item['qty']  = 1;
                         $item['rate'] = $project->project_cost;
                     } elseif ($project->billing_type == 2) {
                         $item['rate'] = $project->project_rate_per_hour;
                     }
                     $item['unit'] = '';
-                    $items[] = $item;
+                    $items[]      = $item;
                 } elseif ($type == 'task_per_item') {
                     foreach ($tasks as $task_id) {
-                        $task = $this->tasks_model->get($task_id);
-                        $sec = $this->tasks_model->calc_task_total_time($task_id);
-                        $item['description'] = $project->name . ' - ' . $task->name;
-                        $item['qty'] = floatVal(sec2qty(task_timer_round($sec)));
+                        $task                     = $this->tasks_model->get($task_id);
+                        $sec                      = $this->tasks_model->calc_task_total_time($task_id);
+                        $item['description']      = $project->name . ' - ' . $task->name;
+                        $item['qty']              = floatVal(sec2qty(task_timer_round($sec)));
                         $item['long_description'] = seconds_to_time_format(task_timer_round($sec)) . ' ' . _l('hours');
                         if ($project->billing_type == 2) {
                             $item['rate'] = $project->project_rate_per_hour;
@@ -966,11 +962,11 @@ class Projects extends AdminController
                             $item['rate'] = $task->hourly_rate;
                         }
                         $item['task_id'] = $task_id;
-                        $item['unit'] = '';
-                        $items[] = $item;
+                        $item['unit']    = '';
+                        $items[]         = $item;
                     }
                 } elseif ($type == 'timesheets_individualy') {
-                    $timesheets = $this->projects_model->get_timesheets($project_id, $tasks);
+                    $timesheets     = $this->projects_model->get_timesheets($project_id, $tasks);
                     $added_task_ids = [];
                     foreach ($timesheets as $timesheet) {
                         if ($timesheet['task_data']->billed == 0 && $timesheet['task_data']->billable == 1) {
@@ -981,7 +977,7 @@ class Projects extends AdminController
 
                             array_push($added_task_ids, $timesheet['task_id']);
 
-                            $item['qty'] = floatVal(sec2qty(task_timer_round($timesheet['total_spent'])));
+                            $item['qty']              = floatVal(sec2qty(task_timer_round($timesheet['total_spent'])));
                             $item['long_description'] = _l('project_invoice_timesheet_start_time', _dt($timesheet['start_time'], true)) . "\r\n" . _l('project_invoice_timesheet_end_time', _dt($timesheet['end_time'], true)) . "\r\n" . _l('project_invoice_timesheet_total_logged_time', seconds_to_time_format(task_timer_round($timesheet['total_spent']))) . ' ' . _l('hours');
 
                             if ($this->input->post('timesheets_include_notes') && $timesheet['note']) {
@@ -994,7 +990,7 @@ class Projects extends AdminController
                                 $item['rate'] = $timesheet['task_data']->hourly_rate;
                             }
                             $item['unit'] = '';
-                            $items[] = $item;
+                            $items[]      = $item;
                         }
                     }
                 }
@@ -1009,7 +1005,7 @@ class Projects extends AdminController
                 if (count($tasks) > 0) {
                     $data['qty_hrs_quantity'] = true;
                 }
-                $expenses = $this->input->post('expenses');
+                $expenses       = $this->input->post('expenses');
                 $addExpenseNote = $this->input->post('expenses_add_note');
                 $addExpenseName = $this->input->post('expenses_add_name');
 
@@ -1024,11 +1020,11 @@ class Projects extends AdminController
                 $this->load->model('expenses_model');
                 foreach ($expenses as $expense_id) {
                     // reset item array
-                    $item = [];
-                    $item['id'] = 0;
-                    $expense = $this->expenses_model->get($expense_id);
-                    $item['expense_id'] = $expense->expenseid;
-                    $item['description'] = _l('item_as_expense') . ' ' . $expense->name;
+                    $item                     = [];
+                    $item['id']               = 0;
+                    $expense                  = $this->expenses_model->get($expense_id);
+                    $item['expense_id']       = $expense->expenseid;
+                    $item['description']      = _l('item_as_expense') . ' ' . $expense->name;
                     $item['long_description'] = $expense->description;
 
                     if (in_array($expense_id, $addExpenseNote) && !empty($expense->note)) {
@@ -1048,15 +1044,15 @@ class Projects extends AdminController
                     if ($expense->tax2 != 0) {
                         array_push($item['taxname'], $expense->tax_name2 . '|' . $expense->taxrate2);
                     }
-                    $item['rate'] = $expense->amount;
+                    $item['rate']  = $expense->amount;
                     $item['order'] = 1;
-                    $item['unit'] = '';
-                    $items[] = $item;
+                    $item['unit']  = '';
+                    $items[]       = $item;
                 }
             }
-            $data['customer_id'] = $project->clientid;
+            $data['customer_id']          = $project->clientid;
             $data['invoice_from_project'] = true;
-            $data['add_items'] = $items;
+            $data['add_items']            = $items;
             $this->load->view('admin/projects/invoice_project', $data);
         }
     }
@@ -1066,7 +1062,7 @@ class Projects extends AdminController
         if ($this->input->is_ajax_request()) {
             $selected_milestone = '';
             if ($task_id != '' && $task_id != 'undefined') {
-                $task = $this->tasks_model->get($task_id);
+                $task               = $this->tasks_model->get($task_id);
                 $selected_milestone = $task->milestone;
             }
 
@@ -1081,11 +1077,11 @@ class Projects extends AdminController
             $deadline = get_project_deadline($id);
 
             echo json_encode([
-                'deadline' => $deadline,
-                'deadline_formatted' => $deadline ? _d($deadline) : null,
+                'deadline'            => $deadline,
+                'deadline_formatted'  => $deadline ? _d($deadline) : null,
                 'allow_to_view_tasks' => $allow_to_view_tasks,
-                'billing_type' => get_project_billing_type($id),
-                'milestones' => render_select('milestone', $this->projects_model->get_milestones($id), [
+                'billing_type'        => get_project_billing_type($id),
+                'milestones'          => render_select('milestone', $this->projects_model->get_milestones($id), [
                     'id',
                     'name',
                 ], 'task_milestone', $selected_milestone),
@@ -1097,9 +1093,9 @@ class Projects extends AdminController
     {
         if (has_permission('invoices', '', 'create')) {
             $this->load->model('invoices_model');
-            $data = $this->input->post();
+            $data               = $this->input->post();
             $data['project_id'] = $project_id;
-            $invoice_id = $this->invoices_model->add($data);
+            $invoice_id         = $this->invoices_model->add($data);
             if ($invoice_id) {
                 $this->projects_model->log_activity($project_id, 'project_activity_invoiced_project', format_invoice_number($invoice_id));
                 set_alert('success', _l('project_invoiced_successfully'));

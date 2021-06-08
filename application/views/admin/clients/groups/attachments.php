@@ -36,7 +36,7 @@
     <div class="attachments">
         <div class="mtop25">
 
-            <table class="table dt-table" data-order-col="2" data-order-type="desc">
+            <table class="table dt-table scroll-responsive" data-order-col="2" data-order-type="desc">
                 <thead>
                     <tr>
                         <th width="30%"><?php echo _l('customer_attachments_file'); ?></th>

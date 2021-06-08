@@ -39,38 +39,38 @@ class Projects_model extends App_Model
     {
         $statuses = hooks()->apply_filters('before_get_project_statuses', [
             [
-                'id' => 1,
-                'color' => '#989898',
-                'name' => _l('project_status_1'),
-                'order' => 1,
+                'id'             => 1,
+                'color'          => '#989898',
+                'name'           => _l('project_status_1'),
+                'order'          => 1,
                 'filter_default' => true,
             ],
             [
-                'id' => 2,
-                'color' => '#03a9f4',
-                'name' => _l('project_status_2'),
-                'order' => 2,
+                'id'             => 2,
+                'color'          => '#03a9f4',
+                'name'           => _l('project_status_2'),
+                'order'          => 2,
                 'filter_default' => true,
             ],
             [
-                'id' => 3,
-                'color' => '#ff6f00',
-                'name' => _l('project_status_3'),
-                'order' => 3,
+                'id'             => 3,
+                'color'          => '#ff6f00',
+                'name'           => _l('project_status_3'),
+                'order'          => 3,
                 'filter_default' => true,
             ],
             [
-                'id' => 4,
-                'color' => '#84c529',
-                'name' => _l('project_status_4'),
-                'order' => 100,
+                'id'             => 4,
+                'color'          => '#84c529',
+                'name'           => _l('project_status_4'),
+                'order'          => 100,
                 'filter_default' => false,
             ],
             [
-                'id' => 5,
-                'color' => '#989898',
-                'name' => _l('project_status_5'),
-                'order' => 4,
+                'id'             => 5,
+                'color'          => '#989898',
+                'name'           => _l('project_status_5'),
+                'order'          => 4,
                 'filter_default' => false,
             ],
         ]);
@@ -116,11 +116,11 @@ class Projects_model extends App_Model
     public function pin_action($id)
     {
         if (total_rows(db_prefix() . 'pinned_projects', [
-                'staff_id' => get_staff_user_id(),
-                'project_id' => $id,
-            ]) == 0) {
+            'staff_id' => get_staff_user_id(),
+            'project_id' => $id,
+        ]) == 0) {
             $this->db->insert(db_prefix() . 'pinned_projects', [
-                'staff_id' => get_staff_user_id(),
+                'staff_id'   => get_staff_user_id(),
                 'project_id' => $id,
             ]);
 
@@ -167,12 +167,12 @@ class Projects_model extends App_Model
     {
         $total_project_tasks = total_rows(db_prefix() . 'tasks', [
             'rel_type' => 'project',
-            'rel_id' => $id,
+            'rel_id'   => $id,
         ]);
         $total_finished_tasks = total_rows(db_prefix() . 'tasks', [
             'rel_type' => 'project',
-            'rel_id' => $id,
-            'status' => 5,
+            'rel_id'   => $id,
+            'status'   => 5,
         ]);
         $percent = 0;
         if ($total_finished_tasks >= floatval($total_project_tasks)) {
@@ -212,18 +212,18 @@ class Projects_model extends App_Model
             $project = $this->db->get(db_prefix() . 'projects')->row();
             if ($project) {
                 $project->shared_vault_entries = $this->clients_model->get_vault_entries($project->clientid, ['share_in_projects' => 1]);
-                $settings = $this->get_project_settings($id);
+                $settings                      = $this->get_project_settings($id);
 
                 // SYNC NEW TABS
-                $tabs = get_project_tabs_admin();
-                $tabs_flatten = [];
+                $tabs                        = get_project_tabs_admin();
+                $tabs_flatten                = [];
                 $settings_available_features = [];
 
                 $available_features_index = false;
                 foreach ($settings as $key => $setting) {
                     if ($setting['name'] == 'available_features') {
                         $available_features_index = $key;
-                        $available_features = unserialize($setting['value']);
+                        $available_features       = unserialize($setting['value']);
                         if (is_array($available_features)) {
                             foreach ($available_features as $name => $avf) {
                                 $settings_available_features[] = $name;
@@ -245,8 +245,8 @@ class Projects_model extends App_Model
                         if (!in_array($tab, $settings_available_features)) {
                             if ($available_features_index) {
                                 $current_available_features_settings = $settings[$available_features_index];
-                                $tmp = unserialize($current_available_features_settings['value']);
-                                $tmp[$tab] = 1;
+                                $tmp                                 = unserialize($current_available_features_settings['value']);
+                                $tmp[$tab]                           = 1;
                                 $this->db->where('id', $current_available_features_settings['id']);
                                 $this->db->update(db_prefix() . 'project_settings', ['value' => serialize($tmp)]);
                             }
@@ -263,7 +263,7 @@ class Projects_model extends App_Model
                 $project->client_data = new StdClass();
                 $project->client_data = $this->clients_model->get($project->clientid);
 
-                $project = hooks()->apply_filters('project_get', $project);
+                $project            = hooks()->apply_filters('project_get', $project);
                 $GLOBALS['project'] = $project;
 
                 return $project;
@@ -281,20 +281,20 @@ class Projects_model extends App_Model
 
     public function calculate_total_by_project_hourly_rate($seconds, $hourly_rate)
     {
-        $hours = seconds_to_time_format($seconds);
-        $decimal = sec2qty($seconds);
+        $hours       = seconds_to_time_format($seconds);
+        $decimal     = sec2qty($seconds);
         $total_money = 0;
         $total_money += ($decimal * $hourly_rate);
 
         return [
-            'hours' => $hours,
+            'hours'       => $hours,
             'total_money' => $total_money,
         ];
     }
 
     public function calculate_total_by_task_hourly_rate($tasks)
     {
-        $total_money = 0;
+        $total_money    = 0;
         $_total_seconds = 0;
 
         foreach ($tasks as $task) {
@@ -304,14 +304,14 @@ class Projects_model extends App_Model
         }
 
         return [
-            'total_money' => $total_money,
+            'total_money'   => $total_money,
             'total_seconds' => $_total_seconds,
         ];
     }
 
     public function get_tasks($id, $where = [], $apply_restrictions = false, $count = false, $callback = null)
     {
-        $has_permission = has_permission('tasks', '', 'view');
+        $has_permission                    = has_permission('tasks', '', 'view');
         $show_all_tasks_for_project_member = get_option('show_all_tasks_for_project_member');
 
         $select = implode(', ', prefixed_table_fields_array(db_prefix() . 'tasks')) . ',' . db_prefix() . 'milestones.name as milestone_name,
@@ -378,11 +378,11 @@ class Projects_model extends App_Model
         $this->db->where('(cycles != total_cycles OR cycles=0)');
 
         $this->db->update(db_prefix() . 'tasks', [
-            'recurring_type' => null,
-            'repeat_every' => 0,
-            'cycles' => 0,
-            'recurring' => 0,
-            'custom_recurring' => 0,
+            'recurring_type'      => null,
+            'repeat_every'        => 0,
+            'cycles'              => 0,
+            'recurring'           => 0,
+            'custom_recurring'    => 0,
             'last_recurring_date' => null,
         ]);
     }
@@ -390,8 +390,8 @@ class Projects_model extends App_Model
     public function do_milestones_kanban_query($milestone_id, $project_id, $page = 1, $where = [], $count = false)
     {
         $where['milestone'] = $milestone_id;
-        $limit = get_option('tasks_kanban_limit');
-        $tasks = $this->get_tasks($project_id, $where, true, $count, function () use ($count, $page, $limit) {
+        $limit              = get_option('tasks_kanban_limit');
+        $tasks              = $this->get_tasks($project_id, $where, true, $count, function () use ($count, $page, $limit) {
             if ($count == false) {
                 if ($page > 1) {
                     $position = (($page - 1) * $limit);
@@ -463,12 +463,12 @@ class Projects_model extends App_Model
         $file = $this->db->get(db_prefix() . 'project_files')->row();
         if ($file) {
             if (empty($file->external)) {
-                $path = get_upload_path_by_type('project') . $file->project_id . '/';
+                $path     = get_upload_path_by_type('project') . $file->project_id . '/';
                 $fullPath = $path . $file->file_name;
                 if (file_exists($fullPath)) {
                     unlink($fullPath);
-                    $fname = pathinfo($fullPath, PATHINFO_FILENAME);
-                    $fext = pathinfo($fullPath, PATHINFO_EXTENSION);
+                    $fname     = pathinfo($fullPath, PATHINFO_FILENAME);
+                    $fext      = pathinfo($fullPath, PATHINFO_EXTENSION);
                     $thumbPath = $path . $fname . '_thumb.' . $fext;
 
                     if (file_exists($thumbPath)) {
@@ -503,7 +503,7 @@ class Projects_model extends App_Model
     public function get_project_overview_weekly_chart_data($id, $type = 'this_week')
     {
         $billing_type = get_project_billing_type($id);
-        $chart = [];
+        $chart        = [];
 
         $has_permission_create = has_permission('projects', '', 'create');
         // If don't have permission for projects create show only bileld time
@@ -517,56 +517,56 @@ class Projects_model extends App_Model
             }
         }
 
-        $chart['data'] = [];
-        $chart['data']['labels'] = [];
+        $chart['data']             = [];
+        $chart['data']['labels']   = [];
         $chart['data']['datasets'] = [];
 
         $chart['data']['datasets'][] = [
-            'label' => ($timesheets_type == 'billable_unbilled' ? str_replace(':', '', _l('project_overview_billable_hours')) : str_replace(':', '', _l('project_overview_logged_hours'))),
-            'data' => [],
+            'label'           => ($timesheets_type == 'billable_unbilled' ? str_replace(':', '', _l('project_overview_billable_hours')) : str_replace(':', '', _l('project_overview_logged_hours'))),
+            'data'            => [],
             'backgroundColor' => [],
-            'borderColor' => [],
-            'borderWidth' => 1,
+            'borderColor'     => [],
+            'borderWidth'     => 1,
         ];
 
         if ($timesheets_type == 'billable_unbilled') {
             $chart['data']['datasets'][] = [
-                'label' => str_replace(':', '', _l('project_overview_unbilled_hours')),
-                'data' => [],
+                'label'           => str_replace(':', '', _l('project_overview_unbilled_hours')),
+                'data'            => [],
                 'backgroundColor' => [],
-                'borderColor' => [],
-                'borderWidth' => 1,
+                'borderColor'     => [],
+                'borderWidth'     => 1,
             ];
         }
 
         $temp_weekdays_data = [];
-        $weeks = [];
-        $where_time = '';
+        $weeks              = [];
+        $where_time         = '';
 
         if ($type == 'this_month') {
             $beginThisMonth = date('Y-m-01');
-            $endThisMonth = date('Y-m-t 23:59:59');
+            $endThisMonth   = date('Y-m-t 23:59:59');
 
             $weeks_split_start = date('Y-m-d', strtotime($beginThisMonth));
-            $weeks_split_end = date('Y-m-d', strtotime($endThisMonth));
+            $weeks_split_end   = date('Y-m-d', strtotime($endThisMonth));
 
             $where_time = 'start_time BETWEEN ' . strtotime($beginThisMonth) . ' AND ' . strtotime($endThisMonth);
         } elseif ($type == 'last_month') {
             $beginLastMonth = date('Y-m-01', strtotime('-1 MONTH'));
-            $endLastMonth = date('Y-m-t 23:59:59', strtotime('-1 MONTH'));
+            $endLastMonth   = date('Y-m-t 23:59:59', strtotime('-1 MONTH'));
 
             $weeks_split_start = date('Y-m-d', strtotime($beginLastMonth));
-            $weeks_split_end = date('Y-m-d', strtotime($endLastMonth));
+            $weeks_split_end   = date('Y-m-d', strtotime($endLastMonth));
 
             $where_time = 'start_time BETWEEN ' . strtotime($beginLastMonth) . ' AND ' . strtotime($endLastMonth);
         } elseif ($type == 'last_week') {
             $beginLastWeek = date('Y-m-d', strtotime('monday last week'));
-            $endLastWeek = date('Y-m-d 23:59:59', strtotime('sunday last week'));
-            $where_time = 'start_time BETWEEN ' . strtotime($beginLastWeek) . ' AND ' . strtotime($endLastWeek);
+            $endLastWeek   = date('Y-m-d 23:59:59', strtotime('sunday last week'));
+            $where_time    = 'start_time BETWEEN ' . strtotime($beginLastWeek) . ' AND ' . strtotime($endLastWeek);
         } else {
             $beginThisWeek = date('Y-m-d', strtotime('monday this week'));
-            $endThisWeek = date('Y-m-d 23:59:59', strtotime('sunday this week'));
-            $where_time = 'start_time BETWEEN ' . strtotime($beginThisWeek) . ' AND ' . strtotime($endThisWeek);
+            $endThisWeek   = date('Y-m-d 23:59:59', strtotime('sunday this week'));
+            $where_time    = 'start_time BETWEEN ' . strtotime($beginThisWeek) . ' AND ' . strtotime($endThisWeek);
         }
 
         if ($type == 'this_week' || $type == 'last_week') {
@@ -574,7 +574,7 @@ class Projects_model extends App_Model
                 array_push($chart['data']['labels'], $day);
             }
             $weekDay = date('w', strtotime(date('Y-m-d H:i:s')));
-            $i = 0;
+            $i       = 0;
             foreach (get_weekdays_original() as $day) {
                 if ($weekDay != '0') {
                     $chart['data']['labels'][$i] = date('d', strtotime($day . ' ' . str_replace('_', ' ', $type))) . ' - ' . $chart['data']['labels'][$i];
@@ -586,7 +586,7 @@ class Projects_model extends App_Model
                         }
                         $chart['data']['labels'][$i] = date('d', strtotime($strtotime)) . ' - ' . $chart['data']['labels'][$i];
                     } else {
-                        $strtotime = $day . ' last week';
+                        $strtotime                   = $day . ' last week';
                         $chart['data']['labels'][$i] = date('d', strtotime($strtotime)) . ' - ' . $chart['data']['labels'][$i];
                     }
                 }
@@ -594,9 +594,9 @@ class Projects_model extends App_Model
             }
         } elseif ($type == 'this_month' || $type == 'last_month') {
             $weeks_split_start = new DateTime($weeks_split_start);
-            $weeks_split_end = new DateTime($weeks_split_end);
-            $weeks = get_weekdays_between_dates($weeks_split_start, $weeks_split_end);
-            $total_weeks = count($weeks);
+            $weeks_split_end   = new DateTime($weeks_split_end);
+            $weeks             = get_weekdays_between_dates($weeks_split_start, $weeks_split_end);
+            $total_weeks       = count($weeks);
             for ($i = 1; $i <= $total_weeks; $i++) {
                 array_push($chart['data']['labels'], split_weeks_chart_label($weeks, $i));
             }
@@ -693,29 +693,29 @@ class Projects_model extends App_Model
     public function get_gantt_data($project_id, $type = 'milestones', $taskStatus = null)
     {
         $project_data = $this->get($project_id);
-        $type_data = [];
+        $type_data    = [];
         if ($type == 'milestones') {
             $type_data[] = [
-                'name' => _l('milestones_uncategorized'),
+                'name'   => _l('milestones_uncategorized'),
                 'dep_id' => 'milestone_0',
-                'id' => 0,
+                'id'     => 0,
             ];
             $_milestones = $this->get_milestones($project_id);
             foreach ($_milestones as $m) {
-                $m['dep_id'] = 'milestone_' . $m['id'];
+                $m['dep_id']       = 'milestone_' . $m['id'];
                 $m['milestone_id'] = $m['id'];
-                $type_data[] = $m;
+                $type_data[]       = $m;
             }
         } elseif ($type == 'members') {
             $type_data[] = [
-                'name' => _l('task_list_not_assigned'),
-                'dep_id' => 'member_0',
+                'name'     => _l('task_list_not_assigned'),
+                'dep_id'   => 'member_0',
                 'staff_id' => 0,
             ];
             $_members = $this->get_project_members($project_id);
             foreach ($_members as $m) {
                 $m['dep_id'] = 'member_' . $m['staff_id'];
-                $m['name'] = get_staff_full_name($m['staff_id']);
+                $m['name']   = get_staff_full_name($m['staff_id']);
                 $type_data[] = $m;
             }
         } else {
@@ -723,18 +723,18 @@ class Projects_model extends App_Model
                 $statuses = $this->tasks_model->get_statuses();
                 foreach ($statuses as $status) {
                     $status['dep_id'] = 'status_' . $status['id'];
-                    $status['name'] = format_task_status($status['id'], false, true);
-                    $type_data[] = $status;
+                    $status['name']   = format_task_status($status['id'], false, true);
+                    $type_data[]      = $status;
                 }
             } else {
-                $status['id'] = $taskStatus;
+                $status['id']     = $taskStatus;
                 $status['dep_id'] = 'status_' . $taskStatus;
-                $status['name'] = format_task_status($taskStatus, false, true);
-                $type_data[] = $status;
+                $status['name']   = format_task_status($taskStatus, false, true);
+                $type_data[]      = $status;
             }
         }
 
-        $gantt_data = [];
+        $gantt_data     = [];
         $has_permission = has_permission('tasks', '', 'view');
         foreach ($type_data as $data) {
             if ($type == 'milestones') {
@@ -756,9 +756,9 @@ class Projects_model extends App_Model
             }
 
             if (count($tasks) > 0) {
-                $data['id'] = $data['dep_id'];
-                $data['start'] = $project_data->start_date;
-                $data['end'] = (isset($data['end'])) ? $data['end'] : $project_data->deadline;
+                $data['id']           = $data['dep_id'];
+                $data['start']        = $project_data->start_date;
+                $data['end']          = (isset($data['end'])) ? $data['end'] : $project_data->deadline;
                 $data['custom_class'] = 'noDrag';
                 unset($data['dep_id']);
                 $gantt_data[] = $data;
@@ -774,7 +774,7 @@ class Projects_model extends App_Model
 
     public function get_all_projects_gantt_data($filters = [])
     {
-        $statuses = $this->get_project_statuses();
+        $statuses   = $this->get_project_statuses();
         $gantt_data = [];
 
         $statusesIds = [];
@@ -798,26 +798,26 @@ class Projects_model extends App_Model
             foreach ($projects as $project) {
                 $tasks = $this->get_tasks($project['id'], [], true);
 
-                $data = [];
-                $data['id'] = 'proj_' . $project['id'];
+                $data               = [];
+                $data['id']         = 'proj_' . $project['id'];
                 $data['project_id'] = $project['id'];
-                $data['name'] = $project['name'];
-                $data['progress'] = 0;
-                $data['start'] = strftime('%Y-%m-%d', strtotime($project['start_date']));
+                $data['name']       = $project['name'];
+                $data['progress']   = 0;
+                $data['start']      = strftime('%Y-%m-%d', strtotime($project['start_date']));
 
                 if (!empty($project['deadline'])) {
                     $data['end'] = strftime('%Y-%m-%d', strtotime($project['deadline']));
                 }
 
                 $data['custom_class'] = 'noDrag';
-                $gantt_data[] = $data;
+                $gantt_data[]         = $data;
 
                 if (count($tasks) > 0) {
                     foreach ($tasks as $task) {
-                        $task_data = get_task_array_gantt_data($task, null, isset($data['end']) ? $data['end'] : null);
-                        $task_data['progress'] = 0;
+                        $task_data                 = get_task_array_gantt_data($task, null, isset($data['end']) ? $data['end'] : null);
+                        $task_data['progress']     = 0;
                         $task_data['dependencies'] = $data['id'];
-                        $gantt_data[] = $task_data;
+                        $gantt_data[]              = $task_data;
                     }
                 }
             }
@@ -860,7 +860,7 @@ class Projects_model extends App_Model
         $this->db->where('project_id', $project_id);
         $this->db->order_by('milestone_order', 'ASC');
         $milestones = $this->db->get(db_prefix() . 'milestones')->result_array();
-        $i = 0;
+        $i          = 0;
         foreach ($milestones as $milestone) {
             $milestones[$i]['total_logged_time'] = $this->calc_milestone_logged_time($project_id, $milestone['id']);
             $i++;
@@ -872,7 +872,7 @@ class Projects_model extends App_Model
 
     public function add_milestone($data)
     {
-        $data['due_date'] = to_sql_date($data['due_date']);
+        $data['due_date']    = to_sql_date($data['due_date']);
         $data['datecreated'] = date('Y-m-d');
         $data['description'] = nl2br($data['description']);
 
@@ -886,7 +886,7 @@ class Projects_model extends App_Model
         if ($insert_id) {
             $this->db->where('id', $insert_id);
             $milestone = $this->db->get(db_prefix() . 'milestones')->row();
-            $project = $this->get($milestone->project_id);
+            $project   = $this->get($milestone->project_id);
             if ($project->settings->view_milestones == 1) {
                 $show_to_customer = 1;
             } else {
@@ -904,8 +904,8 @@ class Projects_model extends App_Model
     public function update_milestone($data, $id)
     {
         $this->db->where('id', $id);
-        $milestone = $this->db->get(db_prefix() . 'milestones')->row();
-        $data['due_date'] = to_sql_date($data['due_date']);
+        $milestone           = $this->db->get(db_prefix() . 'milestones')->row();
+        $data['due_date']    = to_sql_date($data['due_date']);
         $data['description'] = nl2br($data['description']);
 
         if (isset($data['description_visible_to_customer'])) {
@@ -1022,15 +1022,8 @@ class Projects_model extends App_Model
             $data['progress_from_tasks'] = 0;
         }
 
-        if (isset($data['contact_notification'])) {
-            if ($data['contact_notification'] == 2) {
-                $data['notify_contacts'] = serialize($data['notify_contacts']);
-            } else {
-                $data['notify_contacts'] = serialize([]);
-            }
-        }
 
-        $data['project_cost'] = !empty($data['project_cost']) ? $data['project_cost'] : null;
+        $data['project_cost']    = !empty($data['project_cost']) ? $data['project_cost'] : null;
         $data['estimated_hours'] = !empty($data['estimated_hours']) ? $data['estimated_hours'] : null;
 
         $data['start_date'] = to_sql_date($data['start_date']);
@@ -1052,19 +1045,10 @@ class Projects_model extends App_Model
             $data['project_cost'] = 0;
         } else {
             $data['project_rate_per_hour'] = 0;
-            $data['project_cost'] = 0;
+            $data['project_cost']          = 0;
         }
 
         $data['addedfrom'] = get_staff_user_id();
-
-
-        $items_to_convert = false;
-        if (isset($data['items'])) {
-            $items_to_convert = $data['items'];
-            $estimate_id = $data['estimate_id'];
-            $items_assignees = $data['items_assignee'];
-            unset($data['items'], $data['estimate_id'], $data['items_assignee']);
-        }
 
         $data = hooks()->apply_filters('before_add_project', $data);
 
@@ -1091,7 +1075,7 @@ class Projects_model extends App_Model
             $original_settings = $this->get_settings();
             if (isset($project_settings)) {
                 $_settings = [];
-                $_values = [];
+                $_values   = [];
                 foreach ($project_settings as $name => $val) {
                     array_push($_settings, $name);
                     $_values[$name] = $val;
@@ -1104,7 +1088,7 @@ class Projects_model extends App_Model
                             $value_setting = 0;
                         }
                     } else {
-                        $tabs = get_project_tabs_admin();
+                        $tabs         = get_project_tabs_admin();
                         $tab_settings = [];
                         foreach ($_values[$setting] as $tab) {
                             $tab_settings[$tab] = 1;
@@ -1126,8 +1110,8 @@ class Projects_model extends App_Model
                     }
                     $this->db->insert(db_prefix() . 'project_settings', [
                         'project_id' => $insert_id,
-                        'name' => $setting,
-                        'value' => $value_setting,
+                        'name'       => $setting,
+                        'value'      => $value_setting,
                     ]);
                 }
             } else {
@@ -1135,18 +1119,10 @@ class Projects_model extends App_Model
                     $value_setting = 0;
                     $this->db->insert(db_prefix() . 'project_settings', [
                         'project_id' => $insert_id,
-                        'name' => $setting,
-                        'value' => $value_setting,
+                        'name'       => $setting,
+                        'value'      => $value_setting,
                     ]);
                 }
-            }
-
-            if ($items_to_convert && is_numeric($estimate_id)) {
-                $this->convert_estimate_items_to_tasks($insert_id, $items_to_convert, $items_assignees, $data, $project_settings);
-
-                $this->db->where('id', $estimate_id);
-                $this->db->set('project_id', $insert_id);
-                $this->db->update(db_prefix() . 'estimates');
             }
 
             $this->log_activity($insert_id, 'project_activity_created');
@@ -1204,7 +1180,7 @@ class Projects_model extends App_Model
             }
         } else {
             $_settings = [];
-            $_values = [];
+            $_values   = [];
 
             foreach ($data['settings'] as $name => $val) {
                 array_push($_settings, $name);
@@ -1222,7 +1198,7 @@ class Projects_model extends App_Model
                         $value_setting = 0;
                     }
                 } else {
-                    $tabs = get_project_tabs_admin();
+                    $tabs         = get_project_tabs_admin();
                     $tab_settings = [];
                     foreach ($_values[$setting['name']] as $tab) {
                         $tab_settings[$tab] = 1;
@@ -1255,7 +1231,7 @@ class Projects_model extends App_Model
             }
         }
 
-        $data['project_cost'] = !empty($data['project_cost']) ? $data['project_cost'] : null;
+        $data['project_cost']    = !empty($data['project_cost']) ? $data['project_cost'] : null;
         $data['estimated_hours'] = !empty($data['estimated_hours']) ? $data['estimated_hours'] : null;
 
         if ($old_status == 4 && $data['status'] != 4) {
@@ -1291,7 +1267,7 @@ class Projects_model extends App_Model
             $data['project_cost'] = 0;
         } else {
             $data['project_rate_per_hour'] = 0;
-            $data['project_cost'] = 0;
+            $data['project_cost']          = 0;
         }
         if (isset($data['project_members'])) {
             $project_members = $data['project_members'];
@@ -1319,14 +1295,6 @@ class Projects_model extends App_Model
         if (isset($data['cancel_recurring_tasks'])) {
             unset($data['cancel_recurring_tasks']);
             $this->cancel_recurring_tasks($id);
-        }
-
-        if (isset($data['contact_notification'])) {
-            if ($data['contact_notification'] == 2) {
-                $data['notify_contacts'] = serialize($data['notify_contacts']);
-            } else {
-                $data['notify_contacts'] = serialize([]);
-            }
         }
 
         $data = hooks()->apply_filters('before_update_project', $data, $id);
@@ -1358,7 +1326,7 @@ class Projects_model extends App_Model
 
             if ($original_project->status != $data['status']) {
                 hooks()->do_action('project_status_changed', [
-                    'status' => $data['status'],
+                    'status'     => $data['status'],
                     'project_id' => $id,
                 ]);
                 // Give space this log to be on top
@@ -1385,33 +1353,19 @@ class Projects_model extends App_Model
 
     /**
      * Simplified function to send non complicated email templates for project contacts
-     * @param mixed $id project id
+     * @param  mixed $id project id
      * @return boolean
      */
     public function send_project_customer_email($id, $template)
     {
-        $this->db->select('clientid,contact_notification,notify_contacts');
+        $this->db->select('clientid');
         $this->db->where('id', $id);
-        $project = $this->db->get(db_prefix() . 'projects')->row();
+        $clientid = $this->db->get(db_prefix() . 'projects')->row()->clientid;
 
-        $sent = false;
-
-        if ($project->contact_notification == 1) {
-            $contacts = $this->clients_model->get_contacts($project->clientid, ['active' => 1, 'project_emails' => 1]);
-        } elseif ($project->contact_notification == 2) {
-            $contacts = [];
-            $contactIds = unserialize($project->notify_contacts);
-            if (count($contactIds) > 0) {
-                $this->db->where_in('id', $contactIds);
-                $this->db->where('active', 1);
-                $contacts = $this->db->get(db_prefix() . 'contacts')->result_array();
-            }
-        } else {
-            $contacts = [];
-        }
-
+        $sent     = false;
+        $contacts = $this->clients_model->get_contacts($clientid, ['active' => 1, 'project_emails' => 1]);
         foreach ($contacts as $contact) {
-            if (send_mail_template($template, $id, $project->clientid, $contact)) {
+            if (send_mail_template($template, $id, $clientid, $contact)) {
                 $sent = true;
             }
         }
@@ -1431,7 +1385,7 @@ class Projects_model extends App_Model
         ]);
         if ($this->db->affected_rows() > 0) {
             hooks()->do_action('project_status_changed', [
-                'status' => $data['status_id'],
+                'status'     => $data['status_id'],
                 'project_id' => $data['project_id'],
             ]);
 
@@ -1475,15 +1429,15 @@ class Projects_model extends App_Model
 
     private function _notify_project_members_status_change($id, $old_status, $new_status)
     {
-        $members = $this->get_project_members($id);
+        $members       = $this->get_project_members($id);
         $notifiedUsers = [];
         foreach ($members as $member) {
             if ($member['staff_id'] != get_staff_user_id()) {
                 $notified = add_notification([
-                    'fromuserid' => get_staff_user_id(),
-                    'description' => 'not_project_status_updated',
-                    'link' => 'projects/view/' . $id,
-                    'touserid' => $member['staff_id'],
+                    'fromuserid'      => get_staff_user_id(),
+                    'description'     => 'not_project_status_updated',
+                    'link'            => 'projects/view/' . $id,
+                    'touserid'        => $member['staff_id'],
                     'additional_data' => serialize([
                         '<lang>project_status_' . $old_status . '</lang>',
                         '<lang>project_status_' . $new_status . '</lang>',
@@ -1502,7 +1456,7 @@ class Projects_model extends App_Model
         $this->db->where('rel_type', 'project');
         $this->db->where('rel_id', $id);
         $this->db->update(db_prefix() . 'tasks', [
-            'status' => 5,
+            'status'       => 5,
             'datefinished' => date('Y-m-d H:i:s'),
         ]);
         $tasks = $this->get_tasks($id);
@@ -1526,9 +1480,9 @@ class Projects_model extends App_Model
         $new_project_members_to_receive_email = [];
         $this->db->select('name,clientid');
         $this->db->where('id', $id);
-        $project = $this->db->get(db_prefix() . 'projects')->row();
+        $project      = $this->db->get(db_prefix() . 'projects')->row();
         $project_name = $project->name;
-        $client_id = $project->clientid;
+        $client_id    = $project->clientid;
 
         $project_members_in = $this->get_project_members($id);
         if (sizeof($project_members_in) > 0) {
@@ -1567,15 +1521,15 @@ class Projects_model extends App_Model
                         }
                         $this->db->insert(db_prefix() . 'project_members', [
                             'project_id' => $id,
-                            'staff_id' => $staff_id,
+                            'staff_id'   => $staff_id,
                         ]);
                         if ($this->db->affected_rows() > 0) {
                             if ($staff_id != get_staff_user_id()) {
                                 $notified = add_notification([
-                                    'fromuserid' => get_staff_user_id(),
-                                    'description' => 'not_staff_added_as_project_member',
-                                    'link' => 'projects/view/' . $id,
-                                    'touserid' => $staff_id,
+                                    'fromuserid'      => get_staff_user_id(),
+                                    'description'     => 'not_staff_added_as_project_member',
+                                    'link'            => 'projects/view/' . $id,
+                                    'touserid'        => $staff_id,
                                     'additional_data' => serialize([
                                         $project_name,
                                     ]),
@@ -1603,15 +1557,15 @@ class Projects_model extends App_Model
                     }
                     $this->db->insert(db_prefix() . 'project_members', [
                         'project_id' => $id,
-                        'staff_id' => $staff_id,
+                        'staff_id'   => $staff_id,
                     ]);
                     if ($this->db->affected_rows() > 0) {
                         if ($staff_id != get_staff_user_id()) {
                             $notified = add_notification([
-                                'fromuserid' => get_staff_user_id(),
-                                'description' => 'not_staff_added_as_project_member',
-                                'link' => 'projects/view/' . $id,
-                                'touserid' => $staff_id,
+                                'fromuserid'      => get_staff_user_id(),
+                                'description'     => 'not_staff_added_as_project_member',
+                                'link'            => 'projects/view/' . $id,
+                                'touserid'        => $staff_id,
                                 'additional_data' => serialize([
                                     $project_name,
                                 ]),
@@ -1650,7 +1604,7 @@ class Projects_model extends App_Model
             $staff_id = get_staff_user_id();
         }
         $member = total_rows(db_prefix() . 'project_members', [
-            'staff_id' => $staff_id,
+            'staff_id'   => $staff_id,
             'project_id' => $project_id,
         ]);
         if ($member > 0) {
@@ -1706,7 +1660,7 @@ class Projects_model extends App_Model
     public function get_timesheets($project_id, $tasks_ids = [])
     {
         if (count($tasks_ids) == 0) {
-            $tasks = $this->get_tasks($project_id);
+            $tasks     = $this->get_tasks($project_id);
             $tasks_ids = [];
             foreach ($tasks as $task) {
                 array_push($tasks_ids, $task['id']);
@@ -1715,10 +1669,10 @@ class Projects_model extends App_Model
         if (count($tasks_ids) > 0) {
             $this->db->where('task_id IN(' . implode(', ', $tasks_ids) . ')');
             $timesheets = $this->db->get(db_prefix() . 'taskstimers')->result_array();
-            $i = 0;
+            $i          = 0;
             foreach ($timesheets as $t) {
-                $task = $this->tasks_model->get($t['task_id']);
-                $timesheets[$i]['task_data'] = $task;
+                $task                         = $this->tasks_model->get($t['task_id']);
+                $timesheets[$i]['task_data']  = $task;
                 $timesheets[$i]['staff_name'] = get_staff_full_name($t['staff_id']);
                 if (!is_null($t['end_time'])) {
                     $timesheets[$i]['total_spent'] = $t['end_time'] - $t['start_time'];
@@ -1803,9 +1757,9 @@ class Projects_model extends App_Model
     {
         $this->db->where('discussion_id', $id);
         $this->db->where('discussion_type', $type);
-        $comments = $this->db->get(db_prefix() . 'projectdiscussioncomments')->result_array();
-        $i = 0;
-        $allCommentsIDS = [];
+        $comments             = $this->db->get(db_prefix() . 'projectdiscussioncomments')->result_array();
+        $i                    = 0;
+        $allCommentsIDS       = [];
         $allCommentsParentIDS = [];
         foreach ($comments as $comment) {
             $allCommentsIDS[] = $comment['id'];
@@ -1876,10 +1830,10 @@ class Projects_model extends App_Model
             $this->db->where('show_to_customer', 1);
         }
         $discussions = $this->db->get(db_prefix() . 'projectdiscussions')->result_array();
-        $i = 0;
+        $i           = 0;
         foreach ($discussions as $discussion) {
             $discussions[$i]['total_comments'] = total_rows(db_prefix() . 'projectdiscussioncomments', [
-                'discussion_id' => $discussion['id'],
+                'discussion_id'   => $discussion['id'],
                 'discussion_type' => 'regular',
             ]);
             $i++;
@@ -1890,8 +1844,8 @@ class Projects_model extends App_Model
 
     public function add_discussion_comment($data, $discussion_id, $type)
     {
-        $discussion = $this->get_discussion($discussion_id);
-        $_data['discussion_id'] = $discussion_id;
+        $discussion               = $this->get_discussion($discussion_id);
+        $_data['discussion_id']   = $discussion_id;
         $_data['discussion_type'] = $type;
         if (isset($data['content'])) {
             $_data['content'] = $data['content'];
@@ -1901,12 +1855,12 @@ class Projects_model extends App_Model
         }
         if (is_client_logged_in()) {
             $_data['contact_id'] = get_contact_user_id();
-            $_data['fullname'] = get_contact_full_name($_data['contact_id']);
-            $_data['staff_id'] = 0;
+            $_data['fullname']   = get_contact_full_name($_data['contact_id']);
+            $_data['staff_id']   = 0;
         } else {
             $_data['contact_id'] = 0;
-            $_data['staff_id'] = get_staff_user_id();
-            $_data['fullname'] = get_staff_full_name($_data['staff_id']);
+            $_data['staff_id']   = get_staff_user_id();
+            $_data['fullname']   = get_staff_full_name($_data['staff_id']);
         }
         $_data = handle_project_discussion_comment_attachments($discussion_id, $data, $_data);
 
@@ -1919,24 +1873,24 @@ class Projects_model extends App_Model
         if ($insert_id) {
             if ($type == 'regular') {
                 $discussion = $this->get_discussion($discussion_id);
-                $not_link = 'projects/view/' . $discussion->project_id . '?group=project_discussions&discussion_id=' . $discussion_id;
+                $not_link   = 'projects/view/' . $discussion->project_id . '?group=project_discussions&discussion_id=' . $discussion_id;
             } else {
-                $discussion = $this->get_file($discussion_id);
-                $not_link = 'projects/view/' . $discussion->project_id . '?group=project_files&file_id=' . $discussion_id;
+                $discussion                   = $this->get_file($discussion_id);
+                $not_link                     = 'projects/view/' . $discussion->project_id . '?group=project_files&file_id=' . $discussion_id;
                 $discussion->show_to_customer = $discussion->visible_to_customer;
             }
 
             $emailTemplateData = [
                 'staff' => [
-                    'discussion_id' => $discussion_id,
+                    'discussion_id'         => $discussion_id,
                     'discussion_comment_id' => $insert_id,
-                    'discussion_type' => $type,
+                    'discussion_type'       => $type,
                 ],
                 'customers' => [
-                    'customer_template' => true,
-                    'discussion_id' => $discussion_id,
+                    'customer_template'     => true,
+                    'discussion_id'         => $discussion_id,
                     'discussion_comment_id' => $insert_id,
-                    'discussion_type' => $type,
+                    'discussion_type'       => $type,
                 ],
             ];
 
@@ -1944,16 +1898,16 @@ class Projects_model extends App_Model
                 $emailTemplateData['attachments'] = [
                     [
                         'attachment' => PROJECT_DISCUSSION_ATTACHMENT_FOLDER . $discussion_id . '/' . $_data['file_name'],
-                        'filename' => $_data['file_name'],
-                        'type' => $_data['file_mime_type'],
-                        'read' => true,
+                        'filename'   => $_data['file_name'],
+                        'type'       => $_data['file_mime_type'],
+                        'read'       => true,
                     ],
                 ];
             }
 
             $notification_data = [
                 'description' => 'not_commented_on_project_discussion',
-                'link' => $not_link,
+                'link'        => $not_link,
             ];
 
             if (is_client_logged_in()) {
@@ -2013,7 +1967,7 @@ class Projects_model extends App_Model
         $this->db->where('id', $data['id']);
         $this->db->update(db_prefix() . 'projectdiscussioncomments', [
             'modified' => date('Y-m-d H:i:s'),
-            'content' => $data['content'],
+            'content'  => $data['content'],
         ]);
         if ($this->db->affected_rows() > 0) {
             $this->_update_discussion_last_activity($comment->discussion_id, $comment->discussion_type);
@@ -2033,11 +1987,11 @@ class Projects_model extends App_Model
                 $additional_data = '';
                 if ($comment->discussion_type == 'regular') {
                     $discussion = $this->get_discussion($comment->discussion_id);
-                    $not = 'project_activity_deleted_discussion_comment';
+                    $not        = 'project_activity_deleted_discussion_comment';
                     $additional_data .= $discussion->subject . '<br />' . $comment->content;
                 } else {
                     $discussion = $this->get_file($comment->discussion_id);
-                    $not = 'project_activity_deleted_file_discussion_comment';
+                    $not        = 'project_activity_deleted_file_discussion_comment';
                     $additional_data .= $discussion->subject . '<br />' . $comment->content;
                 }
 
@@ -2081,11 +2035,11 @@ class Projects_model extends App_Model
     public function add_discussion($data)
     {
         if (is_client_logged_in()) {
-            $data['contact_id'] = get_contact_user_id();
-            $data['staff_id'] = 0;
+            $data['contact_id']       = get_contact_user_id();
+            $data['staff_id']         = 0;
             $data['show_to_customer'] = 1;
         } else {
-            $data['staff_id'] = get_staff_user_id();
+            $data['staff_id']   = get_staff_user_id();
             $data['contact_id'] = 0;
             if (isset($data['show_to_customer'])) {
                 $data['show_to_customer'] = 1;
@@ -2098,10 +2052,10 @@ class Projects_model extends App_Model
         $this->db->insert(db_prefix() . 'projectdiscussions', $data);
         $insert_id = $this->db->insert_id();
         if ($insert_id) {
-            $members = $this->get_project_members($data['project_id']);
+            $members           = $this->get_project_members($data['project_id']);
             $notification_data = [
                 'description' => 'not_created_new_project_discussion',
-                'link' => 'projects/view/' . $data['project_id'] . '?group=project_discussions&discussion_id=' . $insert_id,
+                'link'        => 'projects/view/' . $data['project_id'] . '?group=project_discussions&discussion_id=' . $insert_id,
             ];
 
             if (is_client_logged_in()) {
@@ -2123,13 +2077,13 @@ class Projects_model extends App_Model
             pusher_trigger_notification($notifiedUsers);
             $this->send_project_email_template($data['project_id'], 'project_discussion_created_to_staff', 'project_discussion_created_to_customer', $data['show_to_customer'], [
                 'staff' => [
-                    'discussion_id' => $insert_id,
+                    'discussion_id'   => $insert_id,
                     'discussion_type' => 'regular',
                 ],
                 'customers' => [
                     'customer_template' => true,
-                    'discussion_id' => $insert_id,
-                    'discussion_type' => 'regular',
+                    'discussion_id'     => $insert_id,
+                    'discussion_type'   => 'regular',
                 ],
             ]);
             $this->log_activity($data['project_id'], 'project_activity_created_discussion', $data['subject'], $data['show_to_customer']);
@@ -2179,9 +2133,9 @@ class Projects_model extends App_Model
     public function copy($project_id, $data)
     {
         $_new_data = [];
-        $project = $this->get($project_id);
-        $settings = $this->get_project_settings($project_id);
-        $fields = $this->db->list_fields(db_prefix() . 'projects');
+        $project   = $this->get($project_id);
+        $settings  = $this->get_project_settings($project_id);
+        $fields    = $this->db->list_fields(db_prefix() . 'projects');
 
         foreach ($fields as $field) {
             if (isset($project->$field)) {
@@ -2207,14 +2161,9 @@ class Projects_model extends App_Model
         }
 
         $_new_data['project_created'] = date('Y-m-d H:i:s');
-        $_new_data['addedfrom'] = get_staff_user_id();
+        $_new_data['addedfrom']       = get_staff_user_id();
 
         $_new_data['date_finished'] = null;
-
-        if ($project->contact_notification == 2) {
-            $contacts = $this->clients_model->get_contacts($_new_data['clientid'], ['active' => 1, 'project_emails' => 1]);
-            $_new_data['notify_contacts'] = serialize(array_column($contacts, 'id'));
-        }
 
         $this->db->insert(db_prefix() . 'projects', $_new_data);
         $id = $this->db->insert_id();
@@ -2225,13 +2174,13 @@ class Projects_model extends App_Model
             foreach ($settings as $setting) {
                 $this->db->insert(db_prefix() . 'project_settings', [
                     'project_id' => $id,
-                    'name' => $setting['name'],
-                    'value' => $setting['value'],
+                    'name'       => $setting['name'],
+                    'value'      => $setting['value'],
                 ]);
             }
 
             $added_tasks = [];
-            $tasks = $this->get_tasks($project_id);
+            $tasks       = $this->get_tasks($project_id);
 
             if (isset($data['tasks'])) {
                 foreach ($tasks as $task) {
@@ -2256,27 +2205,27 @@ class Projects_model extends App_Model
                     // e.q. old project start date 2020-04-01, old task start date 2020-04-15 and due date 2020-04-30
                     // copy project and set start date 2020-06-01
                     // new task start date will be 2020-06-15 and below due date 2020-06-30
-                    $dStart = new DateTime($project->start_date);
-                    $dEnd = new DateTime($task['startdate']);
-                    $dDiff = $dStart->diff($dEnd);
+                    $dStart    = new DateTime($project->start_date);
+                    $dEnd      = new DateTime($task['startdate']);
+                    $dDiff     = $dStart->diff($dEnd);
                     $startDate = new DateTime($_new_data['start_date']);
                     $startDate->modify('+' . $dDiff->days . ' DAY');
                     $newTaskStartDate = $startDate->format('Y-m-d');
 
                     $merge = [
-                        'rel_id' => $id,
-                        'rel_type' => 'project',
+                        'rel_id'              => $id,
+                        'rel_type'            => 'project',
                         'last_recurring_date' => null,
-                        'startdate' => $newTaskStartDate,
-                        'status' => $data['copy_project_task_status'],
+                        'startdate'           => $newTaskStartDate,
+                        'status'              => $data['copy_project_task_status'],
                     ];
 
                     // Calculate the diff in days between the task start and due date
                     // then add these days to the new task start date to be used as this task due date
                     if ($task['duedate']) {
-                        $dStart = new DateTime($task['startdate']);
-                        $dEnd = new DateTime($task['duedate']);
-                        $dDiff = $dStart->diff($dEnd);
+                        $dStart  = new DateTime($task['startdate']);
+                        $dEnd    = new DateTime($task['duedate']);
+                        $dDiff   = $dStart->diff($dEnd);
                         $dueDate = new DateTime($newTaskStartDate);
                         $dueDate->modify('+' . $dDiff->days . ' DAY');
                         $merge['duedate'] = $dueDate->format('Y-m-d');
@@ -2291,35 +2240,35 @@ class Projects_model extends App_Model
             }
 
             if (isset($data['milestones'])) {
-                $milestones = $this->get_milestones($project_id);
+                $milestones        = $this->get_milestones($project_id);
                 $_added_milestones = [];
                 foreach ($milestones as $milestone) {
                     $oldProjectStartDate = new DateTime($project->start_date);
-                    $dDuedate = new DateTime($milestone['due_date']);
-                    $dDiff = $oldProjectStartDate->diff($dDuedate);
+                    $dDuedate            = new DateTime($milestone['due_date']);
+                    $dDiff               = $oldProjectStartDate->diff($dDuedate);
 
                     $newProjectStartDate = new DateTime($_new_data['start_date']);
                     $newProjectStartDate->modify('+' . $dDiff->days . ' DAY');
                     $newMilestoneDueDate = $newProjectStartDate->format('Y-m-d');
 
                     $this->db->insert(db_prefix() . 'milestones', [
-                        'name' => $milestone['name'],
-                        'project_id' => $id,
-                        'milestone_order' => $milestone['milestone_order'],
+                        'name'                            => $milestone['name'],
+                        'project_id'                      => $id,
+                        'milestone_order'                 => $milestone['milestone_order'],
                         'description_visible_to_customer' => $milestone['description_visible_to_customer'],
-                        'description' => $milestone['description'],
-                        'due_date' => $newMilestoneDueDate,
-                        'datecreated' => date('Y-m-d'),
-                        'color' => $milestone['color'],
+                        'description'                     => $milestone['description'],
+                        'due_date'                        => $newMilestoneDueDate,
+                        'datecreated'                     => date('Y-m-d'),
+                        'color'                           => $milestone['color'],
                     ]);
 
                     $milestone_id = $this->db->insert_id();
 
                     if ($milestone_id) {
-                        $_added_milestone_data = [];
-                        $_added_milestone_data['id'] = $milestone_id;
+                        $_added_milestone_data         = [];
+                        $_added_milestone_data['id']   = $milestone_id;
                         $_added_milestone_data['name'] = $milestone['name'];
-                        $_added_milestones[] = $_added_milestone_data;
+                        $_added_milestones[]           = $_added_milestone_data;
                     }
                 }
 
@@ -2359,7 +2308,7 @@ class Projects_model extends App_Model
             }
 
             if (isset($data['members'])) {
-                $members = $this->get_project_members($project_id);
+                $members  = $this->get_project_members($project_id);
                 $_members = [];
 
                 foreach ($members as $member) {
@@ -2375,10 +2324,10 @@ class Projects_model extends App_Model
                 $value = get_custom_field_value($project_id, $field['id'], 'projects', false);
                 if ($value != '') {
                     $this->db->insert(db_prefix() . 'customfieldsvalues', [
-                        'relid' => $id,
+                        'relid'   => $id,
                         'fieldid' => $field['id'],
                         'fieldto' => 'projects',
-                        'value' => $value,
+                        'value'   => $value,
                     ]);
                 }
             }
@@ -2388,7 +2337,7 @@ class Projects_model extends App_Model
             log_activity('Project Copied [ID: ' . $project_id . ', NewID: ' . $id . ']');
 
             hooks()->do_action('project_copied', [
-                'project_id' => $project_id,
+                'project_id'     => $project_id,
                 'new_project_id' => $id,
             ]);
 
@@ -2428,8 +2377,8 @@ class Projects_model extends App_Model
             return false;
         }
         $this->db->insert(db_prefix() . 'project_notes', [
-            'staff_id' => get_staff_user_id(),
-            'content' => $data['content'],
+            'staff_id'   => get_staff_user_id(),
+            'content'    => $data['content'],
             'project_id' => $project_id,
         ]);
         $insert_id = $this->db->insert_id();
@@ -2558,10 +2507,10 @@ class Projects_model extends App_Model
         }
         $this->db->order_by('dateadded', 'desc');
         $activities = $this->db->get(db_prefix() . 'project_activity')->result_array();
-        $i = 0;
+        $i          = 0;
         foreach ($activities as $activity) {
-            $seconds = get_string_between($activity['additional_data'], '<seconds>', '</seconds>');
-            $other_lang_keys = get_string_between($activity['additional_data'], '<lang>', '</lang>');
+            $seconds          = get_string_between($activity['additional_data'], '<seconds>', '</seconds>');
+            $other_lang_keys  = get_string_between($activity['additional_data'], '<lang>', '</lang>');
             $_additional_data = $activity['additional_data'];
 
             if ($seconds != '') {
@@ -2580,9 +2529,9 @@ class Projects_model extends App_Model
                 }
             }
 
-            $activities[$i]['description'] = _l($activities[$i]['description_key']);
+            $activities[$i]['description']     = _l($activities[$i]['description_key']);
             $activities[$i]['additional_data'] = $_additional_data;
-            $activities[$i]['project_name'] = get_project_name_by_id($activity['project_id']);
+            $activities[$i]['project_name']    = get_project_name_by_id($activity['project_id']);
             unset($activities[$i]['description_key']);
             $i++;
         }
@@ -2595,23 +2544,23 @@ class Projects_model extends App_Model
         if (!DEFINED('CRON')) {
             if (is_client_logged_in()) {
                 $data['contact_id'] = get_contact_user_id();
-                $data['staff_id'] = 0;
-                $data['fullname'] = get_contact_full_name(get_contact_user_id());
+                $data['staff_id']   = 0;
+                $data['fullname']   = get_contact_full_name(get_contact_user_id());
             } elseif (is_staff_logged_in()) {
                 $data['contact_id'] = 0;
-                $data['staff_id'] = get_staff_user_id();
-                $data['fullname'] = get_staff_full_name(get_staff_user_id());
+                $data['staff_id']   = get_staff_user_id();
+                $data['fullname']   = get_staff_full_name(get_staff_user_id());
             }
         } else {
             $data['contact_id'] = 0;
-            $data['staff_id'] = 0;
-            $data['fullname'] = '[CRON]';
+            $data['staff_id']   = 0;
+            $data['fullname']   = '[CRON]';
         }
-        $data['description_key'] = $description_key;
-        $data['additional_data'] = $additional_data;
+        $data['description_key']     = $description_key;
+        $data['additional_data']     = $additional_data;
         $data['visible_to_customer'] = $visible_to_customer;
-        $data['project_id'] = $project_id;
-        $data['dateadded'] = date('Y-m-d H:i:s');
+        $data['project_id']          = $project_id;
+        $data['dateadded']           = date('Y-m-d H:i:s');
 
         $data = hooks()->apply_filters('before_log_project_activity', $data);
 
@@ -2625,10 +2574,10 @@ class Projects_model extends App_Model
         $additional_data = $file->file_name;
         $this->log_activity($project_id, 'project_activity_uploaded_file', $additional_data, $file->visible_to_customer);
 
-        $members = $this->get_project_members($project_id);
+        $members           = $this->get_project_members($project_id);
         $notification_data = [
             'description' => 'not_project_file_uploaded',
-            'link' => 'projects/view/' . $project_id . '?group=project_files&file_id=' . $file_id,
+            'link'        => 'projects/view/' . $project_id . '?group=project_files&file_id=' . $file_id,
         ];
 
         if (is_client_logged_in()) {
@@ -2655,7 +2604,7 @@ class Projects_model extends App_Model
             'project_file_to_customer',
             $file->visible_to_customer,
             [
-                'staff' => ['discussion_id' => $file_id, 'discussion_type' => 'file'],
+                'staff'     => ['discussion_id' => $file_id, 'discussion_type' => 'file'],
                 'customers' => ['customer_template' => true, 'discussion_id' => $file_id, 'discussion_type' => 'file'],
             ]
         );
@@ -2663,15 +2612,15 @@ class Projects_model extends App_Model
 
     public function add_external_file($data)
     {
-        $insert['dateadded'] = date('Y-m-d H:i:s');
-        $insert['project_id'] = $data['project_id'];
-        $insert['external'] = $data['external'];
+        $insert['dateadded']           = date('Y-m-d H:i:s');
+        $insert['project_id']          = $data['project_id'];
+        $insert['external']            = $data['external'];
         $insert['visible_to_customer'] = $data['visible_to_customer'];
-        $insert['file_name'] = $data['files'][0]['name'];
-        $insert['subject'] = $data['files'][0]['name'];
-        $insert['external_link'] = $data['files'][0]['link'];
+        $insert['file_name']           = $data['files'][0]['name'];
+        $insert['subject']             = $data['files'][0]['name'];
+        $insert['external_link']       = $data['files'][0]['link'];
 
-        $path_parts = pathinfo($data['files'][0]['name']);
+        $path_parts         = pathinfo($data['files'][0]['name']);
         $insert['filetype'] = get_mime_by_extension('.' . $path_parts['extension']);
 
         if (isset($data['files'][0]['thumbnailLink'])) {
@@ -2699,7 +2648,7 @@ class Projects_model extends App_Model
     {
         if (count($additional_data) == 0) {
             $additional_data['customers'] = [];
-            $additional_data['staff'] = [];
+            $additional_data['staff']     = [];
         } elseif (count($additional_data) == 1) {
             if (!isset($additional_data['staff'])) {
                 $additional_data['staff'] = [];
@@ -2723,21 +2672,8 @@ class Projects_model extends App_Model
             }
             $mailTemplate->send();
         }
-
         if ($action_visible_to_customer == 1) {
-            if ($project->contact_notification == 1) {
-                $contacts = $this->clients_model->get_contacts($project->clientid, ['active' => 1, 'project_emails' => 1]);
-            } elseif ($project->contact_notification == 2) {
-                $contacts = [];
-                $contactIds = unserialize($project->notify_contacts);
-                if (count($contactIds) > 0) {
-                    $this->db->where_in('id', $contactIds);
-                    $this->db->where('active', 1);
-                    $contacts = $this->db->get(db_prefix() . 'contacts')->result_array();
-                }
-            } else {
-                $contacts = [];
-            }
+            $contacts = $this->clients_model->get_contacts($project->clientid, ['active' => 1, 'project_emails' => 1]);
 
             foreach ($contacts as $contact) {
                 if (is_client_logged_in() && $contact['id'] == get_contact_user_id()) {
@@ -2765,10 +2701,10 @@ class Projects_model extends App_Model
     public function total_logged_time_by_billing_type($id, $conditions = [])
     {
         $project_data = $this->_get_project_billing_data($id);
-        $data = [];
+        $data         = [];
         if ($project_data->billing_type == 2) {
-            $seconds = $this->total_logged_time($id);
-            $data = $this->projects_model->calculate_total_by_project_hourly_rate($seconds, $project_data->project_rate_per_hour);
+            $seconds             = $this->total_logged_time($id);
+            $data                = $this->projects_model->calculate_total_by_project_hourly_rate($seconds, $project_data->project_rate_per_hour);
             $data['logged_time'] = $data['hours'];
         } elseif ($project_data->billing_type == 3) {
             $data = $this->_get_data_total_logged_time($id);
@@ -2788,7 +2724,7 @@ class Projects_model extends App_Model
     {
         return $this->_get_data_total_logged_time($id, [
             'billable' => 1,
-            'billed' => 1,
+            'billed'   => 1,
         ]);
     }
 
@@ -2796,7 +2732,7 @@ class Projects_model extends App_Model
     {
         return $this->_get_data_total_logged_time($id, [
             'billable' => 1,
-            'billed' => 0,
+            'billed'   => 0,
         ]);
     }
 
@@ -2816,17 +2752,17 @@ class Projects_model extends App_Model
     private function _get_data_total_logged_time($id, $conditions = [])
     {
         $project_data = $this->_get_project_billing_data($id);
-        $tasks = $this->get_tasks($id, $conditions);
+        $tasks        = $this->get_tasks($id, $conditions);
 
         if ($project_data->billing_type == 3) {
-            $data = $this->calculate_total_by_task_hourly_rate($tasks);
+            $data                = $this->calculate_total_by_task_hourly_rate($tasks);
             $data['logged_time'] = seconds_to_time_format($data['total_seconds']);
         } elseif ($project_data->billing_type == 2) {
             $seconds = 0;
             foreach ($tasks as $task) {
                 $seconds += $task['total_logged_time'];
             }
-            $data = $this->calculate_total_by_project_hourly_rate($seconds, $project_data->project_rate_per_hour);
+            $data                = $this->calculate_total_by_project_hourly_rate($seconds, $project_data->project_rate_per_hour);
             $data['logged_time'] = $data['hours'];
         }
 
@@ -2856,7 +2792,7 @@ class Projects_model extends App_Model
             if (is_staff_logged_in() && $staffId == get_staff_user_id()) {
                 continue;
             }
-            $member = (array)$this->staff_model->get($staffId);
+            $member             = (array) $this->staff_model->get($staffId);
             $member['staff_id'] = $member['staffid'];
 
             $mailTemplate = mail_template($staff_template, $project, $member, $additional_data['staff']);
@@ -2867,83 +2803,5 @@ class Projects_model extends App_Model
             }
             $mailTemplate->send();
         }
-    }
-
-    public function convert_estimate_items_to_tasks($project_id, $items, $assignees, $project_data, $project_settings)
-    {
-        $this->load->model('tasks_model');
-        foreach ($items as $index => $itemId) {
-
-            $this->db->where('id', $itemId);
-            $_item = $this->db->get(db_prefix() . 'itemable')->row();
-
-            $data = [
-                'billable' => 'on',
-                'name' => $_item->description,
-                'description' => $_item->long_description,
-                'startdate' => $project_data['start_date'],
-                'duedate' => '',
-                'rel_type' => 'project',
-                'rel_id' => $project_id,
-                'hourly_rate' => $project_data['billing_type'] == 3 ? $_item->rate : 0,
-                'priority' => get_option('default_task_priority'),
-                'withDefaultAssignee' => false,
-            ];
-
-            if (isset($project_settings->view_tasks)) {
-                $data['visible_to_client'] = 'on';
-            }
-
-            $task_id = $this->tasks_model->add($data);
-
-            if ($task_id) {
-                $staff_id = $assignees[$index];
-
-                $this->tasks_model->add_task_assignees([
-                    'taskid' => $task_id,
-                    'assignee' => intval($staff_id),
-                ]);
-
-                if (!$this->is_member($project_id, $staff_id)) {
-                    $this->db->insert(db_prefix() . 'project_members', [
-                        'project_id' => $project_id,
-                        'staff_id' => $staff_id,
-                    ]);
-                }
-            }
-        }
-    }
-    function get_next_file($file_id)
-    {
-        $condition = '1=1';
-        if (is_client_logged_in()) {
-            $condition = 'visible_to_customer = 1';
-        }
-        $stmt = $this->db->query("SELECT * FROM " . db_prefix() . "project_files 
-        WHERE id > " . $file_id . " 
-         AND " . $condition . "
-        ORDER BY id DESC LIMIT 1;");
-        $file = $stmt->row();
-        if (isset($file)) {
-            return $file;
-        }
-        return null;
-    }
-
-    function get_previous_file($file_id)
-    {
-        $condition = '1=1';
-        if (is_client_logged_in()) {
-            $condition = 'visible_to_customer = 1';
-        }
-        $stmt = $this->db->query("SELECT * FROM " . db_prefix() . "project_files 
-        WHERE id < " . $file_id . " 
-         AND " . $condition . "
-        ORDER BY id DESC LIMIT 1;");
-        $file = $stmt->row();
-        if (isset($file)) {
-            return $file;
-        }
-        return null;
     }
 }

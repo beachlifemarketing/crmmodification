@@ -108,7 +108,7 @@
                      <?php echo _l('date_signed'); ?>
                   </div>
                   <div class="col-md-7 contract-type">
-                     <?php echo _dt($contract->acceptance_date); ?>
+                     <?php echo _d(explode(' ', $contract->acceptance_date)[0]); ?>
                   </div>
                   <?php } ?>
                </div>
@@ -128,35 +128,6 @@
                      <a href="<?php echo $attachment_url; ?>"><?php echo $attachment['file_name']; ?></a>
                   </div>
                   <?php } ?>
-               </div>
-               <?php } ?>
-               <?php if($contract->signed == 1){ ?>
-               <div class="row mtop20">
-                  <div class="col-md-12 contract-value">
-                     <h4 class="bold mbot30">
-                        <?php echo _l('signature'); ?>
-                     </h4>
-                  </div>
-                  <div class="col-md-5 text-muted contract-signed-by">
-                     <?php echo _l('contract_signed_by'); ?>
-                  </div>
-                  <div class="col-md-7 contract-contract-signed-by">
-                     <?php echo "{$contract->acceptance_firstname} {$contract->acceptance_lastname}"; ?>
-                  </div>
-                  
-                  <div class="col-md-5 text-muted contract-signed-by">
-                     <?php echo _l('contract_signed_date'); ?>
-                  </div>
-                  <div class="col-md-7 contract-contract-signed-by">
-                     <?php echo _d(explode(' ', $contract->acceptance_date)[0]); ?>
-                  </div>
-                  
-                  <div class="col-md-5 text-muted contract-signed-by">
-                     <?php echo _l('contract_signed_ip'); ?>
-                  </div>
-                  <div class="col-md-7 contract-contract-signed-by">
-                     <?php echo $contract->acceptance_ip; ?>
-                  </div>
                </div>
                <?php } ?>
             </div>

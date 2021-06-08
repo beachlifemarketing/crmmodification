@@ -24,9 +24,9 @@ function payment_gateway_logo_url()
     $logoLight = get_option('company_logo');
 
     if ($logoDark != '' && file_exists(get_upload_path_by_type('company') . $logoDark)) {
-        $logoURL = base_url('uploads/' . APP_ENC_KEY . '/company/' . $logoDark);
+        $logoURL = base_url('uploads/company/' . $logoDark);
     } elseif ($logoLight != '' && file_exists(get_upload_path_by_type('company') . $logoLight)) {
-        $logoURL = base_url('uploads/' . APP_ENC_KEY . '/company/' . $logoLight);
+        $logoURL = base_url('uploads/company/' . $logoLight);
     }
 
     $logoURL = hooks()->apply_filters('payment_gateway_logo_url', $logoURL);

@@ -60,8 +60,7 @@ class Utilities extends AdminController
     public function calendar()
     {
         if ($this->input->post() && $this->input->is_ajax_request()) {
-            $data = $this->input->post();
-
+            $data    = $this->input->post();
             $success = $this->utilities_model->event($data);
             $message = '';
             if ($success) {
@@ -87,14 +86,16 @@ class Utilities extends AdminController
 
     public function get_calendar_data()
     {
-        echo json_encode($this->utilities_model->get_calendar_data(
-                date('Y-m-d', strtotime($this->input->get('start'))),
-                date('Y-m-d', strtotime($this->input->get('end'))),
+        if ($this->input->is_ajax_request()) {
+            echo json_encode($this->utilities_model->get_calendar_data(
+                $this->input->post('start'),
+                $this->input->post('end'),
                 '',
                 '',
-                $this->input->get()
+                $this->input->post()
             ));
-        die();
+            die();
+        }
     }
 
     public function view_event($id)

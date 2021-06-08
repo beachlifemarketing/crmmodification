@@ -347,8 +347,6 @@ class Invoices_model extends App_Model
             $data['number'] = self::STATUS_DRAFT_NUMBER;
         }
 
-        $data['duedate'] = isset($data['duedate']) && empty($data['duedate']) ? null : $data['duedate'];
-
         $hook = hooks()->apply_filters('before_invoice_added', [
             'data'  => $data,
             'items' => $items,
@@ -773,7 +771,6 @@ class Invoices_model extends App_Model
 
         $data['billing_street']  = nl2br($data['billing_street']);
         $data['shipping_street'] = nl2br($data['shipping_street']);
-        $data['duedate']         = isset($data['duedate']) && empty($data['duedate']) ? null : $data['duedate'];
 
         $hook = hooks()->apply_filters('before_invoice_updated', [
             'data'          => $data,

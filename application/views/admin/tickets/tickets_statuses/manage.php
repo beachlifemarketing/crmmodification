@@ -15,7 +15,7 @@
 						<hr class="hr-panel-heading" />
 						<?php if(count($statuses) > 0){ ?>
 
-						<table class="table dt-table">
+						<table class="table dt-table scroll-responsive">
 							<thead>
 								<th><?php echo _l('id'); ?></th>
 								<th><?php echo _l('ticket_statuses_dt_name'); ?></th>

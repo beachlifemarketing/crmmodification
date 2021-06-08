@@ -14,7 +14,7 @@ class Surveys_module
     {
         $last_survey_cron = get_option('last_survey_send_cron');
         if ($last_survey_cron == '' || (time() > ($last_survey_cron + 3600)) || $cronManuallyInvoked === true) {
-            $found_emails = $this->ci->db->count_all_results(db_prefix() . 'surveysemailsendcron');
+            $found_emails = $this->ci->db->count_all_results(db_prefix().'surveysemailsendcron');
             if ($found_emails > 0) {
                 $total_emails_per_cron = get_option('survey_send_emails_per_cron_run');
                 // Initialize mail library
@@ -24,13 +24,13 @@ class Surveys_module
                 $this->ci->load->model('surveys_model');
                 // Get all surveys send log where sending emails is not finished
                 $this->ci->db->where('iscronfinished', 0);
-                $unfinished_surveys_send_log = $this->ci->db->get(db_prefix() . 'surveysendlog')->result_array();
+                $unfinished_surveys_send_log = $this->ci->db->get(db_prefix().'surveysendlog')->result_array();
                 foreach ($unfinished_surveys_send_log as $_survey) {
                     $surveyid = $_survey['surveyid'];
                     // Get survey emails that has been not sent yet.
                     $this->ci->db->where('surveyid', $surveyid);
                     $this->ci->db->limit($total_emails_per_cron);
-                    $emails = $this->ci->db->get(db_prefix() . 'surveysemailsendcron')->result_array();
+                    $emails = $this->ci->db->get(db_prefix().'surveysemailsendcron')->result_array();
                     $survey = $this->ci->surveys_model->get($surveyid);
                     if ($survey->fromname == '' || $survey->fromname == null) {
                         $survey->fromname = get_option('companyname');
@@ -65,20 +65,20 @@ class Surveys_module
                         }
 
                         $this->ci->db->where('id', $data['id']);
-                        $this->ci->db->delete(db_prefix() . 'surveysemailsendcron');
+                        $this->ci->db->delete(db_prefix().'surveysemailsendcron');
                     }
                     // Update survey send log
                     $this->ci->db->where('id', $_survey['id']);
-                    $this->ci->db->update(db_prefix() . 'surveysendlog', [
+                    $this->ci->db->update(db_prefix().'surveysendlog', [
                         'total' => $total,
                     ]);
                     // Check if all emails send
                     $this->ci->db->where('surveyid', $surveyid);
-                    $found_emails = $this->ci->db->count_all_results(db_prefix() . 'surveysemailsendcron');
+                    $found_emails = $this->ci->db->count_all_results(db_prefix().'surveysemailsendcron');
                     if ($found_emails == 0) {
                         // Update that survey send is finished
                         $this->ci->db->where('id', $_survey['id']);
-                        $this->ci->db->update(db_prefix() . 'surveysendlog', [
+                        $this->ci->db->update(db_prefix().'surveysendlog', [
                             'iscronfinished' => 1,
                         ]);
                     }

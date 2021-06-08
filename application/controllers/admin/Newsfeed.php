@@ -107,12 +107,12 @@ class Newsfeed extends AdminController
                         $_wrapper_additional_class .= 'post-image-wrapper-' . $total_image_attachments . ' ';
                     }
                     $response .= '<div class="post-image-wrapper ' . $_wrapper_additional_class . 'mbot10">';
-                    $response .= '<a href="' . base_url('uploads/' . APP_ENC_KEY . '/newsfeed/' . $post['postid'] . '/' . $attachment['file_name']) . '" data-lightbox="post-' . $post['postid'] . '"><img src="' . base_url('uploads/newsfeed/' . $post['postid'] . '/' . $attachment['file_name']) . '" class="img img-responsive"></a>';
+                    $response .= '<a href="' . base_url('uploads/newsfeed/' . $post['postid'] . '/' . $attachment['file_name']) . '" data-lightbox="post-' . $post['postid'] . '"><img src="' . base_url('uploads/newsfeed/' . $post['postid'] . '/' . $attachment['file_name']) . '" class="img img-responsive"></a>';
                     $response .= '</div>';
                     if ($a == 5) {
                         $total_left = $total_image_attachments - 6;
                         if ($total_left > 0) {
-                            $next_image_attachment_url = base_url('uploads/' . APP_ENC_KEY . '/newsfeed/' . $post['postid'] . '/' . $image_attachments[$a + 1]['file_name']);
+                            $next_image_attachment_url = base_url('uploads/newsfeed/' . $post['postid'] . '/' . $image_attachments[$a + 1]['file_name']);
                             $response .= '<div class="clearfix"></div><a href="' . $next_image_attachment_url . '" class="pull-right" data-lightbox="post-' . $post['postid'] . '">+' . $total_left . ' more</a>';
 
                             break;
@@ -122,7 +122,7 @@ class Newsfeed extends AdminController
                 }
                 // Hidden images for +X left lightbox
                 for ($i = $a + 2; $i < $total_image_attachments; $i++) {
-                    $response .= '<a href="' . base_url('uploads/' . APP_ENC_KEY . '/newsfeed/' . $post['postid'] . '/' . $image_attachments[$i]['file_name']) . '" data-lightbox="post-' . $post['postid'] . '"></a>';
+                    $response .= '<a href="' . base_url('uploads/newsfeed/' . $post['postid'] . '/' . $image_attachments[$i]['file_name']) . '" data-lightbox="post-' . $post['postid'] . '"></a>';
                 }
                 $response .= '</ul>';
             }

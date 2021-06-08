@@ -1030,18 +1030,13 @@ class Cron_model extends App_Model
         $this->db->from(db_prefix() . 'invoices');
         // We dont need invoices with no duedate and where the duedate is less the current date
         // e.q. is already overdue and partially paid invoice
-        $this->db->where('(duedate IS NOT NULL and duedate > "' . date('Y-m-d') . '")')
+        $this->db->where('(duedate IS NOT NULL and duedate != "" and duedate > "' . date('Y-m-d') . '")')
                 ->where_in('status', [Invoices_model::STATUS_UNPAID, Invoices_model::STATUS_PARTIALLY])
                 ->where('cancel_overdue_reminders', 0);
 
         $invoices = $this->db->get()->result_array();
 
         foreach ($invoices as $invoice) {
-
-            if(empty($invoice['duedate'])) {
-                continue;
-            }
-
             if (!$invoice['last_due_reminder']) {
                 $due_date               = new DateTime($invoice['duedate']);
                 $diff                   = $due_date->diff(new DateTime(date('Y-m-d')))->format('%a');

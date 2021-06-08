@@ -437,67 +437,67 @@
 			<td>
 				<?php
 				$permissionsIssues = false;
-				if (!is_writable(FCPATH.'uploads/' . APP_ENC_KEY . '/estimates')){
+				if (!is_writable(FCPATH.'uploads/estimates')){
 					$permissionsIssues = true;
 					echo "<span class='text-danger'>No (Make uploads/estimates writable) - Permissions 0755</span><br />";
 				}
-				if (!is_writable(FCPATH.'uploads/' . APP_ENC_KEY . '/proposals')){
+				if (!is_writable(FCPATH.'uploads/proposals')){
 					$permissionsIssues = true;
 					echo "<span class='text-danger'>No (Make uploads/proposals writable) - Permissions 0755</span><br />";
 				}
-				if (!is_writable(FCPATH.'uploads/' . APP_ENC_KEY . '/ticket_attachments')){
+				if (!is_writable(FCPATH.'uploads/ticket_attachments')){
 					$permissionsIssues = true;
 					echo "<span class='text-danger'>No (Make uploads/ticket_attachments writable) - Permissions 0755</span><br />";
 				}
-				if (!is_writable(FCPATH.'uploads/' . APP_ENC_KEY . '/tasks')){
+				if (!is_writable(FCPATH.'uploads/tasks')){
 					$permissionsIssues = true;
 					echo "<span class='text-danger'>No (Make uploads/tasks writable) - Permissions 0755</span><br />";
 				}
-				if (!is_writable(FCPATH.'uploads/' . APP_ENC_KEY . '/staff_profile_images')){
+				if (!is_writable(FCPATH.'uploads/staff_profile_images')){
 					$permissionsIssues = true;
 					echo "<span class='text-danger'>No (Make uploads/staff_profile_images writable) - Permissions 0755</span><br />";
 				}
-				if (!is_writable(FCPATH.'uploads/' . APP_ENC_KEY . '/projects')){
+				if (!is_writable(FCPATH.'uploads/projects')){
 					$permissionsIssues = true;
 					echo "<span class='text-danger'>No (Make uploads/projects writable) - Permissions 0755</span><br />";
 				}
-				if (!is_writable(FCPATH.'uploads/' . APP_ENC_KEY . '/newsfeed')){
+				if (!is_writable(FCPATH.'uploads/newsfeed')){
 					$permissionsIssues = true;
 					echo "<span class='text-danger'>No (Make uploads/newsfeed writable) - Permissions 0755</span><br />";
 				}
-				if (!is_writable(FCPATH.'uploads/' . APP_ENC_KEY . '/leads')){
+				if (!is_writable(FCPATH.'uploads/leads')){
 					$permissionsIssues = true;
 					echo "<span class='text-danger'>No (Make uploads/leads writable) - Permissions 0755</span><br />";
 				}
-				if (!is_writable(FCPATH.'uploads/' . APP_ENC_KEY . '/invoices')){
+				if (!is_writable(FCPATH.'uploads/invoices')){
 					$permissionsIssues = true;
 					echo "<span class='text-danger'>No (Make uploads/invoices writable) - Permissions 0755</span><br />";
 				}
-				if (!is_writable(FCPATH.'uploads/' . APP_ENC_KEY . '/expenses')){
+				if (!is_writable(FCPATH.'uploads/expenses')){
 					$permissionsIssues = true;
 					echo "<span class='text-danger'>No (Make uploads/expenses writable) - Permissions 0755</span><br />";
 				}
-				if (!is_writable(FCPATH.'uploads/' . APP_ENC_KEY . '/discussions')){
+				if (!is_writable(FCPATH.'uploads/discussions')){
 					$permissionsIssues = true;
 					echo "<span class='text-danger'>No (Make uploads/discussions writable) - Permissions 0755</span><br />";
 				}
-				if (!is_writable(FCPATH.'uploads/' . APP_ENC_KEY . '/contracts')){
+				if (!is_writable(FCPATH.'uploads/contracts')){
 					$permissionsIssues = true;
 					echo "<span class='text-danger'>No (Make uploads/contracts writable) - Permissions 0755</span><br />";
 				}
-				if (!is_writable(FCPATH.'uploads/' . APP_ENC_KEY . '/company')){
+				if (!is_writable(FCPATH.'uploads/company')){
 					$permissionsIssues = true;
 					echo "<span class='text-danger'>No (Make uploads/company writable) - Permissions 0755</span><br />";
 				}
-				if (!is_writable(FCPATH.'uploads/' . APP_ENC_KEY . '/clients')){
+				if (!is_writable(FCPATH.'uploads/clients')){
 					$permissionsIssues = true;
 					echo "<span class='text-danger'>No (Make uploads/clients writable) - Permissions 0755</span><br />";
 				}
-				if (!is_writable(FCPATH.'uploads/' . APP_ENC_KEY . '/credit_notes')){
+				if (!is_writable(FCPATH.'uploads/credit_notes')){
 					$permissionsIssues = true;
 					echo "<span class='text-danger'>No (Make uploads/credit_notes writable) - Permissions 0755</span><br />";
 				}
-				if (!is_writable(FCPATH.'uploads/' . APP_ENC_KEY . '/client_profile_images')){
+				if (!is_writable(FCPATH.'uploads/client_profile_images')){
 					$permissionsIssues = true;
 					echo "<span class='text-danger'>No (Make uploads/client_profile_images writable) - Permissions 0755</span><br />";
 				}

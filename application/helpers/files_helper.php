@@ -457,7 +457,7 @@ function protected_file_url_by_path($path, $preview = false)
  */
 function project_file_url($file, $preview = false)
 {
-    $path     = 'uploads/'.APP_ENC_KEY.'/projects/' . $file['project_id'] . '/';
+    $path     = 'uploads/projects/' . $file['project_id'] . '/';
     $fullPath = FCPATH . $path . $file['file_name'];
     $url      = base_url($path . $file['file_name']);
 
@@ -469,7 +469,7 @@ function project_file_url($file, $preview = false)
             $fext      = pathinfo($fullPath, PATHINFO_EXTENSION);
             $thumbPath = pathinfo($fullPath, PATHINFO_DIRNAME) . '/' . $fname . '_thumb.' . $fext;
             if (file_exists($thumbPath)) {
-                $url = base_url('uploads/'.APP_ENC_KEY.'/projects/' . $file['project_id'] . '/' . $fname . '_thumb.' . $fext);
+                $url = base_url('uploads/projects/' . $file['project_id'] . '/' . $fname . '_thumb.' . $fext);
             }
         }
     }

@@ -38,27 +38,26 @@ class Custom_fields extends AdminController
         if ($this->input->post()) {
             if ($id == '') {
                 $id = $this->custom_fields_model->add($this->input->post());
-                set_alert('success', _l('added_successfully', _l('custom_field')));
-                echo json_encode(['id' => $id]);
-                die;
+                if ($id) {
+                    set_alert('success', _l('added_successfully', _l('custom_field')));
+                    redirect(admin_url('custom_fields/field/' . $id));
+                }
+            } else {
+                $success = $this->custom_fields_model->update($this->input->post(), $id);
+                if (is_array($success) && isset($success['cant_change_option_custom_field'])) {
+                    set_alert('warning', _l('cf_option_in_use'));
+                } elseif ($success === true) {
+                    set_alert('success', _l('updated_successfully', _l('custom_field')));
+                }
+                redirect(admin_url('custom_fields/field/' . $id));
             }
-            $success = $this->custom_fields_model->update($this->input->post(), $id);
-            if (is_array($success) && isset($success['cant_change_option_custom_field'])) {
-                set_alert('warning', _l('cf_option_in_use'));
-            } elseif ($success === true) {
-                set_alert('success', _l('updated_successfully', _l('custom_field')));
-            }
-            echo json_encode(['id' => $id]);
-            die;
         }
-
         if ($id == '') {
             $title = _l('add_new', _l('custom_field_lowercase'));
         } else {
             $data['custom_field'] = $this->custom_fields_model->get($id);
             $title                = _l('edit', _l('custom_field_lowercase'));
         }
-
         $data['pdf_fields']             = $this->pdf_fields;
         $data['client_portal_fields']   = $this->client_portal_fields;
         $data['client_editable_fields'] = $this->client_editable_fields;
@@ -87,16 +86,5 @@ class Custom_fields extends AdminController
         if ($this->input->is_ajax_request()) {
             $this->custom_fields_model->change_custom_field_status($id, $status);
         }
-    }
-
-    public function validate_default_date()
-    {
-        $date = strtotime($this->input->post('date'));
-        $type = $this->input->post('type');
-
-        echo json_encode([
-            'valid'  => $date !== false,
-            'sample' => $date ? $type == 'date_picker' ? _d(date('Y-m-d', $date)) : _dt(date('Y-m-d H:i', $date)) : null,
-        ]);
     }
 }

@@ -126,7 +126,6 @@ module.exports = function(grunt) {
                     'assets/plugins/accounting.js/accounting.min.js',
                     'assets/plugins/waypoint/jquery.waypoints.min.js',
                     'assets/plugins/internal/bootstrap-nav-tabs-scrollable/bootstrap-nav-tab-scrollable.js',
-                    'assets/plugins/blm/blm.js'
                 ],
                 dest: 'assets/builds/vendor-admin.js',
             },
@@ -154,7 +153,6 @@ module.exports = function(grunt) {
                     'assets/plugins/font-awesome/css/font-awesome.min.css',
                     'assets/plugins/lightbox/css/lightbox.min.css',
                     'assets/plugins/internal/bootstrap-nav-tabs-scrollable/bootstrap-nav-tab-scrollable.css',
-                    'assets/plugins/blm/blm.css'
                 ],
                 dest: 'assets/builds/vendor-admin.css',
             },

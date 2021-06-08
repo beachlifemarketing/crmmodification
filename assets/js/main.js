@@ -61,7 +61,7 @@ $("body").on('loaded.bs.select change', 'select.ajax-search', function (e) {
 
     var val = $(this).selectpicker('val');
 
-    if (Array.isArray(val) && val.length == 0) {
+    if ($.isArray(val) && val.length == 0) {
         return;
     }
 
@@ -95,6 +95,7 @@ $("body").on('loaded.bs.select', '._select_input_group', function (e) {
 });
 
 $(window).on("load resize", function (e) {
+
     if (!$("body").hasClass('page-small')) {
         // Add special class to minimalize page elements when screen is less than 768px
         set_body_small();
@@ -103,6 +104,7 @@ $(window).on("load resize", function (e) {
     setTimeout(function () {
         mainWrapperHeightFix();
     }, e.type == 'load' ? 150 : 0);
+
 });
 
 $(document).on("mousemove", function (e) {
@@ -451,6 +453,10 @@ $(function () {
         if (setup_menu.hasClass('display-block')) {
             $('.close-customizer').click();
         }
+        // Fix columns going out of the table
+        delay(function () {
+            $($.fn.dataTable.tables(true)).DataTable().responsive.recalc();
+        }, 300)
     });
 
     // Hide sidebar on content click on mobile
@@ -894,7 +900,7 @@ $(function () {
             taskAttachmentDropzone.destroy();
         }
         var viewDescriptionEditor = tinyMCE.get('#task_view_description');
-        if (viewDescriptionEditor) {
+        if(viewDescriptionEditor) {
             // Invoke the blur event before the modal is closed in case
             // there are unsaved changes.
             // see edit_task_inline_description function
@@ -1079,123 +1085,96 @@ $(function () {
     // Check if calendar exists in the DOM and init.
     if (calendar_selector.length > 0) {
         validate_calendar_form();
-
         var calendar_settings = {
+            themeSystem: 'bootstrap3',
             customButtons: {},
-            locale: app.locale,
-            headerToolbar: {
+            header: {
                 left: 'prev,next today',
                 center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                right: 'month,agendaWeek,agendaDay,viewFullCalendar,calendarFilter'
             },
             editable: false,
-            dayMaxEventRows: parseInt(app.options.calendar_events_limit) + 1,
+            eventLimit: parseInt(app.options.calendar_events_limit) + 1,
 
             views: {
                 day: {
-                    dayMaxEventRows: false
+                    eventLimit: false
                 }
             },
-
-            direction: (isRTL == 'true' ? 'rtl' : 'ltr'),
+            defaultView: app.options.default_view_calendar,
+            isRTL: (isRTL == 'true' ? true : false),
             eventStartEditable: false,
+            timezone: app.options.timezone,
             firstDay: parseInt(app.options.calendar_first_day),
-            initialView: app.options.default_view_calendar,
-            timeZone: app.options.timezone,
-
+            year: moment.tz(app.options.timezone).format("YYYY"),
+            month: moment.tz(app.options.timezone).format("M"),
+            date: moment.tz(app.options.timezone).format("DD"),
             loading: function (isLoading, view) {
+                isLoading && $('#calendar .fc-header-toolbar .btn-default').addClass('btn-info').removeClass('btn-default').css('display', 'block');
                 !isLoading ? $('.dt-loader').addClass('hide') : $('.dt-loader').removeClass('hide');
             },
-
-            eventSources: [function (info, successCallback, failureCallback) {
-                var params = {};
-                $('#calendar_filters').find('input:checkbox:checked').map(function () {
-                    params[$(this).attr('name')] = true;
-                }).get();
-
-                if (!jQuery.isEmptyObject(params)) {
-                    params['calendar_filters'] = true;
-                }
-
-                return $.getJSON(admin_url + 'utilities/get_calendar_data', $.extend({}, params, {
-                    start: info.startStr,
-                    end: info.endStr,
-                })).then(function (data) {
-                    successCallback(data.map(function (e) {
-                        return $.extend({}, e, {
-                            start: e.start || e.date,
-                            end: e.end || e.date
-                        });
-                    }));
-                });
-            }],
-
-            moreLinkClick: function (info) {
-                calendar.gotoDate(info.date)
-                calendar.changeView('dayGridDay');
-
-                setTimeout(function () {
-                    $('.fc-popover-close').click();
-                }, 250)
+            eventSources: [{
+                url: admin_url + 'utilities/get_calendar_data',
+                data: function () {
+                    var params = {};
+                    $('#calendar_filters').find('input:checkbox:checked').map(function () {
+                        params[$(this).attr('name')] = true;
+                    }).get();
+                    if (!jQuery.isEmptyObject(params)) {
+                        params['calendar_filters'] = true;
+                    }
+                    return params;
+                },
+                type: 'POST',
+                error: function () {
+                    console.error('There was error fetching calendar data');
+                },
+            }, ],
+            eventLimitClick: function (cellInfo, jsEvent) {
+                $('#calendar').fullCalendar('gotoDate', cellInfo.date);
+                $('#calendar').fullCalendar('changeView', 'basicDay');
             },
-
-            eventDidMount: function (data) {
-                var $el = $(data.el);
-                $el.attr('title', data.event.extendedProps._tooltip);
-                $el.attr('onclick', data.event.extendedProps.onclick);
-                $el.attr('data-toggle', 'tooltip');
-                if (!data.event.extendedProps.url) {
-                    $el.on('click', function () {
-                        view_event(data.event.extendedProps.eventid);
+            eventRender: function (event, element) {
+                element.attr('title', event._tooltip);
+                element.attr('onclick', event.onclick);
+                element.attr('data-toggle', 'tooltip');
+                if (!event.url) {
+                    element.click(function () {
+                        view_event(event.eventid);
                     });
                 }
             },
-
-            dateClick: function (info) {
-                if (info.dateStr.length <= 10) { // has not time
-                    info.dateStr += ' 00:00';
+            dayClick: function (date, jsEvent, view) {
+                var d = date.format();
+                if (!$.fullCalendar.moment(d).hasTime()) {
+                    d += ' 00:00';
                 }
-
+                var vformat = (app.options.time_format == 24 ? app.options.date_format + ' H:i' : app.options.date_format + ' g:i A');
                 var fmt = new DateFormatter();
-
-                var d1 = fmt.formatDate(new Date(info.dateStr), vformat = app.options.time_format == 24 ?
-                    app.options.date_format + ' H:i' :
-                    app.options.date_format + ' g:i A');
-
+                var d1 = fmt.formatDate(new Date(d), vformat);
                 $("input[name='start'].datetimepicker").val(d1);
                 $('#newEventModal').modal('show');
-
                 return false;
-            },
+            }
         };
-
         if ($("body").hasClass('dashboard')) {
-
             calendar_settings.customButtons.viewFullCalendar = {
                 text: app.lang.calendar_expand,
                 click: function () {
                     window.location.href = admin_url + 'utilities/calendar';
                 }
             };
-
-            calendar_settings.headerToolbar.left += ',viewFullCalendar'
         }
-
         calendar_settings.customButtons.calendarFilter = {
             text: app.lang.filter_by.toLowerCase(),
             click: function () {
                 slideToggle('#calendar_filters');
             }
         };
-
-        calendar_settings.headerToolbar.right += ',calendarFilter'
-
         if (app.user_is_staff_member == 1) {
-
             if (app.options.google_api !== '') {
                 calendar_settings.googleCalendarApiKey = app.options.google_api;
             }
-
             if (app.calendarIDs !== '') {
                 app.calendarIDs = JSON.parse(app.calendarIDs);
                 if (app.calendarIDs.length != 0) {
@@ -1211,12 +1190,9 @@ $(function () {
                 }
             }
         }
-
-        var calendar = new FullCalendar.Calendar(calendar_selector[0], calendar_settings)
-        calendar.render();
-
+        // Init calendar
+        calendar_selector.fullCalendar(calendar_settings);
         var new_event = get_url_param('new_event');
-
         if (new_event) {
             $("input[name='start'].datetimepicker").val(get_url_param('date'));
             $('#newEventModal').modal('show');
@@ -1463,7 +1439,9 @@ $(function () {
                     .prop('disabled', ($(this).val() == 'lost' || $(this).val() == 'junk'))
                     .selectpicker('refresh');
 
-                table_leads.DataTable().ajax.reload();
+                table_leads.DataTable().ajax.reload()
+                    .columns.adjust()
+                    .responsive.recalc();
             });
         });
     }
@@ -1481,9 +1459,26 @@ $(function () {
         ($(this).val() == 'yes' ? lsdc.removeClass('hide') : lsdc.addClass('hide'));
     });
 
+    // Fix for checkboxes ID duplicate when table goes responsive
+    $("body").on('click', 'table.dataTable tbody td:first-child', function () {
+        var tr = $(this).parents('tr');
+        if ($(this).parents('table').DataTable().row(tr).child.isShown()) {
+            var switchBox = $(tr).next().find('input.onoffswitch-checkbox');
+            if (switchBox.length > 0) {
+                var switchBoxId = Math.random().toString(16).slice(2);
+                switchBox.attr('id', switchBoxId).next().attr('for', switchBoxId);
+            }
+        }
+    });
+
     // Custom close function for reminder modals in case is modal in modal
     $("body").on('click', '.close-reminder-modal', function () {
         $(".reminder-modal-" + $(this).data('rel-type') + '-' + $(this).data('rel-id')).modal('hide');
+    });
+
+    // Recalculate responsive for hidden tables
+    $("body").on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
+        $($.fn.dataTable.tables(true)).DataTable().responsive.recalc();
     });
 
     // Init are you sure on forms
@@ -2657,6 +2652,7 @@ function initDataTableInline(dt_table) {
         supportsButtons: true,
         supportsLoading: true,
         autoWidth: false,
+        scrollResponsive: app.options.scroll_responsive_tables,
     });
 }
 
@@ -2725,6 +2721,7 @@ function initDataTable(selector, url, notsearchable, notsortable, fnserverparams
         'paginate': true,
         'searchDelay': 750,
         "bDeferRender": true,
+        "responsive": true,
         "autoWidth": false,
         dom: "<'row'><'row'<'col-md-7'lB><'col-md-5'f>>rt<'row'<'col-md-4'i>><'row'<'#colvis'><'.dt-page-jump'>p>",
         "pageLength": app.options.tables_pagination_limit,
@@ -2759,7 +2756,9 @@ function initDataTable(selector, url, notsearchable, notsortable, fnserverparams
             $btnColVis.attr('data-toggle', 'tooltip');
             $btnColVis.attr('title', app.lang.dt_button_column_visibility);
 
-            t.wrap('<div class="table-responsive"></div>');
+            if (t.hasClass('scroll-responsive') || app.options.scroll_responsive_tables == 1) {
+                t.wrap('<div class="table-responsive"></div>');
+            }
 
             var dtEmpty = t.find('.dataTables_empty');
             if (dtEmpty.length) {
@@ -2803,6 +2802,10 @@ function initDataTable(selector, url, notsearchable, notsortable, fnserverparams
         buttons: get_datatable_buttons(table),
     };
 
+    if (table.hasClass('scroll-responsive') || app.options.scroll_responsive_tables == 1) {
+        dtSettings.responsive = false;
+    }
+
     table = table.dataTable(dtSettings);
     var tableApi = table.DataTable();
 
@@ -2820,6 +2823,7 @@ function initDataTable(selector, url, notsearchable, notsortable, fnserverparams
     }, 10);
 
     if (table.hasClass('customizable-table')) {
+
         var tableToggleAbleHeadings = table.find('th.toggleable');
         var invisible = $('#hidden-columns-' + table.attr('id'));
         try {
@@ -3709,8 +3713,7 @@ function init_newsfeed_form() {
         dragover: function (file) {
             $('#new-post-form').addClass('dropzone-active');
         },
-        complete: function (file) {
-        },
+        complete: function (file) {},
         drop: function (file) {
             $('#new-post-form').removeClass('dropzone-active');
         },
@@ -4098,7 +4101,7 @@ function lead_profile_form_handler(form) {
         }
         if ($.fn.DataTable.isDataTable('.table-leads')) {
             table_leads.DataTable().ajax.reload(null, false);
-        } else if ($('body').hasClass('kan-ban-body')) {
+        } else if($('body').hasClass('kan-ban-body')) {
             leads_kanban()
         }
     }).fail(function (data) {
@@ -4437,7 +4440,6 @@ function lead_mark_as_junk(id) {
         alert_float('danger', error.responseText);
     });
 }
-
 // From lead table mark as
 function lead_mark_as(status_id, lead_id) {
     var data = {};
@@ -5684,11 +5686,11 @@ function tasks_bulk_action(event) {
             data.priority = typeof (data.priority) == 'undefined' ? '' : data.priority;
 
             if (data.status === '' &&
-                data.priority === '' &&
-                data.tags === '' &&
-                data.assignees === '' &&
-                data.milestone === '' &&
-                data.billable === '') {
+               data.priority === '' &&
+               data.tags === '' &&
+               data.assignees === '' &&
+               data.milestone === '' &&
+               data.billable === '') {
                 return;
             }
         } else {
@@ -5917,7 +5919,6 @@ function _set_item_preview_custom_fields_array(custom_fields) {
         }
     }
 }
-
 // Add task to preview
 function add_task_to_preview_as_item(id) {
     requestGetJSON('tasks/get_billable_task_data/' + id).done(function (response) {
@@ -6447,7 +6448,7 @@ function init_currency(id, callback) {
                 accounting.settings.currency.format = currency.placement == 'after' ? '%v %s' : '%s%v';
                 calculate_total();
 
-                if (callback) {
+                if(callback) {
                     callback();
                 }
             });
@@ -7269,9 +7270,9 @@ function init_new_task_comment(manual) {
                 process(UserMentions)
             }
         },
-        insert: function (item) {
-            return '<span class="mention" contenteditable="false" data-mention-id="' + item.id + '">@'
-                + item.name + '</span>&nbsp;';
+        insert: function(item) {
+            return '<span class="mention" contenteditable="false" data-mention-id="'+ item.id + '">@'
+            + item.name + '</span>&nbsp;';
         }
     };
 
@@ -7338,7 +7339,7 @@ function init_ajax_search(type, selector, server_data, url) {
 // Used for email template URL
 function merge_field_format_url(url, node, on_save, name) {
     // Merge fields url
-    if (url && url.indexOf("%7B") > -1 && url.indexOf("%7D") > -1) {
+    if (url.indexOf("%7B") > -1 && url.indexOf("%7D") > -1) {
         url = url.replaceAll('%7B', '{').replaceAll('%7D', '}');
     }
 
@@ -7514,30 +7515,30 @@ function retrieve_imap_folders(url, params) {
     var dfd = $.Deferred();
     $('#folders-loader').addClass('spinning').removeClass('hidden');
 
-    $.post(url, params).done(function (response) {
+    $.post(url, params).done(function(response){
         response = JSON.parse(response);
-        if (response.hasOwnProperty('alert_type')) {
-            alert_float(response.alert_type, response.message);
+        if(response.hasOwnProperty('alert_type')) {
+            alert_float(response.alert_type,response.message);
         } else {
             var output = '';
             var $folder = $('#folder');
             var currentFolder = $folder.selectpicker('val');
 
-            response.forEach(function (folderName) {
-                output += '<option name="' + folderName + '"' + (folderName == currentFolder ? ' selected' : '') + '>' + folderName + '</option>';
+            response.forEach(function(folderName) {
+                output += '<option name="'+folderName+'"'+(folderName == currentFolder ? ' selected' : '')+'>'+folderName+'</option>';
             })
 
             $folder.html(output);
             $folder.selectpicker('refresh');
 
-            if (!currentFolder) {
+            if(!currentFolder) {
                 $folder.selectpicker('val', $folder.find('option:eq(0)')[0].value)
             }
         }
         dfd.resolve(response)
-    }).fail(function () {
+    }).fail(function() {
         dfd.reject(error)
-    }).always(function () {
+    }).always(function(){
         $('#folders-loader').removeClass('spinning').addClass('hidden');
     });
 

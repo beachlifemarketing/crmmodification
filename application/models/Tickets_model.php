@@ -244,7 +244,7 @@ class Tickets_model extends App_Model
                 return strtolower(trim($ext));
             }, explode(',', get_option('ticket_attachments_file_extensions')));
 
-            $path = FCPATH . 'uploads/' . APP_ENC_KEY . '/ticket_attachments' . '/' . $ticket_id . '/';
+            $path = FCPATH . 'uploads/ticket_attachments' . '/' . $ticket_id . '/';
 
             foreach ($attachments as $attachment) {
                 $filename      = $attachment['filename'];

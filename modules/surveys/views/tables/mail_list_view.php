@@ -6,20 +6,20 @@ if (is_numeric($id)) {
     $aColumns = [
         'email',
         'dateadded',
-    ];
+        ];
     if (count($data['custom_fields']) > 0) {
         foreach ($data['custom_fields'] as $field) {
             array_push($aColumns, '(SELECT value FROM ' . db_prefix() . 'maillistscustomfieldvalues LEFT JOIN ' . db_prefix() . 'maillistscustomfields ON ' . db_prefix() . 'maillistscustomfields.customfieldid = ' . $field['customfieldid'] . ' WHERE ' . db_prefix() . 'maillistscustomfieldvalues.customfieldid ="' . $field['customfieldid'] . '" AND (' . db_prefix() . 'maillistscustomfieldvalues.emailid = ' . db_prefix() . 'listemails.emailid))');
         }
     }
     $sIndexColumn = 'emailid';
-    $sTable = db_prefix() . 'listemails';
-    $result = data_tables_init($aColumns, $sIndexColumn, $sTable, [], [
+    $sTable       = db_prefix() . 'listemails';
+    $result       = data_tables_init($aColumns, $sIndexColumn, $sTable, [], [
         'WHERE listid =' . $id,
-    ], [
+        ], [
         'emailid',
-    ]);
-    $output = $result['output'];
+        ]);
+    $output  = $result['output'];
     $rResult = $result['rResult'];
     foreach ($rResult as $aRow) {
         $row = [];
@@ -32,7 +32,7 @@ if (is_numeric($id)) {
         }
         if (has_permission('surveys', '', 'delete')) {
             $row[] = icon_btn('surveys/delete_mail_list/' . $aRow['emailid'], 'remove', 'btn-danger', [
-                'onclick' => 'remove_email_from_mail_list(this,' . $aRow['emailid'] . '); return false;',
+            'onclick' => 'remove_email_from_mail_list(this,' . $aRow['emailid'] . '); return false;',
             ]);
         } else {
             $row[] = '';
@@ -42,7 +42,7 @@ if (is_numeric($id)) {
 } elseif ($id == 'clients' || $id == 'staff' || $id == 'leads') {
     $aColumns = [
         'email',
-    ];
+        ];
 
     if ($id == 'clients') {
         array_push($aColumns, 'firstname');
@@ -59,7 +59,7 @@ if (is_numeric($id)) {
     $sIndexColumn = 'id';
     if ($id == 'staff') {
         $sIndexColumn = 'staffid';
-        $sTable = db_prefix() . 'staff';
+        $sTable       = db_prefix() . 'staff';
         array_push($aColumns, 'datecreated');
     } elseif ($id == 'leads') {
         array_push($aColumns, 'dateadded');
@@ -96,7 +96,7 @@ if (is_numeric($id)) {
         array_push($where, ' AND junk = 0');
     } elseif ($id == 'clients') {
         if ($this->ci->input->post('customer_groups')) {
-            $groups = $this->ci->input->post('customer_groups');
+            $groups   = $this->ci->input->post('customer_groups');
             $groupsIn = implode(',', array_map(function ($group) {
                 return get_instance()->db->escape_str($group);
             }, $groups));
@@ -115,8 +115,8 @@ if (is_numeric($id)) {
         }
     }
 
-    $result = data_tables_init($aColumns, $sIndexColumn, $sTable, [], $where);
-    $output = $result['output'];
+    $result  = data_tables_init($aColumns, $sIndexColumn, $sTable, [], $where);
+    $output  = $result['output'];
     $rResult = $result['rResult'];
     foreach ($rResult as $aRow) {
         $row = [];
@@ -128,7 +128,7 @@ if (is_numeric($id)) {
             // No delete option
             $row[] = $_data;
         }
-        $row[] = '';
+        $row[]              = '';
         $output['aaData'][] = $row;
     }
 }

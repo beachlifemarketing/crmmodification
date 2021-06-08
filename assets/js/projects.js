@@ -135,8 +135,8 @@
           new Dropzone('#project-files-upload', appCreateDropzoneOptions({
               paramName: "file",
               uploadMultiple: true,
-              parallelUploads: 250,
-              maxFiles: 250,
+              parallelUploads: 20,
+              maxFiles: 20,
               accept: function(file, done) {
                   done();
               },

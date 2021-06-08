@@ -4,7 +4,7 @@
  */
 
 // For manually modals where no close is defined
-$(document).keyup(function (e) {
+$(document).keyup(function(e) {
     if (e.keyCode == 27) { // escape key maps to keycode `27`
 
         // Close modal if only modal is opened and there is no 2 modals opened
@@ -16,18 +16,18 @@ $(document).keyup(function (e) {
     }
 });
 
-$(function () {
+$(function() {
 
-    setTimeout(function () {
+    setTimeout(function(){
         // Remove the left and right resize indicators for gantt
         $("#gantt .noDrag > g.handle-group").hide();
 
         // Removes the gantt dragging by bar wrapper
         var ganttBarWrappers = document.querySelectorAll('.bar-wrapper');
 
-        Array.prototype.forEach.call(ganttBarWrappers, function (el) {
-            el.addEventListener('mousedown', function (e, element) {
-                if ($(e.target).closest('.bar-wrapper').hasClass('noDrag')) {
+        Array.prototype.forEach.call(ganttBarWrappers, function(el) {
+            el.addEventListener('mousedown', function(e, element) {
+                if($(e.target).closest('.bar-wrapper').hasClass('noDrag')){
                     event.stopPropagation();
                 }
             }, true)
@@ -36,7 +36,7 @@ $(function () {
 
     // + button for adding more attachments
     var addMoreAttachmentsInputKey = 1;
-    $("body").on('click', '.add_more_attachments', function () {
+    $("body").on('click', '.add_more_attachments', function() {
 
         if ($(this).hasClass('disabled')) {
             return false;
@@ -58,36 +58,36 @@ $(function () {
     });
 
     // Remove attachment
-    $("body").on('click', '.remove_attachment', function () {
+    $("body").on('click', '.remove_attachment', function() {
         $(this).parents('.attachment').remove();
     });
 
-    $("a[href='#top']").on("click", function (e) {
+    $("a[href='#top']").on("click", function(e) {
         e.preventDefault();
-        $("html,body").animate({scrollTop: 0}, 1000);
+        $("html,body").animate({ scrollTop: 0 }, 1000);
         e.preventDefault();
     });
 
-    $("a[href='#bot']").on("click", function (e) {
+    $("a[href='#bot']").on("click", function(e) {
         e.preventDefault();
-        $("html,body").animate({scrollTop: $(document).height()}, 1000);
+        $("html,body").animate({ scrollTop: $(document).height() }, 1000);
         e.preventDefault();
     });
 
     // Jump to page feature
-    $(document).on("change", ".dt-page-jump-select", function () {
+    $(document).on("change", ".dt-page-jump-select", function() {
         $('#' + $(this).attr('data-id')).DataTable().page($(this).val() - 1).draw(false);
     });
 
     // Remove tooltip fix on body click (in case user clicked link and tooltip stays open)
-    $("body").on('click', function () {
+    $("body").on('click', function() {
         $('.tooltip').remove();
     });
 
     // Show please wait text on button where data-loading-text is added
-    $("body").on('click', '[data-loading-text]', function () {
+    $("body").on('click', '[data-loading-text]', function() {
         var form = $(this).data('form');
-        if (form !== null && typeof (form) != 'undefined') {
+        if (form !== null && typeof(form) != 'undefined') {
             // Handled in form submit handler function
             return true;
         } else {
@@ -96,8 +96,8 @@ $(function () {
     });
 
     // Close all popovers if user click on body and the click is not inside the popover content area
-    $("body").on('click', function (e) {
-        $('[data-toggle="popover"],.manual-popover').each(function () {
+    $("body").on('click', function(e) {
+        $('[data-toggle="popover"],.manual-popover').each(function() {
             //the 'is' for buttons that trigger popups
             //the 'has' for icons within a button that triggers a popup
             if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
@@ -106,7 +106,7 @@ $(function () {
         });
     });
 
-    $('body').on('change', 'select[name="range"]', function () {
+    $('body').on('change', 'select[name="range"]', function() {
         var $period = $('.period');
         if ($(this).val() == 'period') {
             $period.removeClass('hide');
@@ -116,45 +116,57 @@ $(function () {
         }
     });
 
-    $(document).on('shown.bs.dropdown', '.table-responsive', function (e) {
-        var $container = $(e.target);
-        if ($container.hasClass('bootstrap-select')) {
-            return;
-        }
-        var $dropdown = $container.find('.dropdown-menu');
-        if ($dropdown.length) {
-            $container.data('dropdown-menu', $dropdown);
-        } else {
-            $dropdown = $container.data('dropdown-menu');
-        }
+    // Fix for dropdown overlay in .table-responsive, last rows are overlapping e.q. on tasks table
+    $("body").on('click', '.table-responsive .dropdown-toggle', function(event) {
+        if ($(this).next().hasClass('dropdown-menu')) {
+            var elm = $(this).next(),
+                docHeight = $(document).height(),
+                docWidth = $(document).width(),
+                btn_offset = $(this).offset(),
+                btn_width = $(this).outerWidth(),
+                btn_height = $(this).outerHeight(),
+                elm_width = elm.outerWidth(),
+                elm_height = elm.outerHeight(),
+                table_offset = $(".table-responsive").offset(),
+                table_width = $(".table-responsive").width(),
+                table_height = $(".table-responsive").height(),
 
-        $dropdown.css('top', ($container.offset().top + $container.outerHeight()) + 'px');
-        var leftPosition = 0;
-        $dropdown.css('display', 'block');
-        $dropdown.css('position', 'absolute');
-        var parentWidth = $container.parent().outerWidth();
-        var dropdownWidth = $dropdown.outerWidth();
-        leftPosition = $container.parent().offset().left - (dropdownWidth - parentWidth)
-        $dropdown.css('left', leftPosition + 'px');
-        $dropdown.css('right', 'auto')
+                tableoffright = table_width + table_offset.left,
+                tableoffbottom = table_height + table_offset.top,
+                rem_tablewidth = docWidth - tableoffright,
+                rem_tableheight = docHeight - tableoffbottom,
+                elm_offsetleft = btn_offset.left,
+                elm_offsetright = btn_offset.left + btn_width,
+                elm_offsettop = btn_offset.top + btn_height,
+                btn_offsetbottom = elm_offsettop,
 
-        $dropdown.appendTo('body');
+                left_edge = (elm_offsetleft - table_offset.left) < elm_width,
+                top_edge = btn_offset.top < elm_height,
+                right_edge = (table_width - elm_offsetleft) < elm_width,
+                bottom_edge = (tableoffbottom - btn_offsetbottom) < elm_height;
+
+            var table_offset_bottom = docHeight - (table_offset.top + table_height);
+
+            var touchTableBottom = (btn_offset.top + btn_height + (elm_height * 2)) - table_offset.top;
+
+            var bottomedge = touchTableBottom > table_offset_bottom;
+
+            if (left_edge) {
+                $(this).addClass('left-edge');
+            } else {
+                $('.dropdown-menu').removeClass('left-edge');
+            }
+            if (bottom_edge) {
+                $(this).parent().addClass('dropup');
+            } else {
+                $(this).parent().removeClass('dropup');
+            }
+        }
     });
 
-    $(document).on('hide.bs.dropdown', '.table-responsive', function (e) {
-        var $container = $(e.target);
-
-        if ($container.hasClass('bootstrap-select')) {
-            return;
-        }
-        $container.data('dropdown-menu').css('display', 'none');
-    });
-
-// Add are you sure on all delete links (onclick is not handler here)
-    $("body").on('click', '._delete', function (e) {
-        if (confirm_delete()) {
-            return true;
-        }
+    // Add are you sure on all delete links (onclick is not handler here)
+    $("body").on('click', '._delete', function(e) {
+        if (confirm_delete()) { return true; }
         return false;
     });
 });
@@ -164,27 +176,25 @@ function confirm_delete() {
     var message = 'Are you sure you want to perform this action?';
 
     // Clients area
-    if (typeof (app) != 'undefined') {
+    if (typeof(app) != 'undefined') {
         message = app.lang.confirm_action_prompt;
     }
 
     var r = confirm(message);
-    if (r == false) {
-        return false;
-    }
+    if (r == false) { return false; }
     return true;
 }
 
 // Delay function
-var delay = (function () {
+var delay = (function() {
     var timer = 0;
-    return function (callback, ms) {
+    return function(callback, ms) {
         clearTimeout(timer);
         timer = setTimeout(callback, ms);
     };
 })();
 
-$.fn.isInViewport = function () {
+$.fn.isInViewport = function() {
     var elementTop = $(this).offset().top;
     var elementBottom = elementTop + $(this).outerHeight();
     var viewportTop = $(window).scrollTop();
@@ -192,9 +202,9 @@ $.fn.isInViewport = function () {
     return elementBottom > viewportTop && elementTop < viewportBottom;
 };
 
-String.prototype.matchAll = function (regexp) {
+String.prototype.matchAll = function(regexp) {
     var matches = [];
-    this.replace(regexp, function () {
+    this.replace(regexp, function() {
         var arr = ([]).slice.call(arguments, 0);
         var extras = arr.splice(-2);
         arr.index = extras[0];
@@ -226,13 +236,13 @@ function stripTags(html) {
 
 // Check if field is empty
 function empty(data) {
-    if (typeof (data) == 'number' || typeof (data) == 'boolean') {
+    if (typeof(data) == 'number' || typeof(data) == 'boolean') {
         return false;
     }
-    if (typeof (data) == 'undefined' || data === null) {
+    if (typeof(data) == 'undefined' || data === null) {
         return true;
     }
-    if (typeof (data.length) != 'undefined') {
+    if (typeof(data.length) != 'undefined') {
         return data.length === 0;
     }
     var count = 0;
@@ -247,7 +257,7 @@ function empty(data) {
 // Attached new hotkey handler
 function add_hotkey(key, func) {
 
-    if (typeof ($.Shortcuts) == 'undefined') {
+    if (typeof($.Shortcuts) == 'undefined') {
         return false;
     }
 
@@ -373,9 +383,9 @@ function nl2br(str, is_xhtml) {
 
 // Kanban til direction
 function tilt_direction(item) {
-    setTimeout(function () {
+    setTimeout(function() {
         var left_pos = item.position().left,
-            move_handler = function (e) {
+            move_handler = function(e) {
                 if (e.pageX >= left_pos) {
                     item.addClass("right");
                     item.removeClass("left");
@@ -393,7 +403,7 @@ function tilt_direction(item) {
 // Function to close modal manually... needed in some modals where the data is flexible.
 function close_modal_manually(modal) {
     modal = $(modal).length === 0 ? $("body").find(modal) : modal = $(modal);
-    modal.fadeOut('fast', function () {
+    modal.fadeOut('fast', function() {
         modal.remove();
         if (!$("body").find('.modal').is(':visible')) {
             $('.modal-backdrop').remove();
@@ -407,11 +417,11 @@ function showPassword(name) {
     var target = $('input[name="' + name + '"]');
     if ($(target).attr('type') == 'password' && $(target).val() !== '') {
         $(target)
-            .queue(function () {
+            .queue(function() {
                 $(target).attr('type', 'text').dequeue();
             });
     } else {
-        $(target).queue(function () {
+        $(target).queue(function() {
             $(target).attr('type', 'password').dequeue();
         });
     }
@@ -424,7 +434,7 @@ function hidden_input(name, val) {
 
 // Init color pickers
 function appColorPicker(element) {
-    if (typeof (element) == 'undefined') {
+    if (typeof(element) == 'undefined') {
         element = $("body").find('div.colorpicker-input');
     }
     if (element.length) {
@@ -437,7 +447,7 @@ function appColorPicker(element) {
 // Init bootstrap select picker
 function appSelectPicker(element) {
 
-    if (typeof (element) == 'undefined') {
+    if (typeof(element) == 'undefined') {
         element = $("body").find('select.selectpicker');
     }
 
@@ -452,13 +462,11 @@ function appSelectPicker(element) {
 function appProgressBar() {
     var progress_bars = $('body').find('.progress div.progress-bar');
     if (progress_bars.length) {
-        progress_bars.each(function () {
+        progress_bars.each(function() {
             var bar = $(this);
             var perc = bar.attr("data-percent");
             bar.css('width', (perc) + '%');
-            if (!bar.hasClass('no-percent-text')) {
-                bar.text((perc) + '%');
-            }
+            if (!bar.hasClass('no-percent-text')) { bar.text((perc) + '%'); }
         });
     }
 }
@@ -466,7 +474,7 @@ function appProgressBar() {
 // Lightbox plugins for images
 function appLightbox(options) {
 
-    if (typeof (lightbox) == 'undefined') {
+    if (typeof(lightbox) == 'undefined') {
         return false;
     }
 
@@ -476,7 +484,7 @@ function appLightbox(options) {
         positionFromTop: 25
     };
 
-    if (typeof (options) != 'undefined') {
+    if (typeof(options) != 'undefined') {
         jQuery.extend(_lightBoxOptions, options);
     }
 
@@ -545,8 +553,8 @@ function alert_float(type, message, timeout) {
 
     $("body").append(el);
     timeout = timeout ? timeout : 3500
-    setTimeout(function () {
-        $('#' + aId).hide('fast', function () {
+    setTimeout(function() {
+        $('#' + aId).hide('fast', function() {
             $('#' + aId).remove();
         });
     }, timeout);
@@ -568,7 +576,7 @@ function get_url_param(param) {
     var vars = {};
     window.location.href.replace(location.hash, '').replace(
         /[?&]+([^=&]+)=?([^&]*)?/gi, // regexp
-        function (m, key, value) { // callback
+        function(m, key, value) { // callback
             vars[key] = value !== undefined ? value : '';
         }
     );
@@ -580,23 +588,18 @@ function get_url_param(param) {
 
 // Is mobile checker javascript
 function is_mobile() {
-    if (typeof (app) != 'undefined' && typeof (app.is_mobile) != 'undefined') {
+    if (typeof(app) != 'undefined' && typeof(app.is_mobile) != 'undefined') {
         return app.is_mobile;
     }
 
-    try {
-        document.createEvent("TouchEvent");
-        return true;
-    } catch (e) {
-        return false;
-    }
+    try { document.createEvent("TouchEvent"); return true; } catch (e) { return false; }
 }
 
 function onGoogleApiLoad() {
     var pickers = $('.gpicker');
-    $.each(pickers, function () {
+    $.each(pickers, function() {
         var that = $(this);
-        setTimeout(function () {
+        setTimeout(function() {
             that.googleDrivePicker();
         }, 10)
     });
@@ -629,7 +632,7 @@ function _get_jquery_comments_default_config(discussions_lang) {
         noCommentsText: discussions_lang.discussion_no_comments,
         noAttachmentsText: discussions_lang.discussion_no_attachments,
         attachmentDropText: discussions_lang.discussion_attachments_drop,
-        timeFormatter: function (time) {
+        timeFormatter: function(time) {
             return moment(time).fromNow();
         },
     }
@@ -638,7 +641,7 @@ function _get_jquery_comments_default_config(discussions_lang) {
 
 function appDataTableInline(element, options) {
 
-    var selector = typeof (element) !== 'undefined' ? element : '.dt-table';
+    var selector = typeof(element) !== 'undefined' ? element : '.dt-table';
     var $tables = $(selector);
 
     if ($tables.length === 0) {
@@ -646,6 +649,7 @@ function appDataTableInline(element, options) {
     }
 
     var defaults = {
+        scrollResponsive: 0,
         supportsButtons: false,
         supportsLoading: false,
         dtLengthMenuAllText: app.lang.dt_length_menu_all,
@@ -656,7 +660,7 @@ function appDataTableInline(element, options) {
         fnRowCallback: DataTablesInlineLazyLoadImages,
         order: [0, 'asc'],
         dom: "<'row'><'row'<'col-md-6'lB><'col-md-6'f>r>t<'row'<'col-md-4'i>><'row'<'#colvis'><'.dt-page-jump'>p>",
-        "fnDrawCallback": function (oSettings) {
+        "fnDrawCallback": function(oSettings) {
 
             _table_jump_to_page(this, oSettings);
 
@@ -666,13 +670,15 @@ function appDataTableInline(element, options) {
                 $(oSettings.nTableWrapper).removeClass('app_dt_empty');
             }
 
-            if (typeof (settings.onDrawCallback) == 'function') {
+            if (typeof(settings.onDrawCallback) == 'function') {
                 settings.onDrawCallback(oSettings, this);
             }
         },
-        "initComplete": function (oSettings, json) {
+        "initComplete": function(oSettings, json) {
 
-            this.wrap('<div class="table-responsive"></div>');
+            if (this.hasClass('scroll-responsive') || settings.scrollResponsive == 1) {
+                this.wrap('<div class="table-responsive"></div>');
+            }
 
             var dtInlineEmpty = this.find('.dataTables_empty');
             if (dtInlineEmpty.length) {
@@ -691,7 +697,7 @@ function appDataTableInline(element, options) {
                 }
 
                 var thLastChild = $tables.find('thead th:last-child');
-                if (typeof (app) != 'undefined' && thLastChild.text().trim() == app.lang.options) {
+                if (typeof(app) != 'undefined' && thLastChild.text().trim() == app.lang.options) {
                     thLastChild.addClass('not-export');
                 }
 
@@ -700,7 +706,7 @@ function appDataTableInline(element, options) {
                     thFirstChild.addClass('not-export');
                 }
 
-                if (typeof (settings.onInitComplete) == 'function') {
+                if (typeof(settings.onInitComplete) == 'function') {
                     settings.onInitComplete(oSettings, json, this);
                 }
             }
@@ -719,11 +725,11 @@ function appDataTableInline(element, options) {
         length_options_names.push(settings.pageLength)
     }
 
-    length_options.sort(function (a, b) {
+    length_options.sort(function(a, b) {
         return a - b;
     });
 
-    length_options_names.sort(function (a, b) {
+    length_options_names.sort(function(a, b) {
         return a - b;
     });
 
@@ -737,9 +743,13 @@ function appDataTableInline(element, options) {
         settings.dom = settings.dom.replace('lB', 'l')
     }
 
-    $.each($tables, function () {
+    $.each($tables, function() {
 
         $(this).addClass('dt-inline');
+
+        if ($(this).hasClass('scroll-responsive') || settings.scrollResponsive == 1) {
+            settings.responsive = false;
+        }
 
         orderCol = $(this).attr('data-order-col');
         orderType = $(this).attr('data-order-type');
@@ -758,10 +768,10 @@ function appDataTableInline(element, options) {
             settings.aoColumns = [];
             for (var i = 0; i < totalColumns; i++) {
                 var column = $(columns[i]);
-                var sTypeColumnOption = sTypeColumns.find(function (v) {
+                var sTypeColumnOption = sTypeColumns.find(function(v) {
                     return v['column'] === column.index();
                 });
-                settings.aoColumns.push(sTypeColumnOption ? {sType: sTypeColumnOption.type} : null);
+                settings.aoColumns.push(sTypeColumnOption ? { sType: sTypeColumnOption.type } : null);
             }
         }
 
@@ -791,7 +801,7 @@ function get_datatable_buttons(table) {
     }
 
     var formatExport = {
-        body: function (data, row, column, node) {
+        body: function(data, row, column, node) {
 
             // Fix for notes inline datatables
             // Causing issues because of the hidden textarea for edit and the content is duplicating
@@ -806,8 +816,8 @@ function get_datatable_buttons(table) {
             // Convert e.q. two months ago to actual date
             var exportTextHasActionDate = newTmpRow.find('.text-has-action.is-date');
 
-            if (exportTextHasActionDate.length) {
-                data = exportTextHasActionDate.attr('data-title');
+            if(exportTextHasActionDate.length) {
+               data = exportTextHasActionDate.attr('data-title');
             }
 
             if (newTmpRow.find('.row-options').length > 0) {
@@ -821,14 +831,14 @@ function get_datatable_buttons(table) {
             }
 
             if (data) {
-                /*       // 300,00 becomes 300.00 because excel does not support decimal as coma
-                       var regexFixExcelExport = new RegExp("([0-9]{1,3})(,)([0-9]{" + app.options.decimal_places + ',' + app.options.decimal_places + "})", "gm");
-                       // Convert to string because matchAll won't work on integers in case datatables convert the text to integer
-                       var _stringData = data.toString();
-                       var found = _stringData.matchAll(regexFixExcelExport);
-                       if (found) {
-                           data = data.replace(regexFixExcelExport, "$1.$3");
-                       }*/
+         /*       // 300,00 becomes 300.00 because excel does not support decimal as coma
+                var regexFixExcelExport = new RegExp("([0-9]{1,3})(,)([0-9]{" + app.options.decimal_places + ',' + app.options.decimal_places + "})", "gm");
+                // Convert to string because matchAll won't work on integers in case datatables convert the text to integer
+                var _stringData = data.toString();
+                var found = _stringData.matchAll(regexFixExcelExport);
+                if (found) {
+                    data = data.replace(regexFixExcelExport, "$1.$3");
+                }*/
             }
 
             // Datatables use the same implementation to strip the html.
@@ -841,7 +851,7 @@ function get_datatable_buttons(table) {
     };
     var table_buttons_options = [];
 
-    if (typeof (table_export_button_is_hidden) != 'function' || !table_export_button_is_hidden()) {
+    if (typeof(table_export_button_is_hidden) != 'function' || !table_export_button_is_hidden()) {
         table_buttons_options.push({
             extend: 'collection',
             text: app.lang.dt_button_export,
@@ -852,7 +862,7 @@ function get_datatable_buttons(table) {
                 footer: true,
                 exportOptions: {
                     columns: [':not(.not-export)'],
-                    rows: function (index) {
+                    rows: function(index) {
                         return _dt_maybe_export_only_selected_rows(index, table);
                     },
                     format: formatExport,
@@ -863,7 +873,7 @@ function get_datatable_buttons(table) {
                 footer: true,
                 exportOptions: {
                     columns: [':not(.not-export)'],
-                    rows: function (index) {
+                    rows: function(index) {
                         return _dt_maybe_export_only_selected_rows(index, table);
                     },
                     format: formatExport,
@@ -874,13 +884,13 @@ function get_datatable_buttons(table) {
                 footer: true,
                 exportOptions: {
                     columns: [':not(.not-export)'],
-                    rows: function (index) {
+                    rows: function(index) {
                         return _dt_maybe_export_only_selected_rows(index, table);
                     },
                     format: formatExport,
                 },
                 orientation: 'landscape',
-                customize: function (doc) {
+                customize: function(doc) {
                     // Fix for column widths
                     var table_api = $(table).DataTable();
                     var columns = table_api.columns().visible();
@@ -894,7 +904,7 @@ function get_datatable_buttons(table) {
                         }
                     }
 
-                    setTimeout(function () {
+                    setTimeout(function() {
                         if (total_visible_columns <= 5) {
                             var pdf_widths = [];
                             for (i = 0; i < total_visible_columns; i++) {
@@ -926,7 +936,7 @@ function get_datatable_buttons(table) {
                 footer: true,
                 exportOptions: {
                     columns: [':not(.not-export)'],
-                    rows: function (index) {
+                    rows: function(index) {
                         return _dt_maybe_export_only_selected_rows(index, table);
                     },
                     format: formatExport,
@@ -936,14 +946,14 @@ function get_datatable_buttons(table) {
     }
     var tableButtons = $("body").find('.table-btn');
 
-    $.each(tableButtons, function () {
+    $.each(tableButtons, function() {
         var b = $(this);
         if (b.length && b.attr('data-table')) {
             if ($(table).is(b.attr('data-table'))) {
                 table_buttons_options.push({
                     text: b.text().trim(),
                     className: 'btn btn-default-dt-options',
-                    action: function (e, dt, node, config) {
+                    action: function(e, dt, node, config) {
                         b.click();
                     }
                 });
@@ -955,7 +965,7 @@ function get_datatable_buttons(table) {
         table_buttons_options.push({
             text: '<i class="fa fa-refresh"></i>',
             className: 'btn btn-default-dt-options btn-dt-reload',
-            action: function (e, dt, node, config) {
+            action: function(e, dt, node, config) {
                 dt.ajax.reload();
             }
         });
@@ -995,7 +1005,7 @@ function _dt_maybe_export_only_selected_rows(index, table) {
     if (bulkActionsCheckbox && bulkActionsCheckbox.length > 0) {
         var rows = table.find('tbody tr');
         var anyChecked = false;
-        $.each(rows, function () {
+        $.each(rows, function() {
             if ($(this).find('td:first input[type="checkbox"]:checked').length) {
                 anyChecked = true;
             }
@@ -1018,34 +1028,28 @@ function _dt_maybe_export_only_selected_rows(index, table) {
 // Slide toggle any selector passed
 function slideToggle(selector, callback) {
     var $element = $(selector);
-    if ($element.hasClass('hide')) {
-        $element.removeClass('hide', 'slow');
-    }
-    if ($element.length) {
-        $element.slideToggle();
-    }
+    if ($element.hasClass('hide')) { $element.removeClass('hide', 'slow'); }
+    if ($element.length) { $element.slideToggle(); }
     // Set all progress bar to 0 percent
     var progress_bars = $('.progress-bar').not('.not-dynamic');
     if (progress_bars.length > 0) {
-        progress_bars.each(function () {
+        progress_bars.each(function() {
             $(this).css('width', 0 + '%');
             $(this).text(0 + '%');
         });
         // Init the progress bars again
-        if (typeof (appProgressBar) == 'function') {
+        if (typeof(appProgressBar) == 'function') {
             appProgressBar();
         }
     }
     // Possible callback after slide toggle
-    if (typeof (callback) == 'function') {
-        callback();
-    }
+    if (typeof(callback) == 'function') { callback(); }
 }
 
 // Date picker init, options and optionally element
 function appDatepicker(options) {
 
-    if (typeof (app._date_picker_locale_configured) === 'undefined') {
+    if (typeof(app._date_picker_locale_configured) === 'undefined') {
         jQuery.datetimepicker.setLocale(app.locale);
         app._date_picker_locale_configured = true;
     }
@@ -1060,15 +1064,15 @@ function appDatepicker(options) {
 
     var settings = $.extend({}, defaults, options);
 
-    var datepickers = typeof (settings.element_date) != 'undefined' ? settings.element_date : $(settings.date_picker_selector);
-    var datetimepickers = typeof (settings.element_time) != 'undefined' ? settings.element_time : $(settings.date_time_picker_selector);
+    var datepickers = typeof(settings.element_date) != 'undefined' ? settings.element_date : $(settings.date_picker_selector);
+    var datetimepickers = typeof(settings.element_time) != 'undefined' ? settings.element_time : $(settings.date_time_picker_selector);
 
     if (datetimepickers.length === 0 && datepickers.length === 0) {
         return;
     }
 
     // Datepicker without time
-    $.each(datepickers, function () {
+    $.each(datepickers, function() {
         var that = $(this);
 
         var opt = {
@@ -1099,14 +1103,14 @@ function appDatepicker(options) {
         // Init the picker
         that.datetimepicker(opt);
 
-        that.parents('.form-group').find('.calendar-icon').on('click', function () {
+        that.parents('.form-group').find('.calendar-icon').on('click', function() {
             that.focus();
             that.trigger('open.xdsoft');
         });
     });
 
     // Datepicker with time
-    $.each(datetimepickers, function () {
+    $.each(datetimepickers, function() {
         var that = $(this);
         var opt_time = {
             lazyInit: true,
@@ -1139,7 +1143,7 @@ function appDatepicker(options) {
         // Init the picker
         that.datetimepicker(opt_time);
 
-        that.parents('.form-group').find('.calendar-icon').on('click', function () {
+        that.parents('.form-group').find('.calendar-icon').on('click', function() {
             that.focus();
             that.trigger('open.xdsoft');
         });
@@ -1148,7 +1152,7 @@ function appDatepicker(options) {
 
 function appTagsInput(element) {
 
-    if (typeof (element) == 'undefined') {
+    if (typeof(element) == 'undefined') {
         element = $("body").find('input.tagsinput');
     }
 
@@ -1163,7 +1167,7 @@ function appTagsInput(element) {
             autocomplete: {
                 appendTo: '#inputTagsWrapper',
             },
-            afterTagAdded: function (event, ui) {
+            afterTagAdded: function(event, ui) {
                 var tagIndexAvailable = app.available_tags.indexOf($.trim($(ui.tag).find('.tagit-label').text()));
                 if (tagIndexAvailable > -1) {
                     var _tagId = app.available_tags_ids[tagIndexAvailable];
@@ -1171,16 +1175,15 @@ function appTagsInput(element) {
                 }
                 showHideTagsPlaceholder($(this));
             },
-            afterTagRemoved: function (event, ui) {
+            afterTagRemoved: function(event, ui) {
                 showHideTagsPlaceholder($(this));
             }
         });
     }
 }
-
 // Fix for reordering the items the tables to show the full width
 function fixHelperTableHelperSortable(e, ui) {
-    ui.children().each(function () {
+    ui.children().each(function() {
         $(this).width($(this).width());
     });
     return ui;
@@ -1208,10 +1211,10 @@ function _dropzone_defaults() {
         dictMaxFilesExceeded: app.lang.you_can_not_upload_any_more_files,
         maxFilesize: (app.max_php_ini_upload_size_bytes / (1024 * 1024)).toFixed(0),
         acceptedFiles: acceptedFiles,
-        error: function (file, response) {
+        error: function(file, response) {
             alert_float('danger', response);
         },
-        complete: function (file) {
+        complete: function(file) {
             this.files.length && this.removeFile(file);
         },
     };
@@ -1222,7 +1225,7 @@ function appCreateDropzoneOptions(options) {
 }
 
 function onChartClickRedirect(evt, chart, fetchUrl) {
-    if (typeof (fetchUrl) == 'undefined') {
+    if (typeof(fetchUrl) == 'undefined') {
         fetchUrl = 'statusLink';
     }
     var item = chart.getElementAtEvent(evt)[0];
@@ -1246,7 +1249,7 @@ function destroy_dynamic_scripts_in_element(element) {
 // Old validate form function, callback to _validate_form
 // You should use only $(form).appFormValidator();
 function appValidateForm(form, form_rules, submithandler, overwriteMessages) {
-    $(form).appFormValidator({rules: form_rules, onSubmit: submithandler, messages: overwriteMessages});
+    $(form).appFormValidator({ rules: form_rules, onSubmit: submithandler, messages: overwriteMessages });
 }
 
 function htmlEntities(str) {
