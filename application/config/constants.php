@@ -14,6 +14,31 @@ defined('BASEPATH') or exit('No direct script access allowed');
 */
 defined('SHOW_DEBUG_BACKTRACE') or define('SHOW_DEBUG_BACKTRACE', true);
 
+
+$file_config = APPPATH . 'config/app-config-' . str_replace('.', '-', $_SERVER['HTTP_HOST']) . '.php';
+
+if (file_exists($file_config)) {
+	if (version_compare(PHP_VERSION, APP_MINIMUM_REQUIRED_PHP_VERSION) === -1) {
+		echo '<h1>Minimum required PHP version is <b>' . APP_MINIMUM_REQUIRED_PHP_VERSION . '</b>. Consider upgrading to a newer PHP version.</h4>';
+		echo '<h3>You are using ' . PHP_VERSION . ', you should consult with your hosting provider to help you to change your PHP version to ' . APP_MINIMUM_REQUIRED_PHP_VERSION . ' or higher, after you upgrade the PHP version this message will disappear.</h3>';
+		exit;
+	}
+
+	$cleandUrl = str_replace('.', '-', $_SERVER['HTTP_HOST']);
+	if (is_dir('../../install-' . $cleandUrl)) {
+		unlink('../../install-' . $cleandUrl);
+	}
+
+	include_once($file_config);
+} else {
+	$install_url = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on' ? 'https' : 'http';
+	$install_url .= '://' . $_SERVER['HTTP_HOST'];
+	$install_url .= '/bak_install';
+	echo '<h1>BLM CLOUD CRM not installed</h1>';
+	echo '<p>1. To you use the automatic BLM CLOUD CRM installation tool click <a href="' . $install_url . '">here ( Install )</a></p>';
+	die();
+}
+
 /*
 |--------------------------------------------------------------------------
 | File and Directory Modes
