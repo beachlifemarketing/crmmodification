@@ -47,7 +47,6 @@ if (file_exists($file_config)) {
 		if ($resultCopy) {
 			$install_url = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on' ? 'https' : 'http';
 			$install_url .= '://' . $_SERVER['HTTP_HOST'];
-			$install_url .= str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
 			$install_url .= 'install-' . str_replace('.', '-', $_SERVER['HTTP_HOST']);
 			header('Location: ' . $install_url);
 		}
@@ -74,6 +73,7 @@ if (file_exists($file_config)) {
 		$userDb = '';
 		$key = '';
 		$userPass = '';
+		$email = '';
 		if ($result->num_rows > 0) {
 			// output data of each row
 			while ($row = $result->fetch_assoc()) {
@@ -89,9 +89,10 @@ if (file_exists($file_config)) {
 
 				if (strpos($url, $name_compare) !== false) {
 					$nameDbApi = $nameApi;
-					$userDb = $row['databaseName'];
-					$userPass = $row['databasePassword'];
+					$userDb = $row['database_name'];
+					$userPass = $row['database_password'];
 					$key = $row['key'];
+					$email = $row['service_email'];
 					break;
 				}
 			}

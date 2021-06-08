@@ -14,8 +14,7 @@ if (file_exists($file_config)) {
 } else {
 	$install_url = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on' ? 'https' : 'http';
 	$install_url .= '://' . $_SERVER['HTTP_HOST'];
-	$install_url .= str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
-	$install_url .= 'install-' . str_replace('.', '-', $_SERVER['HTTP_HOST']);
+	$install_url .= 'bak_install';
 	echo '<h1>Perfex CRM not installed</h1>';
 	echo '<p>1. To you use the automatic Perfex CRM installation tool click <a href="' . $install_url . '">here (' . $install_url . ')</a></p>';
 	echo '<p>2. If you are installing manually rename the config file located in application/config/app-config-sample.php to app-config.php and populate the defined fields.</p>';

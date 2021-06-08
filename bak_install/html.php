@@ -192,7 +192,7 @@
 					</div>
 					<div class="form-group">
 						<label for="admin_email" class="control-label">Email</label>
-						<input type="email" class="form-control" name="admin_email" id="admin_email" required>
+						<input type="email" class="form-control" name="admin_email" value="<?php echo $email; ?>" id="admin_email" required>
 					</div>
 					<div class="row">
 						<div class="col-md-6">
