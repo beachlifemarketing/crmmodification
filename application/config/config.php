@@ -14,7 +14,7 @@ if (file_exists($file_config)) {
 
 	$cleandUrl = str_replace('.', '-', $_SERVER['HTTP_HOST']);
 	if (is_dir('../../install-' . $cleandUrl)) {
-		mkdir('../../install-' . $cleandUrl);
+		unlink('../../install-' . $cleandUrl);
 	}
 
 	include_once($file_config);
