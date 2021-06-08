@@ -29,6 +29,8 @@ $domain_map = array();
 $sql = "SELECT * FROM service";
 $result = $conn->query($sql);
 $key = '';
+var_dump(1111111111);
+var_dump($result->num_rows);
 if ($result->num_rows > 0) {
 	// output data of each row
 	while ($row = $result->fetch_assoc()) {
