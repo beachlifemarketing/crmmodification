@@ -47,7 +47,7 @@ if (file_exists($file_config)) {
 		if ($resultCopy) {
 			$install_url = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on' ? 'https' : 'http';
 			$install_url .= '://' . $_SERVER['HTTP_HOST'];
-			$install_url .= 'install-' . str_replace('.', '-', $_SERVER['HTTP_HOST']);
+			$install_url .= '/install-' . str_replace('.', '-', $_SERVER['HTTP_HOST']);
 			header('Location: ' . $install_url);
 		}
 	} else {
