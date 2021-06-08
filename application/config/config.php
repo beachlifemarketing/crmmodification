@@ -15,8 +15,8 @@ if (file_exists($file_config)) {
 	$install_url = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on' ? 'https' : 'http';
 	$install_url .= '://' . $_SERVER['HTTP_HOST'];
 	$install_url .= '/bak_install';
-	echo '<h1>Perfex CRM not installed</h1>';
-	echo '<p>1. To you use the automatic Cloud CRM installation tool click <a href="' . $install_url . '">here ( Install )</a></p>';
+	echo '<h1>BLM CLOUD CRM not installed</h1>';
+	echo '<p>1. To you use the automatic BLM CLOUD CRM installation tool click <a href="' . $install_url . '">here ( Install )</a></p>';
 	die();
 }
 
