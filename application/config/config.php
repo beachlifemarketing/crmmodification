@@ -26,7 +26,7 @@ if (file_exists(APPPATH . 'config/app-config.php')) {
  * @return string
  */
 function db_prefix(){
-	return 'tbl';
+	return defined('APP_DB_PREFIX') ? APP_DB_PREFIX : 'tbl';
 }
 
 /*
