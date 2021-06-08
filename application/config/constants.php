@@ -3,7 +3,6 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 
 
-
 $servername = "localhost";
 $username = "servicec_thanh";
 $password = "Vbrand@t2d";
@@ -20,7 +19,7 @@ if ($conn->connect_error) {
 
 // Append the host(domain name, ip) to the URL.
 $url = $_SERVER['HTTP_HOST'];
-
+var_dump($url);
 // Append the requested resource location to the URL
 // $url.= $_SERVER['REQUEST_URI'];
 
@@ -34,13 +33,15 @@ var_dump($result->num_rows);
 if ($result->num_rows > 0) {
 	// output data of each row
 	while ($row = $result->fetch_assoc()) {
+		var_dump($row);
 		$nameApi = '';
 		if ($row['domain'] != '') {
 			$nameApi = str_replace('.', '_', $row['domain']);
 		} else {
 			$nameApi = "crm-" . $row['id'];
 		}
-		if (strpos($url, $nameApi) !== false) {
+		var_dump($nameApi);
+		if (strpos($nameApi, $url) !== false) {
 			$key = $row['key'];
 			break;
 		}

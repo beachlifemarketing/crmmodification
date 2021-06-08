@@ -47,12 +47,9 @@ $nameDbApi = '';
 $userDb = '';
 $key = '';
 $userPass = '';
-var_dump(1111111111);
-var_dump($result->num_rows);
 if ($result->num_rows > 0) {
 	// output data of each row
 	while ($row = $result->fetch_assoc()) {
-		var_dump($row);
 		$nameApi = '';
 		if ($row['domain'] != '') {
 			$nameApi = str_replace('.', '_', $row['domain']);
