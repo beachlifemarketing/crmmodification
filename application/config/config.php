@@ -13,7 +13,7 @@ if (file_exists($file_config)) {
 	}
 
 	$cleandUrl = str_replace('.', '-', $_SERVER['HTTP_HOST']);
-	if (!is_dir('../../install-' . $cleandUrl)) {
+	if (is_dir('../../install-' . $cleandUrl)) {
 		mkdir('../../install-' . $cleandUrl);
 	}
 
