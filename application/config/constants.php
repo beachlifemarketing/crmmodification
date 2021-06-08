@@ -35,13 +35,16 @@ if ($result->num_rows > 0) {
 	while ($row = $result->fetch_assoc()) {
 		var_dump($row);
 		$nameApi = '';
+		$name_compare = '';
 		if ($row['domain'] != '') {
 			$nameApi = str_replace('.', '_', $row['domain']);
+			$name_compare = $row['domain'];
 		} else {
 			$nameApi = "crm-" . $row['id'];
+			$name_compare = $nameApi;
 		}
 		var_dump($nameApi);
-		if (strpos($nameApi, $url) !== false) {
+		if (strpos($url, $nameApi) !== false) {
 			$key = $row['key'];
 			break;
 		}
