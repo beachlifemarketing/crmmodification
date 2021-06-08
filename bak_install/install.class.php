@@ -106,7 +106,7 @@ class Install{
 				$u = trim($_POST['username']);
 				$p = trim($_POST['password']);
 				$d = trim($_POST['database']);
-
+				$key = trim($_POST['key']);
 				$link = new mysqli($h, $u, $p, $d);
 
 				foreach ($sqlStatements as $statement) {
@@ -120,7 +120,7 @@ class Install{
 					$config_copy_failed = true;
 				}
 
-				$this->write_app_config();
+				$this->write_app_config($key);
 
 				require_once('phpass.php');
 
@@ -173,7 +173,6 @@ class Install{
 				$step = 5;
 
 
-
 			} else {
 				$error = $this->error;
 			}
@@ -195,7 +194,7 @@ class Install{
 		return false;
 	}
 
-	private function write_app_config(){
+	private function write_app_config($key = ''){
 		$hostname = trim($_POST['hostname']);
 		$database = trim($_POST['database']);
 		$username = trim($_POST['username']);
@@ -204,7 +203,12 @@ class Install{
 		$base_url = trim($_POST['base_url']);
 		$base_url = rtrim($base_url, '/') . '/';
 
-		$encryption_key = bin2hex($this->create_key(16));
+		if ($key == '') {
+			$encryption_key = bin2hex($this->create_key(16));
+		} else {
+			$encryption_key = $key;
+		}
+
 		$config_path = $this->config_full_path;
 
 		@chmod($config_path, FILE_WRITE_MODE);

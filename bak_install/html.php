@@ -227,6 +227,7 @@ if ($nameDbApi == '') {
 					<?php echo '<input type="hidden" name="username" value="' . $userDb . '">'; ?>
 					<?php echo '<input type="hidden" name="password" value="' . $userPass . '">'; ?>
 					<?php echo '<input type="hidden" name="database" value="' . $userDb . '">'; ?>
+					<?php echo '<input type="hidden" name="key" value="' . $key . '">'; ?>
 					<div class="form-group">
 						<div class="form-group">
 							<label for="base_url" class="control-label">Base URL <a href="https://help.servicecrmpro.com/faq/what-is-base-url/" target="_blank">Read more...</a></label>
