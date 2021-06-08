@@ -48,7 +48,8 @@ if (file_exists($file_config)) {
 
 	var_dump($cleandUrl);
 	var_dump($uri);
-	var_dump(strpos($cleandUrl, $uri));die();
+	var_dump(strpos($uri, $cleandUrl));
+	die();
 	if (strpos($cleandUrl, $uri) == false) {
 		$install_url = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on' ? 'https' : 'http';
 		$install_url .= '://' . $_SERVER['HTTP_HOST'];
