@@ -17,7 +17,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 * environments.
 *
 */
-
+defined('APP_DB_PREFIX', 'tbl');
 
 $servername = "localhost";
 $username = "servicec_thanh";

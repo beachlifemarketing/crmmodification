@@ -40,9 +40,6 @@ if ($result->num_rows > 0) {
 			$name_compare = $nameApi;
 		}
 
-		var_dump($name_compare);
-		var_dump($url);
-		var_dump(strpos($url, $name_compare) !== false);
 		if (strpos($url, $name_compare) !== false) {
 			$key = $row['key'];
 			break;
@@ -53,7 +50,6 @@ if ($result->num_rows > 0) {
 }
 
 $conn->close();
-var_dump($key);
 if ($key == '') {
 	print_r("Please registry Service before using");
 	die();
