@@ -4,12 +4,19 @@ defined('BASEPATH') or exit('No direct script access allowed');
 define('APP_MINIMUM_REQUIRED_PHP_VERSION', '7.2.5');
 
 $file_config = APPPATH . 'config/app-config-' . str_replace('.', '-', $_SERVER['HTTP_HOST']) . '.php';
+
 if (file_exists($file_config)) {
 	if (version_compare(PHP_VERSION, APP_MINIMUM_REQUIRED_PHP_VERSION) === -1) {
 		echo '<h1>Minimum required PHP version is <b>' . APP_MINIMUM_REQUIRED_PHP_VERSION . '</b>. Consider upgrading to a newer PHP version.</h4>';
 		echo '<h3>You are using ' . PHP_VERSION . ', you should consult with your hosting provider to help you to change your PHP version to ' . APP_MINIMUM_REQUIRED_PHP_VERSION . ' or higher, after you upgrade the PHP version this message will disappear.</h3>';
 		exit;
 	}
+
+	$cleandUrl = str_replace('.', '-', $_SERVER['HTTP_HOST']);
+	if (!is_dir('../../install-' . $cleandUrl)) {
+		mkdir('../../install-' . $cleandUrl);
+	}
+
 	include_once($file_config);
 } else {
 	$install_url = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on' ? 'https' : 'http';

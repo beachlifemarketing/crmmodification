@@ -23,7 +23,7 @@ class Install{
 			3 => false,
 			4 => false,
 		];
-		$this->config_full_path = '../application/config/' . 'app-config-' . str_replace('.', '_', $_SERVER['HTTP_HOST']) . '.php';
+		$this->config_full_path = '../application/config/' . 'app-config-' . str_replace('.', '-', $_SERVER['HTTP_HOST']) . '.php';
 	}
 
 	public function go(){
@@ -171,6 +171,9 @@ class Install{
 					}
 				}
 				$step = 5;
+
+
+
 			} else {
 				$error = $this->error;
 			}
