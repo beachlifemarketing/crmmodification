@@ -45,6 +45,9 @@ if (file_exists($file_config)) {
 		$resultCopy = xcopy('../bak_install', '../install-' . $cleandUrl);
 	}
 	$uri = str_replace('/', '', $_SERVER['REQUEST_URI']);
+
+	var_dump($cleandUrl);
+	var_dump($uri);die();
 	if (strpos($cleandUrl, $uri) == false) {
 		$install_url = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on' ? 'https' : 'http';
 		$install_url .= '://' . $_SERVER['HTTP_HOST'];
