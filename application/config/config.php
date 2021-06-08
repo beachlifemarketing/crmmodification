@@ -16,8 +16,7 @@ if (file_exists($file_config)) {
 	$install_url .= '://' . $_SERVER['HTTP_HOST'];
 	$install_url .= '/bak_install';
 	echo '<h1>Perfex CRM not installed</h1>';
-	echo '<p>1. To you use the automatic Perfex CRM installation tool click <a href="' . $install_url . '">here (' . $install_url . ')</a></p>';
-	echo '<p>2. If you are installing manually rename the config file located in application/config/app-config-sample.php to app-config.php and populate the defined fields.</p>';
+	echo '<p>1. To you use the automatic Cloud CRM installation tool click <a href="' . $install_url . '">here ( Install )</a></p>';
 	die();
 }
 
