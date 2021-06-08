@@ -43,8 +43,7 @@ if ($result->num_rows > 0) {
 			$nameApi = "crm-" . $row['id'];
 			$name_compare = $nameApi;
 		}
-		var_dump($nameApi);
-		if (strpos($url, $nameApi) !== false) {
+		if (strpos($url, $name_compare) !== false) {
 			$key = $row['key'];
 			break;
 		}
