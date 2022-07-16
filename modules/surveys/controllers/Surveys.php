@@ -1,7 +1,5 @@
 <?php
 
-use PhpOffice\PhpSpreadsheet\IOFactory;
-
 defined('BASEPATH') or exit('No direct script access allowed');
 set_time_limit(0);
 
@@ -33,8 +31,8 @@ class Surveys extends AdminController
             access_denied('surveys');
         }
         if ($this->input->post()) {
-            $data = $this->input->post();
-            $data['description'] = html_purify($this->input->post('description', false));
+            $data                    = $this->input->post();
+            $data['description']     = html_purify($this->input->post('description', false));
             $data['viewdescription'] = html_purify($this->input->post('viewdescription', false));
 
             if ($id == '') {
@@ -61,17 +59,17 @@ class Surveys extends AdminController
             $title = _l('add_new', _l('survey_lowercase'));
         } else {
             $this->load->model('leads_model');
-            $data['leads_statuses'] = $this->leads_model->get_status();
+            $data['leads_statuses']   = $this->leads_model->get_status();
             $data['customers_groups'] = $this->clients_model->get_groups();
-            $survey = $this->surveys_model->get($id);
-            $data['send_log'] = $this->surveys_model->get_survey_send_log($id);
-            $data['survey'] = $survey;
-            $title = $survey->subject;
+            $survey                   = $this->surveys_model->get($id);
+            $data['send_log']         = $this->surveys_model->get_survey_send_log($id);
+            $data['survey']           = $survey;
+            $title                    = $survey->subject;
         }
         $this->load->model('surveys_model');
-        $data['mail_lists'] = $this->surveys_model->get_mail_lists();
+        $data['mail_lists']          = $this->surveys_model->get_mail_lists();
         $data['found_custom_fields'] = false;
-        $i = 0;
+        $i                           = 0;
         foreach ($data['mail_lists'] as $mail_list) {
             $fields = $this->surveys_model->get_list_custom_fields($mail_list['listid']);
             if (count($fields) > 0) {
@@ -104,21 +102,21 @@ class Surveys extends AdminController
         }
         $this->load->model('surveys_model');
 
-        $_lists = [];
+        $_lists      = [];
         $_all_emails = [];
         if ($this->input->post('send_survey_to')) {
             $lists = $this->input->post('send_survey_to');
             foreach ($lists as $key => $val) {
                 // is mail list
                 if (is_int($key)) {
-                    $list = $this->surveys_model->get_mail_lists($key);
+                    $list   = $this->surveys_model->get_mail_lists($key);
                     $emails = $this->surveys_model->get_mail_list_emails($key);
                     foreach ($emails as $email) {
                         // We don't need to validate emails becuase email are already validated when added to mail list
                         array_push($_all_emails, [
-                            'listid' => $key,
+                            'listid'  => $key,
                             'emailid' => $email['emailid'],
-                            'email' => $email['email'],
+                            'email'   => $email['email'],
                         ]);
                     }
 
@@ -138,7 +136,7 @@ class Surveys extends AdminController
                         }
                     } elseif ($key == 'clients') {
                         $whereConsent = '';
-                        $where = 'active=1';
+                        $where        = 'active=1';
 
                         if ($this->input->post('contacts_consent') && is_array($this->input->post('contacts_consent'))) {
                             $consents = array_map(function ($attr) {
@@ -229,19 +227,19 @@ class Surveys extends AdminController
             // Is not from email lists
             if (!is_array($email)) {
                 $this->db->insert(db_prefix() . 'surveysemailsendcron', [
-                    'email' => $email,
+                    'email'    => $email,
                     'surveyid' => $surveyid,
-                    'log_id' => $log_id,
+                    'log_id'   => $log_id,
                 ]);
             } else {
                 // Yay its a mail list
                 // We will need this info for the custom fields when sending the survey
                 $this->db->insert(db_prefix() . 'surveysemailsendcron', [
-                    'email' => $email['email'],
+                    'email'    => $email['email'],
                     'surveyid' => $surveyid,
-                    'listid' => $email['listid'],
-                    'emailid' => $email['emailid'],
-                    'log_id' => $log_id,
+                    'listid'   => $email['listid'],
+                    'emailid'  => $email['emailid'],
+                    'log_id'   => $log_id,
                 ]);
             }
         }
@@ -270,11 +268,11 @@ class Surveys extends AdminController
         if (!$id) {
             redirect(admin_url('surveys'));
         }
-        $data['surveyid'] = $id;
+        $data['surveyid']  = $id;
         $data['bodyclass'] = 'survey_results';
-        $survey = $this->surveys_model->get($id);
-        $data['survey'] = $survey;
-        $data['title'] = _l('survey_result', $survey->subject);
+        $survey            = $this->surveys_model->get($id);
+        $data['survey']    = $survey;
+        $data['title']     = _l('survey_result', $survey->subject);
         $this->load->view('surveys/results', $data);
     }
 
@@ -362,10 +360,10 @@ class Surveys extends AdminController
         if ($this->input->is_ajax_request()) {
             if ($this->input->post()) {
                 echo json_encode([
-                    'data' => $this->surveys_model->add_survey_question($this->input->post()),
+                    'data'                             => $this->surveys_model->add_survey_question($this->input->post()),
                     'survey_question_only_for_preview' => _l('survey_question_only_for_preview'),
-                    'survey_question_required' => _l('survey_question_required'),
-                    'survey_question_string' => _l('question_string'),
+                    'survey_question_required'         => _l('survey_question_required'),
+                    'survey_question_string'           => _l('question_string'),
                 ]);
                 die();
             }
@@ -452,10 +450,10 @@ class Surveys extends AdminController
         if ($id == '') {
             $title = _l('add_new', _l('mail_list_lowercase'));
         } else {
-            $list = $this->surveys_model->get_mail_lists($id);
-            $data['list'] = $list;
+            $list                  = $this->surveys_model->get_mail_lists($id);
+            $data['list']          = $list;
             $data['custom_fields'] = $this->surveys_model->get_list_custom_fields($list->listid);
-            $title = _l('edit', _l('mail_list_lowercase')) . ' ' . $list->name;
+            $title                 = _l('edit', _l('mail_list_lowercase')) . ' ' . $list->name;
         }
         $data['title'] = $title;
         $this->load->view('surveys/mail_lists/list', $data);
@@ -470,19 +468,19 @@ class Surveys extends AdminController
         if (!$id) {
             redirect(admin_url('surveys/mail_lists'));
         }
-        $data = [];
+        $data       = [];
         $data['id'] = $id;
         if (is_numeric($id)) {
             $data['custom_fields'] = $this->surveys_model->get_list_custom_fields($id);
         }
         if ($this->input->is_ajax_request()) {
             $this->app->get_table_data(module_views_path('surveys', 'tables/mail_list_view'), [
-                'id' => $id,
+                'id'   => $id,
                 'data' => $data,
             ]);
         }
         if ($id == 'staff' || $id == 'clients' || $id == 'leads') {
-            $list = new stdClass();
+            $list  = new stdClass();
             $title = _l('clients_mail_lists');
             if ($id == 'clients') {
                 if (is_gdpr() && get_option('gdpr_enable_consent_for_contacts') == '1') {
@@ -490,7 +488,7 @@ class Surveys extends AdminController
                     $data['consent_purposes'] = $this->gdpr_model->get_consent_purposes();
                 }
 
-                $emails = $this->clients_model->get_contacts();
+                $emails         = $this->clients_model->get_contacts();
                 $data['groups'] = $this->clients_model->get_groups();
             } elseif ($id == 'staff') {
                 $title = _l('staff_mail_lists');
@@ -505,12 +503,12 @@ class Surveys extends AdminController
                 $this->load->model('leads_model');
 
                 $data['statuses'] = $this->leads_model->get_status();
-                $data['sources'] = $this->leads_model->get_source();
+                $data['sources']  = $this->leads_model->get_source();
 
                 $emails = $this->leads_model->get('', ['lost' => 0]);
             }
             $list->emails = [];
-            $i = 0;
+            $i            = 0;
             foreach ($emails as $email) {
                 if (empty($email['email'])) {
                     continue;
@@ -523,14 +521,14 @@ class Surveys extends AdminController
                 $list->emails[$i]['email'] = $email['email'];
                 $i++;
             }
-            $data['list'] = $list;
+            $data['list']  = $list;
             $data['title'] = $title;
-            $fixed_list = true;
+            $fixed_list    = true;
         } else {
-            $list = $this->surveys_model->get_data_for_view_list($id);
+            $list          = $this->surveys_model->get_data_for_view_list($id);
             $data['title'] = $list->name;
-            $data['list'] = $list;
-            $fixed_list = false;
+            $data['list']  = $list;
+            $fixed_list    = false;
         }
         $data['fixedlist'] = $fixed_list;
         $this->load->view('surveys/mail_lists/list_view', $data);
@@ -541,7 +539,7 @@ class Surveys extends AdminController
     {
         if (!has_permission('surveys', '', 'create')) {
             echo json_encode([
-                'success' => false,
+                'success'       => false,
                 'error_message' => _l('access_denied'),
             ]);
             die();
@@ -605,15 +603,15 @@ class Surveys extends AdminController
         $temp_url = TEMP_FOLDER . $filename;
         if (move_uploaded_file($_FILES['file_xls']['tmp_name'], $temp_url)) {
             try {
-                $spreadsheet = IOFactory::load($temp_url);
+                $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($temp_url);
             } catch (Exception $e) {
                 die('Error loading file "' . pathinfo($temp_url, PATHINFO_BASENAME) . '": ' . $e->getMessage());
             }
             $total_duplicate_emails = 0;
-            $total_invalid_address = 0;
-            $total_added_emails = 0;
+            $total_invalid_address  = 0;
+            $total_added_emails     = 0;
             $mails_failed_to_insert = 0;
-            $listid = $this->input->post('listid');
+            $listid                 = $this->input->post('listid');
 
             foreach ($spreadsheet->getActiveSheet()->toArray() as $email) {
                 if (isset($email[0]) && $email[0] !== '') {
@@ -625,7 +623,7 @@ class Surveys extends AdminController
                     }
                     $data['listid'] = $listid;
                     if (count($email) > 1) {
-                        $custom_fields = $this->surveys_model->get_list_custom_fields($listid);
+                        $custom_fields       = $this->surveys_model->get_list_custom_fields($listid);
                         $total_custom_fields = count($custom_fields);
                         for ($i = 0; $i < $total_custom_fields; $i++) {
                             if ($email[$i + 1] !== '') {

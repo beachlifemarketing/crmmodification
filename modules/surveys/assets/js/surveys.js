@@ -1,32 +1,32 @@
-$(function () {
+$(function() {
 
-    $('input[name="send_survey_to[leads]"]').on('change', function () {
+    $('input[name="send_survey_to[leads]"]').on('change', function() {
         $('.leads-statuses').slideToggle();
     });
 
-    $('input[name="send_survey_to[clients]"]').on('change', function () {
+    $('input[name="send_survey_to[clients]"]').on('change', function() {
         $('.customer-groups').slideToggle();
     });
 
-    $('.survey-customer-groups input').on('change', function () {
+    $('.survey-customer-groups input').on('change', function() {
         if ($('.survey-customer-groups input:checked').length > 0) {
             $('#ml_customers_all').prop('checked', false);
         }
     });
 
-    $('.survey-lead-status input').on('change', function () {
+    $('.survey-lead-status input').on('change', function() {
         if ($('.survey-lead-status input:checked').length > 0) {
             $('#ml_leads_all').prop('checked', false);
         }
     });
 
-    $('#ml_customers_all').on('change', function () {
+    $('#ml_customers_all').on('change', function() {
         if ($(this).prop('checked') !== false) {
             $('.survey-customer-groups input').prop('checked', false);
         }
     });
 
-    $('#ml_leads_all').on('change', function () {
+    $('#ml_leads_all').on('change', function() {
         if ($(this).prop('checked') !== false) {
             $('.survey-lead-status input').prop('checked', false);
         }
@@ -40,14 +40,14 @@ $(function () {
     // Init questions sortable
     var questions_sortable = $("#survey_questions").sortable({
         placeholder: "ui-state-highlight-survey",
-        update: function () {
+        update: function() {
             // Update question order
             update_questions_order();
         }
     });
 
     // Add merge field
-    $('.add_email_list_custom_field_to_survey').on('click', function (e) {
+    $('.add_email_list_custom_field_to_survey').on('click', function(e) {
         e.preventDefault();
         tinymce.get('description').execCommand('mceInsertContent', false, $(this).data('slug'));
     });
@@ -59,13 +59,12 @@ function survey_toggle_full_view() {
     $('#survey_questions_wrapper').toggleClass('col-md-12');
     $('#survey_questions_wrapper').toggleClass('col-md-7');
 }
-
 // New survey question
 function add_survey_question(type, surveyid) {
     $.post(admin_url + 'surveys/add_survey_question', {
         type: type,
         surveyid: surveyid
-    }).done(function (response) {
+    }).done(function(response) {
         response = JSON.parse(response);
         question_area = '<li>';
         question_area += '<div class="form-group question">';
@@ -108,7 +107,6 @@ function add_survey_question(type, surveyid) {
         update_questions_order();
     });
 }
-
 // Update question when user click on reload button
 function update_question(question, type, questionid) {
     $(question).parents('li').find('i.question_update').addClass('spinning');
@@ -126,7 +124,7 @@ function update_question(question, type, questionid) {
         var tempData = [];
         var boxes_area = $(question).parents('.question').find('.box_area');
 
-        $.each(boxes_area, function () {
+        $.each(boxes_area, function() {
             var boxdescriptionid = $(this).find('input.survey_input_box_description').data('box-descriptionid');
             var boxdescription = $(this).find('input.survey_input_box_description').val();
             var _temp_data = [boxdescriptionid, boxdescription];
@@ -136,8 +134,8 @@ function update_question(question, type, questionid) {
         data.boxes_description = tempData;
     }
 
-    setTimeout(function () {
-        $.post(admin_url + 'surveys/update_question', data).done(function (response) {
+    setTimeout(function() {
+        $.post(admin_url + 'surveys/update_question', data).done(function(response) {
             $(question).parents('li').find('i.question_update').removeClass('spinning');
         });
     }, 10);
@@ -155,10 +153,9 @@ function add_more_boxes(question, boxdescriptionid) {
     update_questions_order();
 
 }
-
 // Remove question from database
 function remove_question_from_database(question, questionid) {
-    $.get(admin_url + 'surveys/remove_question/' + questionid, function (response) {
+    $.get(admin_url + 'surveys/remove_question/' + questionid, function(response) {
         if (response.success == false) {
             alert_float('danger', response.message);
         } else {
@@ -167,10 +164,9 @@ function remove_question_from_database(question, questionid) {
         }
     }, 'json');
 }
-
 // Remove question box description  // checkbox // radio box
 function remove_box_description_from_database(question, questionboxdescriptionid) {
-    $.get(admin_url + 'surveys/remove_box_description/' + questionboxdescriptionid, function (response) {
+    $.get(admin_url + 'surveys/remove_box_description/' + questionboxdescriptionid, function(response) {
         if (response.success == true) {
             $(question).parents('.box_area').remove();
         } else {
@@ -178,10 +174,9 @@ function remove_box_description_from_database(question, questionboxdescriptionid
         }
     }, 'json');
 }
-
 // Add question box description  // checkbox // radio box
 function add_box_description_to_database(question, questionid, boxid) {
-    $.get(admin_url + 'surveys/add_box_description/' + questionid + '/' + boxid, function (response) {
+    $.get(admin_url + 'surveys/add_box_description/' + questionid + '/' + boxid, function(response) {
         if (response.boxdescriptionid !== false) {
             add_more_boxes(question, response.boxdescriptionid);
         } else {
@@ -189,17 +184,16 @@ function add_box_description_to_database(question, questionid, boxid) {
         }
     }, 'json');
 }
-
 // Updating survey question order // called when drop event called
 function update_questions_order() {
     var questions = $('#survey_questions').find('.question');
     var i = 1;
-    $.each(questions, function () {
+    $.each(questions, function() {
         $(this).find('input[name="order[]"]').val(i);
         i++;
     });
     var update = [];
-    $.each(questions, function () {
+    $.each(questions, function() {
         var questionid = $(this).find('input.questionid').data('questionid');
         var order = $(this).find('input[name="order[]"]').val();
         update.push([questionid, order])

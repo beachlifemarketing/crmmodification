@@ -1,4 +1,4 @@
-$.fn.dataTable.ext.type.order['task-status-pre'] = function (d) {
+$.fn.dataTable.ext.type.order['task-status-pre'] = function(d) {
     switch (d) {
         case '2':
             return 1;
@@ -29,7 +29,7 @@ if (app.options.enable_google_picker == '1') {
 
 var salesChart;
 
-$(function () {
+$(function() {
 
     // Set moment locale
     moment.locale(app.locale);
@@ -42,7 +42,7 @@ $(function () {
 
     client_home_chart();
 
-    $('select[name="currency"],select[name="payments_years"]').on('change', function () {
+    $('select[name="currency"],select[name="payments_years"]').on('change', function() {
         client_home_chart();
     });
 
@@ -64,18 +64,18 @@ $(function () {
         view_project_file(file_id, project_id);
     }
 
-    if (typeof (discussion_id != 'undefined')) {
+    if (typeof(discussion_id != 'undefined')) {
         discussion_comments('#discussion-comments', discussion_id, 'regular');
     }
 
-    $('body').on('show.bs.modal', '._project_file', function () {
+    $('body').on('show.bs.modal', '._project_file', function() {
         discussion_comments('#project-file-discussion', discussion_id, 'file');
     });
 
-    if (typeof (Dropbox) != 'undefined') {
+    if (typeof(Dropbox) != 'undefined') {
         if ($('#dropbox-chooser-task').length > 0) {
             document.getElementById("dropbox-chooser-task").appendChild(Dropbox.createChooseButton({
-                success: function (files) {
+                success: function(files) {
                     taskExternalFileUpload(files, 'dropbox');
                 },
                 linkType: "preview",
@@ -85,7 +85,7 @@ $(function () {
 
         if ($('#files-upload').length > 0) {
             document.getElementById("dropbox-chooser-files").appendChild(Dropbox.createChooseButton({
-                success: function (files) {
+                success: function(files) {
                     customerExternalFileUpload(files, 'dropbox');
                 },
                 linkType: "preview",
@@ -93,9 +93,9 @@ $(function () {
             }));
         }
 
-        if (typeof (Dropbox) != 'undefined' && $('#dropbox-chooser-project-files').length > 0) {
+        if (typeof(Dropbox) != 'undefined' && $('#dropbox-chooser-project-files').length > 0) {
             document.getElementById("dropbox-chooser-project-files").appendChild(Dropbox.createChooseButton({
-                success: function (files) {
+                success: function(files) {
                     projectExternalFileUpload(files, 'dropbox');
                 },
                 linkType: "preview",
@@ -106,55 +106,46 @@ $(function () {
 
     if ($('#calendar').length) {
         var settings = {
-            headerToolbar: {
+            themeSystem: 'bootstrap3',
+            header: {
                 left: 'prev,next today',
                 center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                right: 'month,agendaWeek,agendaDay'
             },
             editable: false,
-            dayMaxEventRows: parseInt(app.options.calendar_events_limit) + 1,
+            eventLimit: parseInt(app.options.calendar_events_limit) + 1,
             views: {
                 day: {
-                    dayMaxEventRows: false
+                    eventLimit: false
                 }
             },
-            initialView: app.options.default_view_calendar,
-            moreLinkClick: function (info) {
-                calendar.gotoDate(info.date)
-                calendar.changeView('dayGridDay');
-
-                setTimeout(function () {
-                    $('.fc-popover-close').click();
-                }, 250)
+            defaultView: app.options.default_view_calendar,
+            eventLimitClick: function(cellInfo, jsEvent) {
+                $('#calendar').fullCalendar('gotoDate', cellInfo.date);
+                $('#calendar').fullCalendar('changeView', 'basicDay');
             },
-            loading: function (isLoading, view) {
+            loading: function(isLoading, view) {
+                isLoading && $('#calendar .fc-header-toolbar .btn-default').addClass('btn-info').removeClass('btn-default').css('display', 'block');
                 !isLoading ? $('.dt-loader').addClass('hide') : $('.dt-loader').removeClass('hide');
             },
-            direction: (isRTL == 'true' ? 'rtl' : 'ltr'),
+            isRTL: (app.options.isRTL == 'true' ? true : false),
             eventStartEditable: false,
             firstDay: parseInt(app.options.calendar_first_day),
-            events: function (info, successCallback, failureCallback) {
-                return $.getJSON(site_url + 'clients/get_calendar_data', {
-                    start: info.startStr,
-                    end: info.endStr,
-                }).then(function (data) {
-                    successCallback(data.map(function (e) {
-                        return $.extend({}, e, {
-                            start: e.start || e.date,
-                            end: e.end || e.date
-                        });
-                    }));
-                });
-            },
-            eventDidMount: function (data) {
-                var $el = $(data.el);
-                $el.attr('title', data.event.extendedProps._tooltip);
-                $el.attr('onclick', data.event.extendedProps.onclick);
-                $el.attr('data-toggle', 'tooltip');
+            eventSources: [{
+                url: site_url + 'clients/get_calendar_data',
+                type: 'GET',
+                error: function() {
+                    console.error('There was error fetching calendar data')
+                },
+            }, ],
+            eventRender: function(event, element) {
+                element.attr('title', event._tooltip);
+                element.attr('onclick', event.onclick);
+                element.attr('data-toggle', 'tooltip');
             },
         }
-        var calendar = new FullCalendar.Calendar(document.getElementById('calendar'), settings);
-        calendar.render();
+        // Init calendar
+        $('#calendar').fullCalendar(settings);
     }
 
     var tab_group = get_url_param('group');
@@ -168,31 +159,30 @@ $(function () {
         var g = 169;
         var b = 56;
         $('.task-phase:eq(' + (i + 10) + ')').not('.color-not-auto-adjusted').css('background', color(r - (i * 13), g - (i * 13), b - (i * 13))).css('border', '1px solid ' + color(r - (i * 13), g - (i * 13), b - (i * 13)));
-    }
-    ;
+    };
 
     var circle = $('.project-progress').circleProgress({
         fill: {
             gradient: ["#84c529", "#84c529"]
         }
-    }).on('circle-animation-progress', function (event, progress, stepValue) {
+    }).on('circle-animation-progress', function(event, progress, stepValue) {
         $(this).find('strong.project-percent').html(parseInt(100 * stepValue) + '<i>%</i>');
     });
 
-    $('.toggle-change-ticket-status').on('click', function () {
+    $('.toggle-change-ticket-status').on('click', function() {
         $('.ticket-status,.ticket-status-inline').toggleClass('hide');
     });
 
-    $('#ticket_status_single').on('change', function () {
+    $('#ticket_status_single').on('change', function() {
         data = {};
         data.status_id = $(this).val();
         data.ticket_id = $('input[name="ticket_id"]').val();
-        $.post(site_url + 'clients/change_ticket_status/', data).done(function () {
+        $.post(site_url + 'clients/change_ticket_status/', data).done(function() {
             window.location.reload();
         });
     });
 
-    if (typeof (contracts_by_type) != 'undefined') {
+    if (typeof(contracts_by_type) != 'undefined') {
         new Chart($('#contracts-by-type-chart'), {
             type: 'bar',
             data: JSON.parse(contracts_by_type),
@@ -217,7 +207,7 @@ $(function () {
 
     if ($('#task-file-upload').length > 0) {
         createDropzone('#task-file-upload', {
-            sending: function (file, xhr, formData) {
+            sending: function(file, xhr, formData) {
                 formData.append("action", 'upload_task_file');
                 formData.append("task_id", $('input[name="task_id"]').val());
             },
@@ -226,14 +216,14 @@ $(function () {
 
     if ($('#project-files-upload').length > 0) {
         createDropzone('#project-files-upload', {
-            sending: function (file, xhr, formData) {
+            sending: function(file, xhr, formData) {
                 formData.append("action", 'upload_file');
             },
         });
     }
 
     // User cant add more money then the invoice total remaining
-    $('body.viewinvoice input[name="amount"]').on('keyup', function () {
+    $('body.viewinvoice input[name="amount"]').on('keyup', function() {
         var original_total = $(this).data('total');
         var val = $(this).val();
         var form_group = $(this).parents('.form-group');
@@ -251,7 +241,7 @@ $(function () {
     });
 
 
-    $('#discussion').on('hidden.bs.modal', function (event) {
+    $('#discussion').on('hidden.bs.modal', function(event) {
         $('#discussion input[name="subject"]').val('');
         $('#discussion textarea[name="description"]').val('');
         $('#discussion .add-title').removeClass('hide');
@@ -268,7 +258,7 @@ function new_discussion() {
 function manage_discussion(form) {
     var data = $(form).serialize();
     var url = form.action;
-    $.post(url, data).done(function (response) {
+    $.post(url, data).done(function(response) {
         response = JSON.parse(response);
         if (response.success == true) {
             alert_float('success', response.message);
@@ -280,7 +270,7 @@ function manage_discussion(form) {
 }
 
 function remove_task_comment(commentid) {
-    $.get(site_url + 'clients/remove_task_comment/' + commentid, function (response) {
+    $.get(site_url + 'clients/remove_task_comment/' + commentid, function(response) {
         if (response.success == true) {
             window.location.reload();
         }
@@ -303,7 +293,7 @@ function save_edited_comment(id) {
     var data = {};
     data.id = id;
     data.content = $('[data-edit-comment="' + id + '"]').find('textarea').val();
-    $.post(site_url + 'clients/edit_comment', data).done(function (response) {
+    $.post(site_url + 'clients/edit_comment', data).done(function(response) {
         response = JSON.parse(response);
         if (response.success == true) {
             window.location.reload();
@@ -314,7 +304,9 @@ function save_edited_comment(id) {
 }
 
 function initDataTable() {
-    appDataTableInline();
+    appDataTableInline(undefined, {
+        scrollResponsive: true,
+    });
 }
 
 function dt_custom_view(table, column, val) {
@@ -330,7 +322,7 @@ function fix_phases_height() {
     if (is_mobile()) {
         return;
     }
-    var maxPhaseHeight = Math.max.apply(null, $("div.tasks-phases .panel-body").map(function () {
+    var maxPhaseHeight = Math.max.apply(null, $("div.tasks-phases .panel-body").map(function() {
         return $(this).outerHeight();
     }).get());
 
@@ -346,17 +338,17 @@ function discussion_comments(selector, discussion_id, discussion_type) {
     var defaults = _get_jquery_comments_default_config(app.lang.discussions_lang);
 
     var options = {
-        getComments: function (success, error) {
+        getComments: function(success, error) {
             $.post(site_url + 'clients/project/' + project_id, {
                 action: 'discussion_comments',
                 discussion_id: discussion_id,
                 discussion_type: discussion_type,
-            }).done(function (response) {
+            }).done(function(response) {
                 response = JSON.parse(response);
                 success(response);
             });
         },
-        postComment: function (commentJSON, success, error) {
+        postComment: function(commentJSON, success, error) {
             commentJSON.action = 'new_discussion_comment';
             commentJSON.discussion_id = discussion_id;
             commentJSON.discussion_type = discussion_type;
@@ -364,27 +356,27 @@ function discussion_comments(selector, discussion_id, discussion_type) {
                 type: 'post',
                 url: site_url + 'clients/project/' + project_id,
                 data: commentJSON,
-                success: function (comment) {
+                success: function(comment) {
                     comment = JSON.parse(comment);
                     success(comment)
                 },
                 error: error
             });
         },
-        putComment: function (commentJSON, success, error) {
+        putComment: function(commentJSON, success, error) {
             commentJSON.action = 'update_discussion_comment';
             $.ajax({
                 type: 'post',
                 url: site_url + 'clients/project/' + project_id,
                 data: commentJSON,
-                success: function (comment) {
+                success: function(comment) {
                     comment = JSON.parse(comment);
                     success(comment)
                 },
                 error: error
             });
         },
-        deleteComment: function (commentJSON, success, error) {
+        deleteComment: function(commentJSON, success, error) {
             $.ajax({
                 type: 'post',
                 url: site_url + 'clients/project/' + project_id,
@@ -396,11 +388,11 @@ function discussion_comments(selector, discussion_id, discussion_type) {
                 }
             });
         },
-        uploadAttachments: function (commentArray, success, error) {
+        uploadAttachments: function(commentArray, success, error) {
             var responses = 0;
             var successfulUploads = [];
 
-            var serverResponded = function () {
+            var serverResponded = function() {
                 responses++;
                 // Check if all requests have finished
                 if (responses == commentArray.length) {
@@ -414,14 +406,14 @@ function discussion_comments(selector, discussion_id, discussion_type) {
                     }
                 }
             }
-            $(commentArray).each(function (index, commentJSON) {
+            $(commentArray).each(function(index, commentJSON) {
                 if (commentJSON.file.size && commentJSON.file.size > app.max_php_ini_upload_size_bytes) {
                     alert_float('danger', app.lang.file_exceeds_max_filesize);
                     serverResponded();
                 } else {
                     // Create form data
                     var formData = new FormData();
-                    $(Object.keys(commentJSON)).each(function (index, key) {
+                    $(Object.keys(commentJSON)).each(function(index, key) {
                         var value = commentJSON[key];
                         if (value) formData.append(key, value);
                     });
@@ -430,7 +422,7 @@ function discussion_comments(selector, discussion_id, discussion_type) {
                     formData.append('discussion_id', discussion_id);
                     formData.append('discussion_type', discussion_type);
 
-                    if (typeof (csrfData) !== 'undefined') {
+                    if (typeof(csrfData) !== 'undefined') {
                         formData.append(csrfData['token_name'], csrfData['hash']);
                     }
 
@@ -441,11 +433,11 @@ function discussion_comments(selector, discussion_id, discussion_type) {
                         cache: false,
                         contentType: false,
                         processData: false,
-                        success: function (commentJSON) {
+                        success: function(commentJSON) {
                             successfulUploads.push(commentJSON);
                             serverResponded();
                         },
-                        error: function (data) {
+                        error: function(data) {
                             var error = JSON.parse(data.responseText);
                             alert_float('danger', error.message);
                             serverResponded();
@@ -466,9 +458,9 @@ function view_project_file(id, project_id) {
         action: 'get_file',
         id: id,
         project_id: project_id
-    }).done(function (response) {
+    }).done(function(response) {
         $('#project_file_data').html(response);
-    }).fail(function (error) {
+    }).fail(function(error) {
         alert_float('danger', error.statusText);
     });
 }
@@ -515,7 +507,7 @@ function client_home_chart() {
     if (chart.length == 0) {
         return;
     }
-    if (typeof (salesChart) !== 'undefined') {
+    if (typeof(salesChart) !== 'undefined') {
         salesChart.destroy();
     }
     var data = {};
@@ -528,12 +520,12 @@ function client_home_chart() {
         data.year = $('#payments_year').val();
     }
 
-    $.post(site_url + 'clients/client_home_chart', data).done(function (response) {
+    $.post(site_url + 'clients/client_home_chart', data).done(function(response) {
         response = JSON.parse(response);
         salesChart = new Chart(chart, {
             type: 'bar',
             data: response,
-            options: {responsive: true, maintainAspectRatio: false}
+            options: { responsive: true, maintainAspectRatio: false }
         });
     });
 }
@@ -555,7 +547,7 @@ function projectExternalFileUpload(files, externalType) {
         files: files,
         external: externalType,
         action: 'project_external_file',
-    }).done(function () {
+    }).done(function() {
         var location = window.location.href;
         window.location.href = location.split('?')[0] + '?group=project_files';
     });
@@ -567,7 +559,7 @@ function taskExternalFileUpload(files, externalType) {
         task_id: $('input[name="task_id"]').val(),
         external: externalType,
         action: 'add_task_external_file'
-    }).done(function () {
+    }).done(function() {
         window.location.reload();
     });
 }
@@ -576,7 +568,7 @@ function customerExternalFileUpload(files, externalType) {
     $.post(site_url + 'clients/upload_files', {
         files: files,
         external: externalType,
-    }).done(function () {
+    }).done(function() {
         window.location.reload();
     });
 }

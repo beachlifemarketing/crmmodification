@@ -114,7 +114,6 @@ class App_tabs
         $tabs = isset($this->tabs[$group]) ? $this->tabs[$group] : [];
 
         foreach ($tabs as $parent => $item) {
-            $tabs[$parent]['badge'] = isset($tabs[$parent]['badge']) ? $tabs[$parent]['badge'] : [];
             $tabs[$parent]['children'] = $this->get_child($parent, $group);
         }
 
@@ -128,10 +127,6 @@ class App_tabs
     public function get_child($parent_slug, $group)
     {
         $children = isset($this->child[$group][$parent_slug]) ? $this->child[$group][$parent_slug] : [];
-
-        foreach ($children as $key => $item) {
-            $children[$key]['badge'] = isset($children[$key]['badge']) ? $children[$key]['badge'] : [];
-        }
 
         $children = hooks()->apply_filters("{$group}_tabs_child_items", $children, $parent_slug);
 

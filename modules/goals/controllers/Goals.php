@@ -19,8 +19,8 @@ class Goals extends AdminController
         if ($this->input->is_ajax_request()) {
             $this->app->get_table_data(module_views_path('goals', 'table'));
         }
-        $this->app_scripts->add('circle-progress-js', 'assets/plugins/jquery-circle-progress/circle-progress.min.js');
-        $data['title'] = _l('goals_tracking');
+        $this->app_scripts->add('circle-progress-js','assets/plugins/jquery-circle-progress/circle-progress.min.js');
+        $data['title']                 = _l('goals_tracking');
         $this->load->view('manage', $data);
     }
 
@@ -53,19 +53,19 @@ class Goals extends AdminController
         if ($id == '') {
             $title = _l('add_new', _l('goal_lowercase'));
         } else {
-            $data['goal'] = $this->goals_model->get($id);
+            $data['goal']        = $this->goals_model->get($id);
             $data['achievement'] = $this->goals_model->calculate_goal_achievement($id);
 
             $title = _l('edit', _l('goal_lowercase'));
         }
 
         $this->load->model('staff_model');
-        $data['members'] = $this->staff_model->get('', ['is_not_staff' => 0, 'active' => 1]);
+        $data['members'] = $this->staff_model->get('', ['is_not_staff' => 0, 'active'=>1]);
 
         $this->load->model('contracts_model');
-        $data['contract_types'] = $this->contracts_model->get_contract_types();
-        $data['title'] = $title;
-        $this->app_scripts->add('circle-progress-js', 'assets/plugins/jquery-circle-progress/circle-progress.min.js');
+        $data['contract_types']        = $this->contracts_model->get_contract_types();
+        $data['title']                 = $title;
+        $this->app_scripts->add('circle-progress-js','assets/plugins/jquery-circle-progress/circle-progress.min.js');
         $this->load->view('goal', $data);
     }
 

@@ -14,6 +14,31 @@ defined('BASEPATH') or exit('No direct script access allowed');
 */
 defined('SHOW_DEBUG_BACKTRACE') or define('SHOW_DEBUG_BACKTRACE', true);
 
+
+$file_config = APPPATH . 'config/app-config-' . str_replace('.', '-', $_SERVER['HTTP_HOST']) . '.php';
+
+if (file_exists($file_config)) {
+	if (version_compare(PHP_VERSION, APP_MINIMUM_REQUIRED_PHP_VERSION) === -1) {
+		echo '<h1>Minimum required PHP version is <b>' . APP_MINIMUM_REQUIRED_PHP_VERSION . '</b>. Consider upgrading to a newer PHP version.</h4>';
+		echo '<h3>You are using ' . PHP_VERSION . ', you should consult with your hosting provider to help you to change your PHP version to ' . APP_MINIMUM_REQUIRED_PHP_VERSION . ' or higher, after you upgrade the PHP version this message will disappear.</h3>';
+		exit;
+	}
+
+	$cleandUrl = str_replace('.', '-', $_SERVER['HTTP_HOST']);
+	if (is_dir('../../install-' . $cleandUrl)) {
+		unlink('../../install-' . $cleandUrl);
+	}
+
+	include_once($file_config);
+} else {
+	$install_url = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on' ? 'https' : 'http';
+	$install_url .= '://' . $_SERVER['HTTP_HOST'];
+	$install_url .= '/bak_install';
+	echo '<h1>BLM CLOUD CRM not installed</h1>';
+	echo '<p>1. To you use the automatic BLM CLOUD CRM installation tool click <a href="' . $install_url . '">here ( Install )</a></p>';
+	die();
+}
+
 /*
 |--------------------------------------------------------------------------
 | File and Directory Modes
@@ -117,86 +142,86 @@ define('UPDATE_INFO_URL', 'https://www.perfexcrm.com/perfex_updates/update_info.
  * Do not send sms to data eq. invoices, estimates older then X days.
  */
 if (!defined('DO_NOT_SEND_SMS_ON_DATA_OLDER_THEN')) {
-    define('DO_NOT_SEND_SMS_ON_DATA_OLDER_THEN', 45);
+	define('DO_NOT_SEND_SMS_ON_DATA_OLDER_THEN', 45);
 }
 
 if (!defined('CUSTOM_FIELD_TRANSFER_SIMILARITY')) {
-    define('CUSTOM_FIELD_TRANSFER_SIMILARITY', 85);
+	define('CUSTOM_FIELD_TRANSFER_SIMILARITY', 85);
 }
 
 /**
  * CRM temporary path
  */
-define('TEMP_FOLDER', FCPATH . 'temp' . '/');
+define('TEMP_FOLDER', FCPATH . 'temp' . '/' . APP_ENC_KEY . '/');
 
 /**
  * Customer attachments folder from profile
  */
-define('CLIENT_ATTACHMENTS_FOLDER', FCPATH . 'uploads/clients' . '/');
+define('CLIENT_ATTACHMENTS_FOLDER', FCPATH . 'uploads/' . APP_ENC_KEY . '/clients' . '/');
 /**
  * All tickets attachments
  */
-define('TICKET_ATTACHMENTS_FOLDER', FCPATH . 'uploads/ticket_attachments' . '/');
+define('TICKET_ATTACHMENTS_FOLDER', FCPATH . 'uploads/' . APP_ENC_KEY . '/ticket_attachments' . '/');
 /**
  * Company attachments, favicon, logo etc..
  */
-define('COMPANY_FILES_FOLDER', FCPATH . 'uploads/company' . '/');
+define('COMPANY_FILES_FOLDER', FCPATH . 'uploads/' . APP_ENC_KEY . '/company' . '/');
 /**
  * Staff profile images
  */
-define('STAFF_PROFILE_IMAGES_FOLDER', FCPATH . 'uploads/staff_profile_images' . '/');
+define('STAFF_PROFILE_IMAGES_FOLDER', FCPATH . 'uploads/' . APP_ENC_KEY . '/staff_profile_images' . '/');
 /**
  * Contact profile images
  */
-define('CONTACT_PROFILE_IMAGES_FOLDER', FCPATH . 'uploads/client_profile_images' . '/');
+define('CONTACT_PROFILE_IMAGES_FOLDER', FCPATH . 'uploads/' . APP_ENC_KEY . '/client_profile_images' . '/');
 /**
  * Newsfeed attachments
  */
-define('NEWSFEED_FOLDER', FCPATH . 'uploads/newsfeed' . '/');
+define('NEWSFEED_FOLDER', FCPATH . 'uploads/' . APP_ENC_KEY . '/newsfeed' . '/');
 /**
  * Contracts attachments
  */
-define('CONTRACTS_UPLOADS_FOLDER', FCPATH . 'uploads/contracts' . '/');
+define('CONTRACTS_UPLOADS_FOLDER', FCPATH . 'uploads/' . APP_ENC_KEY . '/contracts' . '/');
 /**
  * Tasks attachments
  */
-define('TASKS_ATTACHMENTS_FOLDER', FCPATH . 'uploads/tasks' . '/');
+define('TASKS_ATTACHMENTS_FOLDER', FCPATH . 'uploads/' . APP_ENC_KEY . '/tasks' . '/');
 /**
  * Invoice attachments
  */
-define('INVOICE_ATTACHMENTS_FOLDER', FCPATH . 'uploads/invoices' . '/');
+define('INVOICE_ATTACHMENTS_FOLDER', FCPATH . 'uploads/' . APP_ENC_KEY . '/invoices' . '/');
 /**
  * Estimate attachments
  */
-define('ESTIMATE_ATTACHMENTS_FOLDER', FCPATH . 'uploads/estimates' . '/');
+define('ESTIMATE_ATTACHMENTS_FOLDER', FCPATH . 'uploads/' . APP_ENC_KEY . '/estimates' . '/');
 /**
  * Proposal attachments
  */
-define('PROPOSAL_ATTACHMENTS_FOLDER', FCPATH . 'uploads/proposals' . '/');
+define('PROPOSAL_ATTACHMENTS_FOLDER', FCPATH . 'uploads/' . APP_ENC_KEY . '/proposals' . '/');
 /**
  * Expenses receipts
  */
-define('EXPENSE_ATTACHMENTS_FOLDER', FCPATH . 'uploads/expenses' . '/');
+define('EXPENSE_ATTACHMENTS_FOLDER', FCPATH . 'uploads/' . APP_ENC_KEY . '/expenses' . '/');
 /**
  * Lead attachments
  */
-define('LEAD_ATTACHMENTS_FOLDER', FCPATH . 'uploads/leads' . '/');
+define('LEAD_ATTACHMENTS_FOLDER', FCPATH . 'uploads/' . APP_ENC_KEY . '/leads' . '/');
 /**
  * Project files attachments
  */
-define('PROJECT_ATTACHMENTS_FOLDER', FCPATH . 'uploads/projects' . '/');
+define('PROJECT_ATTACHMENTS_FOLDER', FCPATH . 'uploads/' . APP_ENC_KEY . '/projects' . '/');
 /**
  * Project discussions attachments
  */
-define('PROJECT_DISCUSSION_ATTACHMENT_FOLDER', FCPATH . 'uploads/discussions' . '/');
+define('PROJECT_DISCUSSION_ATTACHMENT_FOLDER', FCPATH . 'uploads/' . APP_ENC_KEY . '/discussions' . '/');
 /**
  * Credit notes attachment folder
  */
-define('CREDIT_NOTES_ATTACHMENTS_FOLDER', FCPATH . 'uploads/credit_notes' . '/');
+define('CREDIT_NOTES_ATTACHMENTS_FOLDER', FCPATH . 'uploads/' . APP_ENC_KEY . '/credit_notes' . '/');
 /**
  * Modules Path
  */
-define('APP_MODULES_PATH', FCPATH . 'modules/');
+define('APP_MODULES_PATH', FCPATH . 'modules/' . APP_ENC_KEY . '/');
 /**
  * Helper libraries path
  */

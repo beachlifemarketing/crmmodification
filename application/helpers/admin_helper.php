@@ -330,6 +330,7 @@ function render_admin_js_variables()
     $options = [
         'date_format'                                 => $date_format,
         'decimal_places'                              => get_decimal_places(),
+        'scroll_responsive_tables'                    => get_option('scroll_responsive_tables'),
         'company_is_required'                         => get_option('company_is_required'),
         'default_view_calendar'                       => get_option('default_view_calendar'),
         'calendar_events_limit'                       => get_option('calendar_events_limit'),
@@ -455,6 +456,7 @@ function render_admin_js_variables()
         'app_user_browser'                            => strtolower($CI->agent->browser()), // done, prefix it
         'app_date_format'                             => $date_format, // done, prefix it
         'app_decimal_places'                          => get_decimal_places(), // done, prefix it
+        'app_scroll_responsive_tables'                => get_option('scroll_responsive_tables'), // done, prefix it
         'app_company_is_required'                     => get_option('company_is_required'), // done, prefix it
         'app_default_view_calendar'                   => get_option('default_view_calendar'), // done, prefix it
         'app_calendar_events_limit'                   => get_option('calendar_events_limit'), // done, prefix it

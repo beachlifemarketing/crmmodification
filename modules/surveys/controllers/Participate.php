@@ -52,7 +52,7 @@ class Participate extends ClientsController
         $this->app_css->theme('surveys-css', module_dir_url('surveys', 'assets/css/surveys.css'));
 
         $this->disableNavigation()
-            ->disableSubMenu();
+        ->disableSubMenu();
 
         $this->data(['survey' => $survey]);
         $this->title($survey->subject);

@@ -10,7 +10,7 @@ class Goals_model extends App_Model
     }
 
     /**
-     * @param integer (optional)
+     * @param  integer (optional)
      * @return object
      * Get single goal
      */
@@ -45,7 +45,7 @@ class Goals_model extends App_Model
                 unset($goals[$key]);
             }
 
-            $goals[$key]['achievement'] = $this->calculate_goal_achievement($val['id']);
+            $goals[$key]['achievement']    = $this->calculate_goal_achievement($val['id']);
             $goals[$key]['goal_type_name'] = format_goal_type($val['goal_type']);
         }
 
@@ -64,7 +64,7 @@ class Goals_model extends App_Model
         $goals = $this->db->get(db_prefix() . 'goals')->result_array();
 
         foreach ($goals as $key => $val) {
-            $goals[$key]['achievement'] = $this->calculate_goal_achievement($val['id']);
+            $goals[$key]['achievement']    = $this->calculate_goal_achievement($val['id']);
             $goals[$key]['goal_type_name'] = format_goal_type($val['goal_type']);
         }
 
@@ -78,13 +78,13 @@ class Goals_model extends App_Model
      */
     public function add($data)
     {
-        $data['notify_when_fail'] = isset($data['notify_when_fail']) ? 1 : 0;
+        $data['notify_when_fail']    = isset($data['notify_when_fail']) ? 1 : 0;
         $data['notify_when_achieve'] = isset($data['notify_when_achieve']) ? 1 : 0;
 
         $data['contract_type'] = $data['contract_type'] == '' ? 0 : $data['contract_type'];
-        $data['staff_id'] = $data['staff_id'] == '' ? 0 : $data['staff_id'];
-        $data['start_date'] = to_sql_date($data['start_date']);
-        $data['end_date'] = to_sql_date($data['end_date']);
+        $data['staff_id']      = $data['staff_id'] == '' ? 0 : $data['staff_id'];
+        $data['start_date']    = to_sql_date($data['start_date']);
+        $data['end_date']      = to_sql_date($data['end_date']);
         $this->db->insert(db_prefix() . 'goals', $data);
         $insert_id = $this->db->insert_id();
         if ($insert_id) {
@@ -98,19 +98,19 @@ class Goals_model extends App_Model
 
     /**
      * Update goal
-     * @param mixed $data All $_POST data
-     * @param mixed $id goal id
+     * @param  mixed $data All $_POST data
+     * @param  mixed $id   goal id
      * @return boolean
      */
     public function update($data, $id)
     {
-        $data['notify_when_fail'] = isset($data['notify_when_fail']) ? 1 : 0;
+        $data['notify_when_fail']    = isset($data['notify_when_fail']) ? 1 : 0;
         $data['notify_when_achieve'] = isset($data['notify_when_achieve']) ? 1 : 0;
 
         $data['contract_type'] = $data['contract_type'] == '' ? 0 : $data['contract_type'];
-        $data['staff_id'] = $data['staff_id'] == '' ? 0 : $data['staff_id'];
-        $data['start_date'] = to_sql_date($data['start_date']);
-        $data['end_date'] = to_sql_date($data['end_date']);
+        $data['staff_id']      = $data['staff_id'] == '' ? 0 : $data['staff_id'];
+        $data['start_date']    = to_sql_date($data['start_date']);
+        $data['end_date']      = to_sql_date($data['end_date']);
 
         $goal = $this->get($id);
 
@@ -132,7 +132,7 @@ class Goals_model extends App_Model
 
     /**
      * Delete goal
-     * @param mixed $id goal id
+     * @param  mixed $id goal id
      * @return boolean
      */
     public function delete($id)
@@ -150,9 +150,9 @@ class Goals_model extends App_Model
 
     /**
      * Notify staff members about goal result
-     * @param mixed $id goal id
-     * @param string $notify_type is success or failed
-     * @param mixed $achievement total achievent (Option)
+     * @param  mixed $id          goal id
+     * @param  string $notify_type is success or failed
+     * @param  mixed $achievement total achievent (Option)
      * @return boolean
      */
     public function notify_staff_members($id, $notify_type, $achievement = '')
@@ -172,7 +172,7 @@ class Goals_model extends App_Model
             $staff = $this->staff_model->get('', ['active' => 1]);
         } else {
             $this->db->where('active', 1)
-                ->where('staffid', $goal->staff_id);
+            ->where('staffid', $goal->staff_id);
             $staff = $this->db->get(db_prefix() . 'staff')->result_array();
         }
 
@@ -180,9 +180,9 @@ class Goals_model extends App_Model
         foreach ($staff as $member) {
             if (is_staff_member($member['staffid'])) {
                 $notified = add_notification([
-                    'fromcompany' => 1,
-                    'touserid' => $member['staffid'],
-                    'description' => $goal_desc,
+                    'fromcompany'     => 1,
+                    'touserid'        => $member['staffid'],
+                    'description'     => $goal_desc,
                     'additional_data' => serialize([
                         format_goal_type($goal->goal_type),
                         $goal->achievement,
@@ -209,17 +209,17 @@ class Goals_model extends App_Model
 
     /**
      * Calculate goal achievement
-     * @param mixed $id goal id
+     * @param  mixed $id goal id
      * @return array
      */
     public function calculate_goal_achievement($id)
     {
-        $goal = $this->get($id);
+        $goal       = $this->get($id);
         $start_date = $goal->start_date;
-        $end_date = $goal->end_date;
-        $type = $goal->goal_type;
-        $total = 0;
-        $percent = 0;
+        $end_date   = $goal->end_date;
+        $type       = $goal->goal_type;
+        $total      = 0;
+        $percent    = 0;
         if ($type == 1) {
             $sql = 'SELECT SUM(amount) as total FROM ' . db_prefix() . 'invoicepaymentrecords';
 
@@ -289,8 +289,8 @@ class Goals_model extends App_Model
         $progress_bar_percent = $percent / 100;
 
         return [
-            'total' => $total,
-            'percent' => $percent,
+            'total'                => $total,
+            'percent'              => $percent,
             'progress_bar_percent' => $progress_bar_percent,
         ];
     }

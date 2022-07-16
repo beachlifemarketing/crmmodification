@@ -88,18 +88,22 @@ function _init_admin_assets()
 }
 
 
-function add_calendar_assets($group = 'admin')
+function add_calendar_assets($group = 'admin', $tryGcal = true)
 {
     $locale = $GLOBALS['locale'];
     $CI     = &get_instance();
 
-    $CI->app_scripts->add('fullcalendar-js', 'assets/plugins/fullcalendar/lib/main.min.js', $group);
+    $CI->app_scripts->add('full-calendar-js', 'assets/plugins/fullcalendar/fullcalendar.min.js', $group);
 
-    if ($locale != 'en' && file_exists(FCPATH . 'assets/plugins/fullcalendar/lib/locales/' . $locale . '.js')) {
-        $CI->app_scripts->add('fullcalendar-lang-js', 'assets/plugins/fullcalendar/lib/locales/' . $locale . '.js', $group);
+    if ($tryGcal && get_option('google_api_key') != '') {
+        $CI->app_scripts->add('full-calendar-gcal-js', 'assets/plugins/fullcalendar/gcal.min.js', $group);
     }
 
-    $CI->app_css->add('fullcalendar-css', 'assets/plugins/fullcalendar/lib/main.min.css', $group);
+    if ($locale != 'en' && file_exists(FCPATH . 'assets/plugins/fullcalendar/locale/' . $locale . '.js')) {
+        $CI->app_scripts->add('full-calendar-lang-js', 'assets/plugins/fullcalendar/locale/' . $locale . '.js', $group);
+    }
+
+    $CI->app_css->add('full-calendar-css', 'assets/plugins/fullcalendar/fullcalendar.min.css', $group);
 }
 
 function add_moment_js_assets($group = 'admin')

@@ -3,32 +3,38 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 define('APP_MINIMUM_REQUIRED_PHP_VERSION', '7.2.5');
 
-if (file_exists(APPPATH . 'config/app-config.php')) {
-    if (version_compare(PHP_VERSION, APP_MINIMUM_REQUIRED_PHP_VERSION) === -1) {
-        echo '<h1>Minimum required PHP version is <b>' . APP_MINIMUM_REQUIRED_PHP_VERSION . '</b>. Consider upgrading to a newer PHP version.</h4>';
-        echo '<h3>You are using ' . PHP_VERSION . ', you should consult with your hosting provider to help you to change your PHP version to ' . APP_MINIMUM_REQUIRED_PHP_VERSION . ' or higher, after you upgrade the PHP version this message will disappear.</h3>';
-        exit;
-    }
-    include_once(APPPATH . 'config/app-config.php');
+$file_config = APPPATH . 'config/app-config-' . str_replace('.', '-', $_SERVER['HTTP_HOST']) . '.php';
+
+if (file_exists($file_config)) {
+	if (version_compare(PHP_VERSION, APP_MINIMUM_REQUIRED_PHP_VERSION) === -1) {
+		echo '<h1>Minimum required PHP version is <b>' . APP_MINIMUM_REQUIRED_PHP_VERSION . '</b>. Consider upgrading to a newer PHP version.</h4>';
+		echo '<h3>You are using ' . PHP_VERSION . ', you should consult with your hosting provider to help you to change your PHP version to ' . APP_MINIMUM_REQUIRED_PHP_VERSION . ' or higher, after you upgrade the PHP version this message will disappear.</h3>';
+		exit;
+	}
+
+	$cleandUrl = str_replace('.', '-', $_SERVER['HTTP_HOST']);
+	if (is_dir('../../install-' . $cleandUrl)) {
+		unlink('../../install-' . $cleandUrl);
+	}
+
+	include_once($file_config);
 } else {
-    $install_url = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on' ? 'https' : 'http';
-    $install_url .= '://' . $_SERVER['HTTP_HOST'];
-    $install_url .= str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
-    $install_url .= 'install';
-    echo '<h1>Perfex CRM not installed</h1>';
-    echo '<p>1. To you use the automatic Perfex CRM installation tool click <a href="' . $install_url . '">here (' . $install_url . ')</a></p>';
-    echo '<p>2. If you are installing manually rename the config file located in application/config/app-config-sample.php to app-config.php and populate the defined fields.</p>';
-    die();
+	$install_url = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on' ? 'https' : 'http';
+	$install_url .= '://' . $_SERVER['HTTP_HOST'];
+	$install_url .= '/bak_install';
+	echo '<h1>BLM CLOUD CRM not installed</h1>';
+	echo '<p>1. To you use the automatic BLM CLOUD CRM installation tool click <a href="' . $install_url . '">here ( Install )</a></p>';
+	die();
 }
 
 /**
  * Database Tables Prefix
  * @return string
  */
-function db_prefix()
-{
-    return defined('APP_DB_PREFIX') ? APP_DB_PREFIX : 'tbl';
+function db_prefix(){
+	return defined('APP_DB_PREFIX') ? APP_DB_PREFIX : 'tbl';
 }
+
 /*
 |--------------------------------------------------------------------------
 | Base Site URL
@@ -209,11 +215,11 @@ $config['permitted_uri_chars'] = (defined('APP_PERMITTED_URI_CHARS') ? APP_PERMI
 | use segment based URLs.
 |
 */
-$config['allow_get_array']      = true;
+$config['allow_get_array'] = true;
 $config['enable_query_strings'] = false;
-$config['controller_trigger']   = 'c';
-$config['function_trigger']     = 'm';
-$config['directory_trigger']    = 'd';
+$config['controller_trigger'] = 'c';
+$config['function_trigger'] = 'm';
+$config['directory_trigger'] = 'd';
 
 /*
 |--------------------------------------------------------------------------
@@ -240,7 +246,7 @@ $config['directory_trigger']    = 'd';
 $config['log_threshold'] = (ENVIRONMENT !== 'production' ? 1 : 0);
 
 if (defined('APP_LOG_THRESHOLD')) {
-    $config['log_threshold'] = APP_LOG_THRESHOLD;
+	$config['log_threshold'] = APP_LOG_THRESHOLD;
 }
 
 /*
@@ -407,12 +413,12 @@ $config['encryption_key'] = APP_ENC_KEY;
 |           -   Clearly communicate you intentionally want the cookie sent in a third-party context.
 |
 */
-$config['sess_driver']             = SESS_DRIVER;
-$config['sess_cookie_name']        = (defined('APP_SESSION_COOKIE_NAME') ? APP_SESSION_COOKIE_NAME : 'sp_session');
-$config['sess_expiration']         = (defined('APP_SESSION_EXPIRATION') ? APP_SESSION_EXPIRATION : 28800);
-$config['sess_save_path']          = SESS_SAVE_PATH;
-$config['sess_match_ip']           = (defined('APP_SESSION_MATCH_IP') ? APP_SESSION_MATCH_IP : false);
-$config['sess_time_to_update']     = (defined('APP_SESSION_TIME_TO_UPDATE') ? APP_SESSION_TIME_TO_UPDATE : 300);
+$config['sess_driver'] = SESS_DRIVER;
+$config['sess_cookie_name'] = (defined('APP_SESSION_COOKIE_NAME') ? APP_SESSION_COOKIE_NAME : 'sp_session');
+$config['sess_expiration'] = (defined('APP_SESSION_EXPIRATION') ? APP_SESSION_EXPIRATION : 28800);
+$config['sess_save_path'] = SESS_SAVE_PATH;
+$config['sess_match_ip'] = (defined('APP_SESSION_MATCH_IP') ? APP_SESSION_MATCH_IP : false);
+$config['sess_time_to_update'] = (defined('APP_SESSION_TIME_TO_UPDATE') ? APP_SESSION_TIME_TO_UPDATE : 300);
 $config['sess_regenerate_destroy'] = (defined('APP_SESSION_REGENERATE_DESTROY') ? APP_SESSION_REGENERATE_DESTROY : false);
 // Work only on php 7.3 or later
 $config['sess_cookie_samesite'] = (defined('APP_SESSION_COOKIE_SAME_SITE') ? APP_SESSION_COOKIE_SAME_SITE : '');
@@ -432,10 +438,10 @@ $config['sess_cookie_samesite'] = (defined('APP_SESSION_COOKIE_SAME_SITE') ? APP
 |       'cookie_httponly') will also affect sessions.
 |
 */
-$config['cookie_prefix']   = (defined('APP_COOKIE_PREFIX') ? APP_COOKIE_PREFIX : '');
-$config['cookie_domain']   = (defined('APP_COOKIE_DOMAIN') ? APP_COOKIE_DOMAIN : '');
-$config['cookie_path']     = (defined('APP_COOKIE_PATH') ? APP_COOKIE_PATH : '/');
-$config['cookie_secure']   = (defined('APP_COOKIE_SECURE') ? APP_COOKIE_SECURE : false);
+$config['cookie_prefix'] = (defined('APP_COOKIE_PREFIX') ? APP_COOKIE_PREFIX : '');
+$config['cookie_domain'] = (defined('APP_COOKIE_DOMAIN') ? APP_COOKIE_DOMAIN : '');
+$config['cookie_path'] = (defined('APP_COOKIE_PATH') ? APP_COOKIE_PATH : '/');
+$config['cookie_secure'] = (defined('APP_COOKIE_SECURE') ? APP_COOKIE_SECURE : false);
 $config['cookie_httponly'] = (defined('APP_COOKIE_HTTPONLY') ? APP_COOKIE_HTTPONLY : false);
 
 /*
@@ -480,22 +486,22 @@ $config['global_xss_filtering'] = true;
 | 'csrf_regenerate' = Regenerate token on every submission
 | 'csrf_exclude_uris' = Array of URIs which ignore CSRF checks
 */
-$config['csrf_protection']   = defined('APP_CSRF_PROTECTION') ? APP_CSRF_PROTECTION : false;
-$config['csrf_token_name']   = defined('APP_CSRF_TOKEN_NAME') ? APP_CSRF_TOKEN_NAME : 'csrf_token_name';
-$config['csrf_cookie_name']  = defined('APP_CSRF_COOKIE_NAME') ? APP_CSRF_COOKIE_NAME : 'csrf_cookie_name';
-$config['csrf_expire']       = defined('APP_CSRF_EXPIRE') ? APP_CSRF_EXPIRE : 3660;
-$config['csrf_regenerate']   = false;
-$config['csrf_exclude_uris'] = ['admin/custom_email_and_sms_notifications/email_sms/sendEmailSms', 'forms/wtl/[0-9a-z]+', 'forms/ticket', 'forms/quote/[0-9a-z]+', 'admin/tasks/timer_tracking', 'api\/.+'];
+$config['csrf_protection'] = defined('APP_CSRF_PROTECTION') ? APP_CSRF_PROTECTION : false;
+$config['csrf_token_name'] = defined('APP_CSRF_TOKEN_NAME') ? APP_CSRF_TOKEN_NAME : 'csrf_token_name';
+$config['csrf_cookie_name'] = defined('APP_CSRF_COOKIE_NAME') ? APP_CSRF_COOKIE_NAME : 'csrf_cookie_name';
+$config['csrf_expire'] = defined('APP_CSRF_EXPIRE') ? APP_CSRF_EXPIRE : 3660;
+$config['csrf_regenerate'] = false;
+$config['csrf_exclude_uris'] = ['forms/wtl/[0-9a-z]+', 'forms/ticket', 'admin/tasks/timer_tracking', 'api\/.+'];
 
 if (isset($app_csrf_exclude_uris)) {
-    $config['csrf_exclude_uris'] = array_merge($config['csrf_exclude_uris'], $app_csrf_exclude_uris);
-    $config['csrf_exclude_uris'] = array_unique($config['csrf_exclude_uris']);
+	$config['csrf_exclude_uris'] = array_merge($config['csrf_exclude_uris'], $app_csrf_exclude_uris);
+	$config['csrf_exclude_uris'] = array_unique($config['csrf_exclude_uris']);
 }
 
 if ($config['csrf_protection'] == true
-    && isset($_SERVER['REQUEST_URI'])
-    && strpos($_SERVER['REQUEST_URI'], 'gateways/') !== false) {
-    $config['csrf_protection'] = false;
+	&& isset($_SERVER['REQUEST_URI'])
+	&& strpos($_SERVER['REQUEST_URI'], 'gateways/') !== false) {
+	$config['csrf_protection'] = false;
 }
 
 /*
@@ -574,13 +580,13 @@ $config['proxy_ips'] = '';
 | For example: define('APP_MEMORY_LIMIT', '256m');
 */
 if (defined('APP_MEMORY_LIMIT')) {
-    @ini_set('memory_limit', APP_MEMORY_LIMIT);
+	@ini_set('memory_limit', APP_MEMORY_LIMIT);
 }
 
 /**
-* Modules path
-* Do not change this code
-*/
+ * Modules path
+ * Do not change this code
+ */
 $config['modules_locations'] = [
-    APP_MODULES_PATH => '../../modules/',
+	APP_MODULES_PATH => '../../modules/',
 ];

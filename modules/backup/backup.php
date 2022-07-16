@@ -51,32 +51,29 @@ function backup_perform()
     $CI->backup_module->make_backup_db();
 }
 
-function backup_set_info_manager()
-{
+function backup_set_info_manager(){
     $CI = &get_instance();
     $CI->load->library(BACKUP_MODULE_NAME . '/' . 'backup_module');
     $manager = $CI->backup_module->get_backup_manager_name();
     echo '<tr>';
     echo '<td class="bold">Backup Manager</td>';
-    echo '<td>' . $manager . '</td>';
+    echo '<td>'.$manager.'</td>';
     echo '</tr>';
 }
-
 /**
- * Add additional settings for this module in the module list area
- * @param array $actions current actions
- * @return array
- */
+* Add additional settings for this module in the module list area
+* @param  array $actions current actions
+* @return array
+*/
 function module_backup_action_links($actions)
 {
     $actions[] = '<a href="' . admin_url('backup') . '">' . _l('utility_backup') . '</a>';
 
     return $actions;
 }
-
 /**
- * Register activation module hook
- */
+* Register activation module hook
+*/
 register_activation_hook(BACKUP_MODULE_NAME, 'backup_module_activation_hook');
 
 function backup_module_activation_hook()
@@ -86,8 +83,8 @@ function backup_module_activation_hook()
 }
 
 /**
- * Register language files, must be registered if the module is using languages
- */
+* Register language files, must be registered if the module is using languages
+*/
 register_language_files(BACKUP_MODULE_NAME, [BACKUP_MODULE_NAME]);
 
 /**
@@ -97,16 +94,16 @@ register_language_files(BACKUP_MODULE_NAME, [BACKUP_MODULE_NAME]);
 function backup_module_init_menu_items()
 {
     /**
-     * If the logged in user is administrator, add custom menu in Setup
-     */
+    * If the logged in user is administrator, add custom menu in Setup
+    */
     if (is_admin()) {
         $CI = &get_instance();
 
         $CI->app_menu->add_sidebar_children_item('utilities', [
-            'slug' => 'utility_backup',
-            'name' => _l('utility_backup'),
-            'href' => admin_url('backup'),
-            'position' => 29,
+                'slug'     => 'utility_backup',
+                'name'     => _l('utility_backup'),
+                'href'     => admin_url('backup'),
+                'position' => 29,
         ]);
     }
 }

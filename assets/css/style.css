@@ -1312,15 +1312,6 @@ body.page-small.show-sidebar #wrapper {
     border-radius: 0;
 }
 
-.bootstrap-select .selectpicker.clean-select + button {
-    border:0px !important;
-}
-
-.bootstrap-select.open .selectpicker.clean-select + button + .dropdown-menu {
-    border-radius:4px !important;
-    border-top-width: 1px !important;
-}
-
 .dropdown-menu>li:last-child>a {
     border-bottom-left-radius: 6px;
     border-bottom-right-radius: 6px;
@@ -2812,14 +2803,23 @@ label:not(.control-label) {
     cursor: pointer;
 }
 
-.fc-view {
-    overflow-y: scroll;
+.event-title {
+    display: inline-block;
+    margin-top: 10px;
 }
 
-#calendar .fc-header-toolbar button,
-#calendar .fc-day-header,
-#calendar .fc-toolbar .fc-center {
-   text-transform: capitalize;
+.events .event {
+    border-bottom: 1px solid #F9F9F9;
+    margin-top: 15px;
+    word-break: break-all;
+}
+
+.events .event:first-child {
+    margin-top: 0;
+}
+
+.events .event:last-child {
+    border-bottom: 0;
 }
 
 .bootstrap-select .btn-default {
@@ -4326,6 +4326,21 @@ body.rtl .btn {
     text-align: right;
 }
 
+table.dataTable.dtr-inline.collapsed>tbody>tr[role=row]>td:first-child:before,
+table.dataTable.dtr-inline.collapsed>tbody>tr[role=row]>th:first-child:before {
+    background-color: #f6f8fa;
+    border: 1px solid #ebf5ff;
+    color: #4e74ad;
+    height: 17px;
+    width: 18px;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    top: 13px;
+    font-weight: 600;
+    border-radius: 4px;
+    line-height: 17px;
+}
+
 .col-xs-5ths,
 .col-sm-5ths,
 .col-md-5ths,
@@ -4876,6 +4891,10 @@ table .goal-percent {
     text-decoration: none;
 }
 
+.fc-view {
+    overflow-y: scroll;
+}
+
 .lead-attachment-wrapper hr,
 .invoice-attachment-wrapper hr {
     margin-top: 0;
@@ -5131,6 +5150,10 @@ body.rtl a+.main-tasks-table-href-name {
     float: right;
 }
 
+.fc-toolbar h2 {
+    font-size: 20px;
+    margin-top: 4px;
+}
 
 .kan-ban-body .panel_s {
     margin-bottom: 0;
@@ -8476,6 +8499,16 @@ body.rtl .task-table-related {
 body.rtl .task-table-related:before {
     content: '\a';
     white-space: pre;
+}
+
+#calendar .fc-header-toolbar .btn-default {
+    display: none;
+}
+
+#calendar .fc-header-toolbar button,
+#calendar .fc-day-header,
+#calendar .fc-toolbar .fc-center {
+    text-transform: capitalize;
 }
 
 .checklist.ui-sortable-helper.relative {

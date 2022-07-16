@@ -98,28 +98,28 @@ class AdminController extends App_Controller
             'permission' => 'invoices',
             'url'        => 'invoices/invoice',
             'position'   => 5,
-        ]);
+            ]);
 
         $this->app->add_quick_actions_link([
             'name'       => _l('estimate'),
             'permission' => 'estimates',
             'url'        => 'estimates/estimate',
             'position'   => 10,
-        ]);
+            ]);
 
         $this->app->add_quick_actions_link([
             'name'       => _l('proposal'),
             'permission' => 'proposals',
             'url'        => 'proposals/proposal',
             'position'   => 15,
-        ]);
+            ]);
 
         $this->app->add_quick_actions_link([
             'name'       => _l('credit_note'),
             'permission' => 'credit_notes',
             'url'        => 'credit_notes/credit_note',
             'position'   => 20,
-        ]);
+            ]);
 
 
         $this->app->add_quick_actions_link([
@@ -127,14 +127,14 @@ class AdminController extends App_Controller
             'permission' => 'customers',
             'url'        => 'clients/client',
             'position'   => 25,
-        ]);
+            ]);
 
         $this->app->add_quick_actions_link([
             'name'       => _l('subscription'),
             'permission' => 'subscriptions',
             'url'        => 'subscriptions/create',
             'position'   => 30,
-        ]);
+            ]);
 
 
         $this->app->add_quick_actions_link([
@@ -142,7 +142,7 @@ class AdminController extends App_Controller
             'url'        => 'projects/project',
             'permission' => 'projects',
             'position'   => 35,
-        ]);
+            ]);
 
 
         $this->app->add_quick_actions_link([
@@ -151,10 +151,10 @@ class AdminController extends App_Controller
             'custom_url'      => true,
             'href_attributes' => [
                 'onclick' => 'new_task();return false;',
-            ],
+                ],
             'permission' => 'tasks',
             'position'   => 40,
-        ]);
+            ]);
 
         $this->app->add_quick_actions_link([
             'name'            => _l('lead'),
@@ -163,16 +163,16 @@ class AdminController extends App_Controller
             'permission'      => 'is_staff_member',
             'href_attributes' => [
                 'onclick' => 'init_lead(); return false;',
-            ],
+                ],
             'position' => 45,
-        ]);
+            ]);
 
         $this->app->add_quick_actions_link([
             'name'       => _l('expense'),
             'permission' => 'expenses',
             'url'        => 'expenses/expense',
             'position'   => 50,
-        ]);
+            ]);
 
 
         $this->app->add_quick_actions_link([
@@ -180,7 +180,7 @@ class AdminController extends App_Controller
             'permission' => 'contracts',
             'url'        => 'contracts/contract',
             'position'   => 55,
-        ]);
+            ]);
 
 
         $this->app->add_quick_actions_link([
@@ -188,13 +188,13 @@ class AdminController extends App_Controller
             'permission' => 'knowledge_base',
             'url'        => 'knowledge_base/article',
             'position'   => 60,
-        ]);
+            ]);
 
         $tickets = [
             'name'     => _l('ticket'),
             'url'      => 'tickets/add',
             'position' => 65,
-        ];
+            ];
 
         if (get_option('access_tickets_to_none_staff_members') == 0 && !is_staff_member()) {
             $tickets['permission'] = 'is_staff_member';
@@ -207,13 +207,13 @@ class AdminController extends App_Controller
             'url'        => 'staff/member',
             'permission' => 'staff',
             'position'   => 70,
-        ]);
+            ]);
 
         $this->app->add_quick_actions_link([
             'name'       => _l('calendar_event'),
             'url'        => 'utilities/calendar?new_event=true&date=' . _d(date('Y-m-d')),
             'permission' => '',
             'position'   => 75,
-        ]);
+            ]);
     }
 }

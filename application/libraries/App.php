@@ -116,6 +116,7 @@ class App
      */
     public function upgrade_database()
     {
+
         $update = $this->upgrade_database_silent();
 
         if ($update['success'] == false) {
@@ -240,6 +241,10 @@ class App
      */
     public function get_option($name)
     {
+        if ($name == 'number_padding_invoice_and_estimate') {
+            $name = 'number_padding_prefixes';
+        }
+
         $val  = '';
         $name = trim($name);
 

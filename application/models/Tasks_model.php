@@ -474,8 +474,8 @@ class Tasks_model extends App_Model
             unset($data['ticket_to_task']);
         }
 
-        $data['startdate']             = to_sql_date($data['startdate'],true);
-        $data['duedate']               = to_sql_date($data['duedate'],true);
+        $data['startdate']             = to_sql_date($data['startdate']);
+        $data['duedate']               = to_sql_date($data['duedate']);
         $data['dateadded']             = date('Y-m-d H:i:s');
         $data['addedfrom']             = $clientRequest == false ? get_staff_user_id() : get_contact_user_id();
         $data['is_added_from_contact'] = $clientRequest == false ? 0 : 1;
@@ -569,20 +569,6 @@ class Tasks_model extends App_Model
             }
         }
 
-        if (isset($data['starttime'])) {
-            unset($data['starttime']);
-        }
-
-        if (isset($data['duetime'])) {
-            unset($data['duetime']);
-        }
-
-        $withDefaultAssignee = true;
-        if (isset($data['withDefaultAssignee'])) {
-            $withDefaultAssignee = $data['withDefaultAssignee'];
-            unset($data['withDefaultAssignee']);
-        }
-
         $data = hooks()->apply_filters('before_add_task', $data);
 
         $tags = '';
@@ -621,11 +607,7 @@ class Tasks_model extends App_Model
             if ($clientRequest == false) {
                 $new_task_auto_assign_creator = (get_option('new_task_auto_assign_current_member') == '1' ? true : false);
 
-                if ( isset($data['rel_type'])
-                    && $data['rel_type'] == 'project'
-                    && !$this->projects_model->is_member($data['rel_id'])
-                    || !$withDefaultAssignee
-                    ) {
+                if (isset($data['rel_type']) && $data['rel_type'] == 'project' && !$this->projects_model->is_member($data['rel_id'])) {
                     $new_task_auto_assign_creator = false;
                 }
                 if ($new_task_auto_assign_creator == true) {
@@ -696,8 +678,8 @@ class Tasks_model extends App_Model
     public function update($data, $id, $clientRequest = false)
     {
         $affectedRows      = 0;
-        $data['startdate'] = to_sql_date($data['startdate'], true);
-        $data['duedate']   = to_sql_date($data['duedate'], true);
+        $data['startdate'] = to_sql_date($data['startdate']);
+        $data['duedate']   = to_sql_date($data['duedate']);
 
         $checklistItems = [];
         if (isset($data['checklist_items']) && count($data['checklist_items']) > 0) {
@@ -749,15 +731,6 @@ class Tasks_model extends App_Model
                 unset($data['repeat_type_custom']);
                 unset($data['repeat_every_custom']);
             }
-
-            if (isset($data['starttime'])) {
-                unset($data['starttime']);
-            }
-
-            if (isset($data['duetime'])) {
-                unset($data['duetime']);
-            }
-
 
             if (isset($data['is_public'])) {
                 $data['is_public'] = 1;

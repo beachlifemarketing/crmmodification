@@ -3,7 +3,6 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 
 $aColumns = [
-    '1', // bulk actions
     db_prefix() . 'expenses.id as id',
     db_prefix() . 'expenses_categories.name as category_name',
     'amount',
@@ -71,8 +70,6 @@ $this->ci->load->model('payment_modes_model');
 
 foreach ($rResult as $aRow) {
     $row = [];
-
-    $row[] = '<div class="checkbox"><input type="checkbox" value="' . $aRow['id'] . '"><label></label></div>';
 
     $row[] = $aRow['id'];
 
